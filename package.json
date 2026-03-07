@@ -8,6 +8,7 @@
   },
   "scripts": {
     "scan": "node src/cli.js scan .",
+    "scan:prompt": "node src/cli.js scan-prompt .",
     "serve": "node src/cli.js serve",
     "test": "node --test"
   }
