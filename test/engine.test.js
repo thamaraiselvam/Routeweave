@@ -123,9 +123,11 @@ test('resolveAiConfig normalizes opencode aliases', () => {
   assert.equal(config.provider, 'opencode');
 });
 
-test('generateOpenCodeScanPrompt includes metadata payload marker', () => {
+test('generateOpenCodeScanPrompt includes repository scan instructions', () => {
   const output = generateOpenCodeScanPrompt(process.cwd());
   assert.ok(output.fileCount > 0);
   assert.ok(output.routeCount >= 0);
-  assert.match(output.prompt, /ROUTE_METADATA_JSON:/);
+  assert.match(output.prompt, /REPOSITORY_ROOT:/);
+  assert.match(output.prompt, /Scan the entire repository rooted at REPOSITORY_ROOT/);
+  assert.match(output.prompt, /HINT_ROUTE_METADATA_JSON:/);
 });

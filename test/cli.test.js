@@ -1,6 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { parseArgs, main } = require('../src/cli');
+const path = require('path');
+const { parseArgs, main, findRepositoryRoot } = require('../src/cli');
 
 test('parseArgs supports --key=value format', () => {
   const { positional, options } = parseArgs([
@@ -56,4 +57,10 @@ test('main rejects extra positional args with npm forwarding hint', async () => 
   } finally {
     process.argv = previousArgv;
   }
+});
+
+test('findRepositoryRoot resolves nearest git root for nested paths', () => {
+  const nestedPath = path.join(process.cwd(), 'src', 'engine');
+  const resolved = findRepositoryRoot(nestedPath);
+  assert.equal(resolved, process.cwd());
 });

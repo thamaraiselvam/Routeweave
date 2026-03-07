@@ -3,212 +3,286 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>APIFlow Graph Explorer</title>
+    <title>APIFlow Constellation</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <style>
       :root {
-        --bg: #070311;
-        --panel: #130a23;
-        --panel-soft: #1a0f30;
-        --line: #2f1d4a;
-        --text: #f4edff;
-        --muted: #9e8eb9;
-        --purple: #9e55ff;
-        --purple-2: #7f41d4;
-        --green: #13d8a1;
-        --blue: #4e88ff;
+        --bg-a: #021620;
+        --bg-b: #132739;
+        --bg-c: #2b1d34;
+        --panel: rgba(9, 24, 37, 0.76);
+        --panel-border: rgba(168, 226, 255, 0.28);
+        --text: #eaf8ff;
+        --muted: #a7c5d8;
+        --teal: #2dd4bf;
+        --cyan: #38bdf8;
+        --orange: #fb923c;
+        --rose: #fb7185;
+        --lime: #84cc16;
       }
 
       * { box-sizing: border-box; }
 
       body {
         margin: 0;
-        font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        background: radial-gradient(circle at 10% 10%, #160d28 0%, var(--bg) 45%);
+        min-height: 100vh;
         color: var(--text);
+        font-family: "Sora", "Trebuchet MS", "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at 8% 14%, rgba(45, 212, 191, 0.25), transparent 40%),
+          radial-gradient(circle at 84% 14%, rgba(251, 146, 60, 0.22), transparent 35%),
+          radial-gradient(circle at 70% 82%, rgba(56, 189, 248, 0.2), transparent 40%),
+          linear-gradient(145deg, var(--bg-a), var(--bg-b) 50%, var(--bg-c));
       }
 
       .shell {
+        min-height: 100vh;
         display: grid;
-        grid-template-rows: 78px 1fr;
-        height: 100vh;
+        grid-template-rows: 84px 1fr;
       }
 
       .topbar {
-        border-bottom: 1px solid var(--line);
-        display: grid;
-        grid-template-columns: 300px 1fr auto;
+        display: flex;
         align-items: center;
-        padding: 0 24px;
-        gap: 24px;
-        background: #090414;
+        justify-content: space-between;
+        padding: 0 22px;
+        border-bottom: 1px solid rgba(168, 226, 255, 0.24);
+        background: rgba(5, 17, 28, 0.45);
+        backdrop-filter: blur(10px);
       }
 
-      .brand { display: flex; align-items: center; gap: 14px; }
-      .logo {
-        width: 46px; height: 46px; border-radius: 14px;
-        background: linear-gradient(135deg, #7b5bff, #5f7cff);
-        box-shadow: 0 0 24px rgba(127, 87, 255, 0.45);
-      }
-      .brand h1 { margin: 0; font-size: 35px; letter-spacing: -0.03em; }
-
-      .tabs { display: flex; gap: 30px; }
-      .tab { color: var(--muted); font-weight: 600; }
-      .tab.active { color: var(--purple); }
-
-      .search-wrap { justify-self: end; display: flex; align-items: center; gap: 14px; }
-      .search {
-        width: 390px; height: 46px; border-radius: 22px;
-        border: 1px solid #2a1840; background: #1a0f30; color: #d0c2ec;
-        padding: 0 18px; outline: none;
-      }
-      .icon-bubble {
-        width: 42px; height: 42px; border-radius: 50%; border: 1px solid #2f1d4a;
-        background: #1a0f30;
+      .brand h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: -0.02em;
       }
 
-      .main {
+      .brand p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.05em;
+      }
+
+      .stats {
+        display: flex;
+        gap: 10px;
+      }
+
+      .pill {
+        border: 1px solid rgba(168, 226, 255, 0.35);
+        background: rgba(12, 36, 54, 0.72);
+        border-radius: 999px;
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+
+      .layout {
         display: grid;
-        grid-template-columns: 332px 1fr 430px;
+        grid-template-columns: 1fr 360px;
+        gap: 14px;
+        padding: 14px;
         min-height: 0;
       }
 
-      .left-panel, .right-panel {
-        background: linear-gradient(180deg, #0f0820, #110a22);
-        border-right: 1px solid var(--line);
-        overflow: auto;
-      }
-      .right-panel {
-        border-right: 0;
-        border-left: 1px solid var(--line);
-        padding: 26px;
-      }
-
-      .section-title {
-        color: #8a7ca6;
-        font-size: 14px;
-        letter-spacing: 0.09em;
-        font-weight: 700;
-        text-transform: uppercase;
-        margin: 20px 20px 16px;
-      }
-
-      .service-item {
-        margin: 0 18px 10px;
-        padding: 12px 14px;
-        border-radius: 16px;
-        color: #b8a8d7;
-        background: transparent;
-        border: 1px solid transparent;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-weight: 600;
-      }
-      .service-item.active {
-        background: #2a1247;
-        border-color: #3a1c67;
-        color: #f1dfff;
-      }
-      .count-pill, .method-pill {
-        background: #8f43f5;
-        color: #f6ebff;
-        border-radius: 999px;
-        font-size: 12px;
-        padding: 4px 10px;
-      }
-      .method-pill.get { background: rgba(18, 216, 161, 0.2); color: #38f3c5; }
-      .method-pill.post { background: rgba(76, 136, 255, 0.24); color: #9dbfff; }
-      .method-pill.put { background: rgba(255, 152, 59, 0.24); color: #ffc684; }
-      .method-pill.delete { background: rgba(255, 87, 87, 0.24); color: #ff9e9e; }
-
-      .api-list { padding: 6px 16px 24px; border-top: 1px solid #211336; margin-top: 16px; }
-      .api-row {
-        display: flex; align-items: center; justify-content: space-between;
-        color: #e8dbff;
-        padding: 10px 10px;
-        border-radius: 12px;
-        margin-top: 7px;
-      }
-      .api-row.active { background: #25123e; border: 1px solid #3f2460; }
-
-      .canvas {
-        position: relative;
-        background:
-          radial-gradient(circle at center, rgba(138, 88, 255, 0.1) 0, rgba(10, 4, 20, 0.05) 38%, #080313 70%),
-          radial-gradient(#211436 1px, transparent 1px);
-        background-size: auto, 26px 26px;
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 18px;
         overflow: hidden;
       }
-      svg { width: 100%; height: 100%; display: block; }
-      .edge { fill: none; stroke-width: 3; opacity: 0.72; }
-      .node-card rect {
-        fill: #1a0f2e;
-        stroke: #6d31af;
-        stroke-width: 2;
-        rx: 22;
-      }
-      .node-card text.name { fill: #f2e8ff; font-size: 27px; font-weight: 700; }
-      .node-card text.meta { fill: #9a89b8; font-size: 18px; }
-      .endpoint rect {
-        fill: #1a0f2e;
-        stroke: #5d2f95;
-        stroke-width: 2;
-        rx: 24;
+
+      .panel-title {
+        margin: 0;
+        padding: 14px 16px;
+        border-bottom: 1px solid rgba(168, 226, 255, 0.2);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.11em;
+        color: var(--muted);
       }
 
-      .detail-title { font-size: 22px; margin: 0 0 24px; }
-      .route { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-      .path { color: #b57dff; font-size: 27px; }
-      .main-head { font-size: 50px; margin: 0; letter-spacing: -0.03em; }
-      .desc { color: #9f8dbc; font-size: 17px; line-height: 1.45; }
-      .subheading {
-        color: #a495bf;
+      .graph-wrap {
+        position: relative;
+        min-height: 0;
+      }
+
+      .graph-hint {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 12px;
+        border: 1px solid rgba(251, 146, 60, 0.45);
+        background: rgba(61, 34, 14, 0.55);
+        border-radius: 12px;
+        padding: 10px 12px;
+        color: #ffd9bd;
         font-size: 13px;
-        font-weight: 800;
-        letter-spacing: 0.13em;
-        margin: 28px 0 14px;
       }
-      .steps { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
-      .steps li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; }
-      .step-num {
-        width: 30px; height: 30px; border-radius: 50%;
-        background: #6d36bf; display: grid; place-items: center; color: #fff; font-size: 13px;
-      }
-      .resource {
-        border: 1px solid #3a2951;
-        background: rgba(255, 255, 255, 0.04);
-        border-radius: 18px;
-        padding: 14px;
-        margin-bottom: 12px;
-      }
-      .run-btn {
-        margin-top: 28px;
+
+      svg {
+        display: block;
         width: 100%;
-        border: 0;
-        background: linear-gradient(90deg, #8f45f7, #b45eff);
-        color: white;
-        height: 64px;
-        border-radius: 34px;
-        font-size: 33px;
-        font-weight: 700;
+        height: calc(100vh - 130px);
+        min-height: 520px;
+      }
+
+      .orbit-line {
+        fill: none;
+        stroke: rgba(143, 211, 243, 0.22);
+        stroke-width: 1.2;
+        stroke-dasharray: 5 8;
+      }
+
+      .flow-edge {
+        fill: none;
+        stroke: rgba(143, 211, 243, 0.62);
+        stroke-width: 2;
+      }
+
+      .bubble {
         cursor: pointer;
       }
 
-      .muted { color: var(--muted); }
-      .error-box {
-        margin: 16px;
-        background: rgba(255, 88, 88, 0.15);
-        border: 1px solid rgba(255, 88, 88, 0.4);
-        color: #ffc6c6;
-        border-radius: 12px;
-        padding: 12px;
+      .bubble circle {
+        transition: transform 150ms ease, filter 150ms ease, opacity 150ms ease;
       }
 
-      @media (max-width: 1200px) {
-        .main { grid-template-columns: 280px 1fr; }
-        .right-panel { display: none; }
+      .bubble:hover circle {
+        filter: brightness(1.07);
+      }
+
+      .bubble.selected circle {
+        filter: drop-shadow(0 0 18px rgba(56, 189, 248, 0.7));
+      }
+
+      .api-label {
+        fill: #f4fdff;
+        font-size: 12px;
+        font-weight: 700;
+        text-anchor: middle;
+      }
+
+      .api-sub {
+        fill: #d0ebf8;
+        font-size: 11px;
+        text-anchor: middle;
+      }
+
+      .flow-label {
+        fill: #f6faff;
+        font-size: 10px;
+        text-anchor: middle;
+      }
+
+      .details {
+        padding: 16px;
+        max-height: calc(100vh - 130px);
+        overflow: auto;
+      }
+
+      .method {
+        display: inline-block;
+        padding: 4px 9px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 800;
+        margin-right: 8px;
+      }
+
+      .m-get { background: rgba(45, 212, 191, 0.22); color: #8ff5e7; }
+      .m-post { background: rgba(56, 189, 248, 0.23); color: #a5e5ff; }
+      .m-put { background: rgba(251, 146, 60, 0.24); color: #ffd1a7; }
+      .m-patch { background: rgba(251, 113, 133, 0.22); color: #ffc3ce; }
+      .m-delete { background: rgba(244, 63, 94, 0.24); color: #ffbac8; }
+
+      .path {
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .summary {
+        color: var(--muted);
+        line-height: 1.45;
+        margin: 12px 0 16px;
+      }
+
+      .focus {
+        border: 1px solid rgba(132, 204, 22, 0.4);
+        background: rgba(46, 68, 16, 0.42);
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 14px;
+      }
+
+      .focus b {
+        display: block;
+        margin-bottom: 4px;
+      }
+
+      .section {
+        margin-top: 16px;
+      }
+
+      .section h3 {
+        margin: 0 0 8px;
+        color: var(--muted);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .steps {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        border: 1px solid rgba(168, 226, 255, 0.28);
+        background: rgba(14, 34, 50, 0.7);
+        border-radius: 999px;
+        font-size: 12px;
+        padding: 5px 10px;
+      }
+
+      .empty {
+        color: var(--muted);
+        margin: 8px 0;
+      }
+
+      .error {
+        border: 1px solid rgba(251, 113, 133, 0.45);
+        background: rgba(79, 18, 32, 0.45);
+        color: #ffd1da;
+        border-radius: 12px;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 13px;
+      }
+
+      @media (max-width: 1100px) {
+        .layout {
+          grid-template-columns: 1fr;
+          grid-template-rows: 65vh auto;
+        }
+
+        svg {
+          height: 65vh;
+          min-height: 420px;
+        }
+
+        .details {
+          max-height: none;
+        }
       }
     </style>
   </head>
@@ -219,201 +293,467 @@
 
       const fallbackApis = [
         {
-          method: 'POST',
-          path: '/login',
-          summary: 'Authenticate a user and issue a signed JWT session token.',
-          flow: ['Validate credentials', 'Sign JWT token', 'Log auth event'],
-          tables: ['users', 'sessions'],
-          services: ['Auth0 Gateway'],
-          caches: ['session-cache'],
-          queues: ['audit-events']
-        },
-        {
           method: 'GET',
-          path: '/users/{id}',
-          summary: 'Returns detailed information about a specific user including roles and activity logs.',
-          flow: ['Validate Session', 'Query Postgres', 'Aggregate Response'],
-          tables: ['users', 'metadata'],
-          services: ['User Microservice'],
-          caches: ['profile-cache'],
+          path: '/api/graph',
+          summary: 'Returns generated API dependency graph data for visualization.',
+          flow: [
+            'Receive request from UI explorer',
+            'Read .apimap/graph.json from cache files',
+            'Respond with graph payload'
+          ],
+          tables: [],
+          services: [],
+          caches: ['.apimap/graph.json'],
           queues: []
         },
         {
-          method: 'PUT',
-          path: '/profile',
-          summary: 'Update profile settings and invalidate related cache data.',
-          flow: ['Validate payload', 'Persist to database', 'Invalidate cache'],
-          tables: ['users'],
-          services: ['User Microservice'],
-          caches: ['profile-cache'],
-          queues: ['notifications']
-        },
-        {
-          method: 'DELETE',
-          path: '/account',
-          summary: 'Anonymize and deactivate the current user account.',
-          flow: ['Authorize user', 'Soft delete account', 'Emit compliance event'],
-          tables: ['users', 'audit_log'],
-          services: ['User Microservice'],
-          caches: ['session-cache'],
-          queues: ['compliance-events']
+          method: 'GET',
+          path: '/api/apis',
+          summary: 'Returns API knowledge summaries from cache for endpoint navigation.',
+          flow: [
+            'Receive request from UI explorer',
+            'Read .apimap/api_knowledge.json from cache files',
+            'Flatten API entries and return the list'
+          ],
+          tables: [],
+          services: [],
+          caches: ['.apimap/api_knowledge.json'],
+          queues: []
         }
       ];
 
-      const fallbackGraph = {
-        nodes: [
-          { id: 'auth', type: 'service', label: 'Auth0 Gateway', meta: 'Identity Provider', x: 680, y: 220 },
-          { id: 'user', type: 'service', label: 'User Microservice', meta: 'v2.4.1 • active', x: 450, y: 470 },
-          { id: 'db', type: 'database', label: 'PostgreSQL', meta: 'Production Cluster', x: 610, y: 840 }
-        ],
-        edges: [
-          { source: 'user', target: 'auth', color: '#3c8fff' },
-          { source: 'user', target: 'db', color: '#21cca8' },
-          { source: 'auth', target: 'db', color: '#8b4cff' }
-        ]
-      };
+      function methodClass(method) {
+        return `m-${String(method || '').toLowerCase()}`;
+      }
 
-      function mapMethodClass(method) {
-        return method.toLowerCase();
+      function normalizeApis(raw) {
+        const legacyPaths = new Set(['/users/:id', '/users/{id}']);
+        const list = Array.isArray(raw) ? raw : [];
+        const deduped = [];
+        const seen = new Set();
+
+        for (const item of list) {
+          if (!item || !item.method || !item.path) continue;
+          if (legacyPaths.has(item.path)) continue;
+          const method = String(item.method).toUpperCase();
+          const key = `${method} ${item.path}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+
+          deduped.push({
+            method,
+            path: item.path,
+            summary: item.summary || 'No summary available.',
+            flow: Array.isArray(item.flow) ? item.flow : [],
+            tables: Array.isArray(item.tables) ? item.tables : [],
+            services: Array.isArray(item.services) ? item.services : [],
+            caches: Array.isArray(item.caches) ? item.caches : [],
+            queues: Array.isArray(item.queues) ? item.queues : []
+          });
+        }
+
+        return deduped;
+      }
+
+      function truncate(text, size) {
+        const value = String(text || '');
+        return value.length <= size ? value : `${value.slice(0, size - 1)}...`;
+      }
+
+      function buildApiPositions(apis) {
+        const cx = 470;
+        const cy = 330;
+        const radius = Math.max(170, 210 + apis.length * 4);
+        return apis.map((api, i) => {
+          const angle = (Math.PI * 2 * i) / Math.max(apis.length, 1) - Math.PI / 2;
+          return {
+            id: `${api.method} ${api.path}`,
+            x: cx + Math.cos(angle) * radius,
+            y: cy + Math.sin(angle) * radius,
+            r: 58
+          };
+        });
+      }
+
+      function buildFlowNodes(flow, selected) {
+        if (!selected) return [];
+        const sx = selected.x;
+        const sy = selected.y;
+        const stepGap = 96;
+        const startX = Math.min(960, sx + 170);
+        const startY = Math.max(100, sy - ((flow.length - 1) * stepGap) / 2);
+        return flow.map((step, i) => ({
+          id: `flow-${i}`,
+          label: step,
+          x: startX,
+          y: startY + i * stepGap,
+          r: 38,
+          index: i
+        }));
+      }
+
+      function buildResourceNodes(api, flowNodes) {
+        if (!api || !flowNodes.length) return [];
+
+        const items = [];
+        for (const table of api.tables) items.push({ type: 'table', label: table, color: '#84cc16' });
+        for (const service of api.services) items.push({ type: 'service', label: service, color: '#38bdf8' });
+        for (const cache of api.caches) items.push({ type: 'cache', label: cache, color: '#2dd4bf' });
+        for (const queue of api.queues) items.push({ type: 'queue', label: queue, color: '#fb7185' });
+
+        const anchor = flowNodes[Math.max(flowNodes.length - 1, 0)];
+        const baseX = anchor.x;
+        const baseY = anchor.y + 90;
+
+        return items.slice(0, 12).map((item, i) => ({
+          ...item,
+          id: `resource-${item.type}-${i}`,
+          x: baseX + (i % 4) * 90 - 130,
+          y: baseY + Math.floor(i / 4) * 78,
+          r: 28
+        }));
+      }
+
+      function Chips({ items, empty }) {
+        if (!items.length) {
+          return React.createElement('p', { className: 'empty' }, empty);
+        }
+
+        return React.createElement(
+          'div',
+          { className: 'chips' },
+          items.map((item, i) => React.createElement('span', { className: 'chip', key: `${item}-${i}` }, item))
+        );
       }
 
       function App() {
-        const [graph, setGraph] = useState(fallbackGraph);
-        const [apis, setApis] = useState(fallbackApis);
-        const [selectedApi, setSelectedApi] = useState('GET /users/{id}');
+        const [rawApis, setRawApis] = useState(fallbackApis);
+        const [selectedId, setSelectedId] = useState('');
+        const [focused, setFocused] = useState(null);
         const [error, setError] = useState('');
 
+        const apis = useMemo(() => normalizeApis(rawApis), [rawApis]);
+        const apiPositions = useMemo(() => buildApiPositions(apis), [apis]);
+
         useEffect(() => {
-          Promise.all([fetch('/api/graph'), fetch('/api/apis')])
-            .then(async ([g, a]) => {
-              if (!g.ok || !a.ok) throw new Error('Using demo mode. Run `apimap scan .` to show your live graph data.');
-              return [await g.json(), await a.json()];
-            })
-            .then(([gData, aData]) => {
-              if (Array.isArray(gData.nodes) && gData.nodes.length) {
-                const mappedNodes = gData.nodes.map((n, i) => ({
-                  ...n,
-                  meta: n.type === 'database' ? 'Production Cluster' : n.type + ' dependency',
-                  x: 420 + (i % 2) * 250,
-                  y: 220 + i * 180
-                }));
-                setGraph({ nodes: mappedNodes, edges: gData.edges || [] });
+          async function loadApis() {
+            try {
+              const response = await fetch('/api/apis');
+              if (!response.ok) {
+                throw new Error('Using demo data. Run `apimap scan .` to load live API cache.');
               }
 
-              if (Array.isArray(aData.apis) && aData.apis.length) {
-                setApis(aData.apis);
-                setSelectedApi(`${aData.apis[0].method} ${aData.apis[0].path}`);
-              }
+              const payload = await response.json();
+              setRawApis(Array.isArray(payload.apis) ? payload.apis : fallbackApis);
               setError('');
-            })
-            .catch((err) => setError(err.message));
+            } catch (err) {
+              setRawApis(fallbackApis);
+              setError(err.message || 'Unable to load APIs from cache.');
+            }
+          }
+
+          loadApis();
         }, []);
 
-        const selected = useMemo(
-          () => apis.find((api) => `${api.method} ${api.path}` === selectedApi) || apis[0],
-          [apis, selectedApi]
+        useEffect(() => {
+          if (!apis.length) {
+            setSelectedId('');
+            setFocused(null);
+            return;
+          }
+
+          const exists = apis.some((api) => `${api.method} ${api.path}` === selectedId);
+          if (!exists && selectedId) {
+            setSelectedId('');
+            setFocused(null);
+          }
+        }, [apis, selectedId]);
+
+        const selectedApi = useMemo(() => {
+          if (!selectedId) return null;
+          return apis.find((api) => `${api.method} ${api.path}` === selectedId) || null;
+        }, [apis, selectedId]);
+
+        const selectedApiPos = useMemo(() => {
+          if (!selectedApi) return null;
+          return apiPositions.find((p) => p.id === `${selectedApi.method} ${selectedApi.path}`) || null;
+        }, [selectedApi, apiPositions]);
+
+        const flowNodes = useMemo(
+          () => buildFlowNodes(selectedApi ? selectedApi.flow : [], selectedApiPos),
+          [selectedApi, selectedApiPos]
         );
 
+        const resourceNodes = useMemo(
+          () => buildResourceNodes(selectedApi, flowNodes),
+          [selectedApi, flowNodes]
+        );
+
+        function onApiClick(api) {
+          const id = `${api.method} ${api.path}`;
+          setSelectedId(id);
+          setFocused({ title: `${api.method} ${api.path}`, body: api.summary });
+        }
+
+        function renderApiBubble(api, pos) {
+          const isSelected = selectedId === `${api.method} ${api.path}`;
+          return React.createElement(
+            'g',
+            {
+              className: `bubble ${isSelected ? 'selected' : ''}`,
+              key: pos.id,
+              onClick: () => onApiClick(api),
+              role: 'button',
+              tabIndex: 0,
+              onKeyDown: (e) => {
+                if (e.key === 'Enter' || e.key === ' ') onApiClick(api);
+              }
+            },
+            [
+              React.createElement('circle', {
+                key: 'c',
+                cx: pos.x,
+                cy: pos.y,
+                r: pos.r,
+                fill: isSelected ? 'url(#apiBubbleSelected)' : 'url(#apiBubble)',
+                stroke: isSelected ? '#80f5e7' : '#8fd3f3',
+                'stroke-width': isSelected ? 2.4 : 1.5
+              }),
+              React.createElement('text', { key: 'm', className: 'api-label', x: pos.x, y: pos.y - 6 }, api.method),
+              React.createElement('text', { key: 'p', className: 'api-sub', x: pos.x, y: pos.y + 14 }, truncate(api.path, 19))
+            ]
+          );
+        }
+
         return React.createElement('div', { className: 'shell' }, [
-          React.createElement('header', { className: 'topbar', key: 't' }, [
-            React.createElement('div', { className: 'brand', key: 'b' }, [
-              React.createElement('div', { className: 'logo', key: 'l' }),
-              React.createElement('h1', { key: 'n' }, 'GraphExplorer')
+          React.createElement('header', { className: 'topbar', key: 'header' }, [
+            React.createElement('div', { className: 'brand', key: 'brand' }, [
+              React.createElement('h1', { key: 't' }, 'APIFlow Constellation'),
+              React.createElement('p', { key: 's' }, 'Click an API bubble to expand its end-to-end flow map')
             ]),
-            React.createElement('nav', { className: 'tabs', key: 'nav' }, [
-              React.createElement('span', { className: 'tab active', key: 1 }, 'Dashboard'),
-              React.createElement('span', { className: 'tab', key: 2 }, 'Infrastructure'),
-              React.createElement('span', { className: 'tab', key: 3 }, 'Alerts')
-            ]),
-            React.createElement('div', { className: 'search-wrap', key: 's' }, [
-              React.createElement('input', { className: 'search', placeholder: 'Search resources...', key: 'i' }),
-              React.createElement('button', { className: 'icon-bubble', key: 'n1', 'aria-label': 'notifications' }),
-              React.createElement('button', { className: 'icon-bubble', key: 'n2', 'aria-label': 'profile' })
+            React.createElement('div', { className: 'stats', key: 'stats' }, [
+              React.createElement('span', { className: 'pill', key: 'a' }, `${apis.length} APIs`),
+              React.createElement('span', { className: 'pill', key: 'f' }, `${selectedApi ? selectedApi.flow.length : 0} Flow Steps`)
             ])
           ]),
 
-          React.createElement('div', { className: 'main', key: 'm' }, [
-            React.createElement('aside', { className: 'left-panel', key: 'l' }, [
-              React.createElement('div', { className: 'section-title', key: 'st' }, 'Inventory'),
-              React.createElement('div', { className: 'service-item active', key: 's1' }, [
-                React.createElement('span', { key: 'tx' }, 'Services'),
-                React.createElement('span', { className: 'count-pill', key: 'ct' }, String(apis.length))
-              ]),
-              React.createElement('div', { className: 'service-item', key: 's2' }, 'Databases'),
-              React.createElement('div', { className: 'service-item', key: 's3' }, 'External Auth'),
+          React.createElement('main', { className: 'layout', key: 'layout' }, [
+            React.createElement('section', { className: 'panel graph-wrap', key: 'graph' }, [
+              React.createElement('h2', { className: 'panel-title', key: 'h' }, 'Interactive API Bubble Graph'),
+              React.createElement(
+                'svg',
+                { viewBox: '0 0 1200 760', key: 'svg' },
+                [
+                  React.createElement('defs', { key: 'defs' }, [
+                    React.createElement('linearGradient', { id: 'apiBubble', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g1' }, [
+                      React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#38bdf8' }),
+                      React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#2dd4bf' })
+                    ]),
+                    React.createElement('linearGradient', { id: 'apiBubbleSelected', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g2' }, [
+                      React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#fb923c' }),
+                      React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#fb7185' })
+                    ])
+                  ]),
 
-              React.createElement('div', { className: 'api-list', key: 'apis' }, [
-                React.createElement('div', { className: 'section-title', style: { margin: '10px 4px' }, key: 'at' }, 'Auth Service'),
-                ...apis.map((api, idx) => {
-                  const id = `${api.method} ${api.path}`;
-                  return React.createElement('div', {
-                    className: `api-row ${id === selectedApi ? 'active' : ''}`,
-                    key: idx,
-                    onClick: () => setSelectedApi(id),
-                    style: { cursor: 'pointer' }
-                  }, [
-                    React.createElement('span', { key: 'p' }, api.path),
-                    React.createElement('span', { className: `method-pill ${mapMethodClass(api.method)}`, key: 'm' }, api.method)
-                  ]);
-                }),
-                error ? React.createElement('div', { className: 'error-box', key: 'e' }, error) : null
-              ])
+                  React.createElement('circle', {
+                    className: 'orbit-line',
+                    key: 'orbit',
+                    cx: 470,
+                    cy: 330,
+                    r: Math.max(170, 210 + apis.length * 4)
+                  }),
+
+                  ...apiPositions.map((pos) => {
+                    const api = apis.find((x) => `${x.method} ${x.path}` === pos.id);
+                    return api ? renderApiBubble(api, pos) : null;
+                  }),
+
+                  selectedApiPos && flowNodes.length
+                    ? React.createElement(
+                        'g',
+                        { key: 'flow' },
+                        [
+                          ...flowNodes.map((node, i) => {
+                            const prev = i === 0 ? selectedApiPos : flowNodes[i - 1];
+                            return React.createElement('path', {
+                              className: 'flow-edge',
+                              key: `edge-${node.id}`,
+                              d: `M ${prev.x + 46} ${prev.y} C ${prev.x + 90} ${prev.y}, ${node.x - 65} ${node.y}, ${node.x - node.r} ${node.y}`
+                            });
+                          }),
+                          ...flowNodes.map((node) =>
+                            React.createElement(
+                              'g',
+                              {
+                                className: 'bubble',
+                                key: node.id,
+                                onClick: () => setFocused({
+                                  title: `Flow Step ${node.index + 1}`,
+                                  body: node.label
+                                }),
+                                role: 'button',
+                                tabIndex: 0,
+                                onKeyDown: (e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    setFocused({ title: `Flow Step ${node.index + 1}`, body: node.label });
+                                  }
+                                }
+                              },
+                              [
+                                React.createElement('circle', {
+                                  key: 'c',
+                                  cx: node.x,
+                                  cy: node.y,
+                                  r: node.r,
+                                  fill: '#1f4f72',
+                                  stroke: '#9edbff',
+                                  'stroke-width': 1.8
+                                }),
+                                React.createElement('text', {
+                                  key: 'n',
+                                  className: 'flow-label',
+                                  x: node.x,
+                                  y: node.y - 5
+                                }, `Step ${node.index + 1}`),
+                                React.createElement('text', {
+                                  key: 'l',
+                                  className: 'flow-label',
+                                  x: node.x,
+                                  y: node.y + 12
+                                }, truncate(node.label, 20))
+                              ]
+                            )
+                          ),
+                          ...resourceNodes.map((resource) =>
+                            React.createElement(
+                              'g',
+                              {
+                                className: 'bubble',
+                                key: resource.id,
+                                onClick: () => setFocused({
+                                  title: `${resource.type.toUpperCase()} Resource`,
+                                  body: resource.label
+                                }),
+                                role: 'button',
+                                tabIndex: 0,
+                                onKeyDown: (e) => {
+                                  if (e.key === 'Enter' || e.key === ' ') {
+                                    setFocused({ title: `${resource.type.toUpperCase()} Resource`, body: resource.label });
+                                  }
+                                }
+                              },
+                              [
+                                React.createElement('line', {
+                                  key: 'line',
+                                  x1: flowNodes[flowNodes.length - 1].x,
+                                  y1: flowNodes[flowNodes.length - 1].y,
+                                  x2: resource.x,
+                                  y2: resource.y,
+                                  stroke: 'rgba(168, 226, 255, 0.38)',
+                                  'stroke-width': 1.2
+                                }),
+                                React.createElement('circle', {
+                                  key: 'c',
+                                  cx: resource.x,
+                                  cy: resource.y,
+                                  r: resource.r,
+                                  fill: resource.color,
+                                  opacity: 0.9,
+                                  stroke: '#ffffff',
+                                  'stroke-width': 1.1
+                                }),
+                                React.createElement('text', {
+                                  key: 't',
+                                  className: 'flow-label',
+                                  x: resource.x,
+                                  y: resource.y + 4
+                                }, truncate(resource.label, 12))
+                              ]
+                            )
+                          )
+                        ]
+                      )
+                    : null
+                ]
+              ),
+              React.createElement(
+                'div',
+                { className: 'graph-hint', key: 'hint' },
+                selectedApi
+                  ? 'Flow graph is expanded. Click any flow or resource bubble to inspect details.'
+                  : 'Start by clicking one API bubble. Flow and dependencies will pop out as an interactive graph.'
+              )
             ]),
 
-            React.createElement('section', { className: 'canvas', key: 'c' },
-              React.createElement('svg', { viewBox: '0 0 1300 980' }, [
-                ...graph.edges.map((edge, i) => {
-                  const source = graph.nodes.find((n) => n.id === edge.source);
-                  const target = graph.nodes.find((n) => n.id === edge.target);
-                  if (!source || !target) return null;
-                  return React.createElement('path', {
-                    className: 'edge',
-                    key: `e-${i}`,
-                    d: `M ${source.x + 130} ${source.y + 40} C ${source.x + 280} ${source.y + 10}, ${target.x - 120} ${target.y + 20}, ${target.x} ${target.y + 40}`,
-                    stroke: edge.color || '#8a4df5'
-                  });
-                }),
-                ...graph.nodes.map((node) => {
-                  const isEndpoint = node.type === 'api';
-                  return React.createElement('g', { key: node.id, className: isEndpoint ? 'endpoint' : 'node-card' }, [
-                    React.createElement('rect', { x: node.x, y: node.y, width: 320, height: 110 }),
-                    React.createElement('text', { x: node.x + 28, y: node.y + 52, className: 'name' }, node.label),
-                    React.createElement('text', { x: node.x + 28, y: node.y + 84, className: 'meta' }, node.meta || node.type)
-                  ]);
-                })
+            React.createElement('section', { className: 'panel', key: 'details' }, [
+              React.createElement('h2', { className: 'panel-title', key: 'h' }, 'Human-Readable Details'),
+              React.createElement('div', { className: 'details', key: 'd' }, [
+                selectedApi
+                  ? React.createElement('div', { key: 'route' }, [
+                      React.createElement('span', { className: `method ${methodClass(selectedApi.method)}`, key: 'm' }, selectedApi.method),
+                      React.createElement('span', { className: 'path', key: 'p' }, selectedApi.path),
+                      React.createElement('p', { className: 'summary', key: 's' }, selectedApi.summary)
+                    ])
+                  : React.createElement('p', { className: 'empty', key: 'empty-route' }, 'No API selected yet.'),
+
+                focused
+                  ? React.createElement('div', { className: 'focus', key: 'focus' }, [
+                      React.createElement('b', { key: 't' }, focused.title),
+                      React.createElement('span', { key: 'b' }, focused.body)
+                    ])
+                  : null,
+
+                React.createElement('div', { className: 'section', key: 'flow' }, [
+                  React.createElement('h3', { key: 'h' }, 'Flow'),
+                  selectedApi && selectedApi.flow.length
+                    ? React.createElement(
+                        'ol',
+                        { className: 'steps', key: 'list' },
+                        selectedApi.flow.map((step, i) =>
+                          React.createElement('li', { key: `step-${i}` }, `Step ${i + 1}: ${step}`)
+                        )
+                      )
+                    : React.createElement('p', { className: 'empty', key: 'e' }, 'Select an API to view flow steps.')
+                ]),
+
+                React.createElement('div', { className: 'section', key: 'tables' }, [
+                  React.createElement('h3', { key: 'h' }, 'Tables'),
+                  React.createElement(Chips, {
+                    key: 'c',
+                    items: selectedApi ? selectedApi.tables : [],
+                    empty: 'No linked tables.'
+                  })
+                ]),
+
+                React.createElement('div', { className: 'section', key: 'services' }, [
+                  React.createElement('h3', { key: 'h' }, 'Services'),
+                  React.createElement(Chips, {
+                    key: 'c',
+                    items: selectedApi ? selectedApi.services : [],
+                    empty: 'No linked services.'
+                  })
+                ]),
+
+                React.createElement('div', { className: 'section', key: 'caches' }, [
+                  React.createElement('h3', { key: 'h' }, 'Caches'),
+                  React.createElement(Chips, {
+                    key: 'c',
+                    items: selectedApi ? selectedApi.caches : [],
+                    empty: 'No linked caches.'
+                  })
+                ]),
+
+                React.createElement('div', { className: 'section', key: 'queues' }, [
+                  React.createElement('h3', { key: 'h' }, 'Queues'),
+                  React.createElement(Chips, {
+                    key: 'c',
+                    items: selectedApi ? selectedApi.queues : [],
+                    empty: 'No linked queues.'
+                  })
+                ]),
+
+                error ? React.createElement('div', { className: 'error', key: 'err' }, error) : null
               ])
-            ),
-
-            React.createElement('aside', { className: 'right-panel', key: 'r' }, [
-              React.createElement('h2', { className: 'detail-title', key: 'h' }, 'Endpoint Details'),
-              React.createElement('div', { className: 'route', key: 'route' }, [
-                React.createElement('span', { className: `method-pill ${mapMethodClass(selected.method)}`, key: 'm' }, selected.method),
-                React.createElement('span', { className: 'path', key: 'p' }, selected.path)
-              ]),
-              React.createElement('h3', { className: 'main-head', key: 'mh' }, selected.summary || 'Fetch User Profile'),
-              React.createElement('p', { className: 'desc', key: 'd' }, selected.summary || 'Returns detailed information about a specific user including their roles and activity logs.'),
-
-              React.createElement('div', { className: 'subheading', key: 'dep' }, 'Dependency Flow'),
-              React.createElement('ol', { className: 'steps', key: 'steps' },
-                (selected.flow || []).map((step, i) => React.createElement('li', { key: i }, [
-                  React.createElement('span', { className: 'step-num', key: 'n' }, String(i + 1)),
-                  React.createElement('div', { key: 's' }, [
-                    React.createElement('div', { style: { fontWeight: 700 }, key: 't' }, step),
-                    React.createElement('div', { className: 'muted', key: 'm' }, 'Execution step in endpoint request lifecycle')
-                  ])
-                ]))
-              ),
-
-              React.createElement('div', { className: 'subheading', key: 'lr' }, 'Linked Resources'),
-              React.createElement('div', { className: 'resource', key: 'res1' }, [
-                React.createElement('div', { style: { fontWeight: 700 }, key: 't' }, 'API Docs'),
-                React.createElement('div', { className: 'muted', key: 'm' }, 'OpenAPI / Swagger specification')
-              ]),
-              React.createElement('div', { className: 'resource', key: 'res2' }, [
-                React.createElement('div', { style: { fontWeight: 700 }, key: 't' }, 'Traffic Metrics'),
-                React.createElement('div', { className: 'muted', key: 'm' }, 'Live request and latency trends')
-              ]),
-              React.createElement('button', { className: 'run-btn', key: 'btn' }, '▶ Run Test Request')
             ])
           ])
         ]);

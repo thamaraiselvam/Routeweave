@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+const fs = require('fs');
 const path = require('path');
 const { ensureCacheDir } = require('./engine/cache');
 const { scanRepository, generateOpenCodeScanPrompt } = require('./engine/workflow');
@@ -30,7 +31,28 @@ Also accepts aliases: --provider, --api-provider, --token, --api-key, --model, -
 
 Environment fallbacks:
   APIMAP_AI_PROVIDER, APIMAP_AI_TOKEN, APIMAP_AI_MODEL, OPENAI_API_KEY, OPENAI_BASE_URL, AI_PROVIDER, AI_API_KEY, AI_MODEL, AI_BASE_URL
+
+Path behavior:
+  If path is omitted (or points inside a git repo), apimap scans the repository root containing that location.
 `);
+}
+
+function findRepositoryRoot(targetPath) {
+  const resolvedTarget = path.resolve(targetPath);
+  let current = resolvedTarget;
+
+  while (true) {
+    if (fs.existsSync(path.join(current, '.git'))) {
+      return current;
+    }
+
+    const parent = path.dirname(current);
+    if (parent === current) {
+      return resolvedTarget;
+    }
+
+    current = parent;
+  }
 }
 
 function parseArgs(argv) {
@@ -86,7 +108,7 @@ async function main() {
     );
   }
   const argPath = positional[0];
-  const targetPath = path.resolve(argPath || '.');
+  const targetPath = findRepositoryRoot(argPath || '.');
 
   if (command === 'init') {
     ensureCacheDir(targetPath);
@@ -131,4 +153,4 @@ if (require.main === module) {
   });
 }
 
-module.exports = { parseArgs, main, OPTION_ALIASES };
+module.exports = { parseArgs, main, OPTION_ALIASES, findRepositoryRoot };
