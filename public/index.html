@@ -3,23 +3,213 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>API Knowledge Graph Explorer</title>
+    <title>APIFlow Graph Explorer</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <style>
-      body { font-family: Arial, sans-serif; margin: 0; background: #f8fafc; color: #0f172a; }
-      .app { display: grid; grid-template-columns: 2fr 1fr; height: 100vh; }
-      .panel { padding: 1rem; overflow: auto; }
-      .graph-panel { border-right: 1px solid #cbd5e1; background: #fff; }
-      svg { width: 100%; height: 100%; min-height: 600px; }
-      .node { cursor: pointer; }
-      .node.api rect { fill: #dbeafe; stroke: #1d4ed8; }
-      .node.database rect { fill: #dcfce7; stroke: #15803d; }
-      .node.service rect { fill: #fef3c7; stroke: #b45309; }
-      .node.cache rect { fill: #fae8ff; stroke: #a21caf; }
-      .node.queue rect { fill: #fee2e2; stroke: #b91c1c; }
-      .node rect { rx: 8; ry: 8; stroke-width: 1.5; }
-      .badge { display: inline-block; padding: 0.2rem 0.5rem; margin-right: 0.35rem; border-radius: 999px; background: #e2e8f0; font-size: 0.75rem; }
+      :root {
+        --bg: #070311;
+        --panel: #130a23;
+        --panel-soft: #1a0f30;
+        --line: #2f1d4a;
+        --text: #f4edff;
+        --muted: #9e8eb9;
+        --purple: #9e55ff;
+        --purple-2: #7f41d4;
+        --green: #13d8a1;
+        --blue: #4e88ff;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background: radial-gradient(circle at 10% 10%, #160d28 0%, var(--bg) 45%);
+        color: var(--text);
+      }
+
+      .shell {
+        display: grid;
+        grid-template-rows: 78px 1fr;
+        height: 100vh;
+      }
+
+      .topbar {
+        border-bottom: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: 300px 1fr auto;
+        align-items: center;
+        padding: 0 24px;
+        gap: 24px;
+        background: #090414;
+      }
+
+      .brand { display: flex; align-items: center; gap: 14px; }
+      .logo {
+        width: 46px; height: 46px; border-radius: 14px;
+        background: linear-gradient(135deg, #7b5bff, #5f7cff);
+        box-shadow: 0 0 24px rgba(127, 87, 255, 0.45);
+      }
+      .brand h1 { margin: 0; font-size: 35px; letter-spacing: -0.03em; }
+
+      .tabs { display: flex; gap: 30px; }
+      .tab { color: var(--muted); font-weight: 600; }
+      .tab.active { color: var(--purple); }
+
+      .search-wrap { justify-self: end; display: flex; align-items: center; gap: 14px; }
+      .search {
+        width: 390px; height: 46px; border-radius: 22px;
+        border: 1px solid #2a1840; background: #1a0f30; color: #d0c2ec;
+        padding: 0 18px; outline: none;
+      }
+      .icon-bubble {
+        width: 42px; height: 42px; border-radius: 50%; border: 1px solid #2f1d4a;
+        background: #1a0f30;
+      }
+
+      .main {
+        display: grid;
+        grid-template-columns: 332px 1fr 430px;
+        min-height: 0;
+      }
+
+      .left-panel, .right-panel {
+        background: linear-gradient(180deg, #0f0820, #110a22);
+        border-right: 1px solid var(--line);
+        overflow: auto;
+      }
+      .right-panel {
+        border-right: 0;
+        border-left: 1px solid var(--line);
+        padding: 26px;
+      }
+
+      .section-title {
+        color: #8a7ca6;
+        font-size: 14px;
+        letter-spacing: 0.09em;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin: 20px 20px 16px;
+      }
+
+      .service-item {
+        margin: 0 18px 10px;
+        padding: 12px 14px;
+        border-radius: 16px;
+        color: #b8a8d7;
+        background: transparent;
+        border: 1px solid transparent;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+      }
+      .service-item.active {
+        background: #2a1247;
+        border-color: #3a1c67;
+        color: #f1dfff;
+      }
+      .count-pill, .method-pill {
+        background: #8f43f5;
+        color: #f6ebff;
+        border-radius: 999px;
+        font-size: 12px;
+        padding: 4px 10px;
+      }
+      .method-pill.get { background: rgba(18, 216, 161, 0.2); color: #38f3c5; }
+      .method-pill.post { background: rgba(76, 136, 255, 0.24); color: #9dbfff; }
+      .method-pill.put { background: rgba(255, 152, 59, 0.24); color: #ffc684; }
+      .method-pill.delete { background: rgba(255, 87, 87, 0.24); color: #ff9e9e; }
+
+      .api-list { padding: 6px 16px 24px; border-top: 1px solid #211336; margin-top: 16px; }
+      .api-row {
+        display: flex; align-items: center; justify-content: space-between;
+        color: #e8dbff;
+        padding: 10px 10px;
+        border-radius: 12px;
+        margin-top: 7px;
+      }
+      .api-row.active { background: #25123e; border: 1px solid #3f2460; }
+
+      .canvas {
+        position: relative;
+        background:
+          radial-gradient(circle at center, rgba(138, 88, 255, 0.1) 0, rgba(10, 4, 20, 0.05) 38%, #080313 70%),
+          radial-gradient(#211436 1px, transparent 1px);
+        background-size: auto, 26px 26px;
+        overflow: hidden;
+      }
+      svg { width: 100%; height: 100%; display: block; }
+      .edge { fill: none; stroke-width: 3; opacity: 0.72; }
+      .node-card rect {
+        fill: #1a0f2e;
+        stroke: #6d31af;
+        stroke-width: 2;
+        rx: 22;
+      }
+      .node-card text.name { fill: #f2e8ff; font-size: 27px; font-weight: 700; }
+      .node-card text.meta { fill: #9a89b8; font-size: 18px; }
+      .endpoint rect {
+        fill: #1a0f2e;
+        stroke: #5d2f95;
+        stroke-width: 2;
+        rx: 24;
+      }
+
+      .detail-title { font-size: 22px; margin: 0 0 24px; }
+      .route { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+      .path { color: #b57dff; font-size: 27px; }
+      .main-head { font-size: 50px; margin: 0; letter-spacing: -0.03em; }
+      .desc { color: #9f8dbc; font-size: 17px; line-height: 1.45; }
+      .subheading {
+        color: #a495bf;
+        font-size: 13px;
+        font-weight: 800;
+        letter-spacing: 0.13em;
+        margin: 28px 0 14px;
+      }
+      .steps { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+      .steps li { display: grid; grid-template-columns: 34px 1fr; gap: 12px; }
+      .step-num {
+        width: 30px; height: 30px; border-radius: 50%;
+        background: #6d36bf; display: grid; place-items: center; color: #fff; font-size: 13px;
+      }
+      .resource {
+        border: 1px solid #3a2951;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 18px;
+        padding: 14px;
+        margin-bottom: 12px;
+      }
+      .run-btn {
+        margin-top: 28px;
+        width: 100%;
+        border: 0;
+        background: linear-gradient(90deg, #8f45f7, #b45eff);
+        color: white;
+        height: 64px;
+        border-radius: 34px;
+        font-size: 33px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .muted { color: var(--muted); }
+      .error-box {
+        margin: 16px;
+        background: rgba(255, 88, 88, 0.15);
+        border: 1px solid rgba(255, 88, 88, 0.4);
+        color: #ffc6c6;
+        border-radius: 12px;
+        padding: 12px;
+      }
+
+      @media (max-width: 1200px) {
+        .main { grid-template-columns: 280px 1fr; }
+        .right-panel { display: none; }
+      }
     </style>
   </head>
   <body>
@@ -27,99 +217,205 @@
     <script>
       const { useEffect, useMemo, useState } = React;
 
-      function layoutGraph(graph) {
-        const typeGroups = { api: [], database: [], service: [], cache: [], queue: [] };
-        graph.nodes.forEach((node) => typeGroups[node.type]?.push(node));
+      const fallbackApis = [
+        {
+          method: 'POST',
+          path: '/login',
+          summary: 'Authenticate a user and issue a signed JWT session token.',
+          flow: ['Validate credentials', 'Sign JWT token', 'Log auth event'],
+          tables: ['users', 'sessions'],
+          services: ['Auth0 Gateway'],
+          caches: ['session-cache'],
+          queues: ['audit-events']
+        },
+        {
+          method: 'GET',
+          path: '/users/{id}',
+          summary: 'Returns detailed information about a specific user including roles and activity logs.',
+          flow: ['Validate Session', 'Query Postgres', 'Aggregate Response'],
+          tables: ['users', 'metadata'],
+          services: ['User Microservice'],
+          caches: ['profile-cache'],
+          queues: []
+        },
+        {
+          method: 'PUT',
+          path: '/profile',
+          summary: 'Update profile settings and invalidate related cache data.',
+          flow: ['Validate payload', 'Persist to database', 'Invalidate cache'],
+          tables: ['users'],
+          services: ['User Microservice'],
+          caches: ['profile-cache'],
+          queues: ['notifications']
+        },
+        {
+          method: 'DELETE',
+          path: '/account',
+          summary: 'Anonymize and deactivate the current user account.',
+          flow: ['Authorize user', 'Soft delete account', 'Emit compliance event'],
+          tables: ['users', 'audit_log'],
+          services: ['User Microservice'],
+          caches: ['session-cache'],
+          queues: ['compliance-events']
+        }
+      ];
 
-        const positioned = {};
-        const centerY = 300;
+      const fallbackGraph = {
+        nodes: [
+          { id: 'auth', type: 'service', label: 'Auth0 Gateway', meta: 'Identity Provider', x: 680, y: 220 },
+          { id: 'user', type: 'service', label: 'User Microservice', meta: 'v2.4.1 • active', x: 450, y: 470 },
+          { id: 'db', type: 'database', label: 'PostgreSQL', meta: 'Production Cluster', x: 610, y: 840 }
+        ],
+        edges: [
+          { source: 'user', target: 'auth', color: '#3c8fff' },
+          { source: 'user', target: 'db', color: '#21cca8' },
+          { source: 'auth', target: 'db', color: '#8b4cff' }
+        ]
+      };
 
-        typeGroups.api.forEach((node, i) => {
-          positioned[node.id] = { ...node, x: 420, y: centerY + i * 120 - ((typeGroups.api.length - 1) * 60) };
-        });
-        typeGroups.database.forEach((node, i) => {
-          positioned[node.id] = { ...node, x: 360 + i * 170, y: 520 };
-        });
-        typeGroups.service.forEach((node, i) => {
-          positioned[node.id] = { ...node, x: 720, y: 160 + i * 130 };
-        });
-        typeGroups.cache.forEach((node, i) => {
-          positioned[node.id] = { ...node, x: 120, y: 160 + i * 130 };
-        });
-        typeGroups.queue.forEach((node, i) => {
-          positioned[node.id] = { ...node, x: 360 + i * 170, y: 60 };
-        });
-
-        return { nodes: Object.values(positioned), edges: graph.edges };
+      function mapMethodClass(method) {
+        return method.toLowerCase();
       }
 
       function App() {
-        const [graph, setGraph] = useState({ nodes: [], edges: [] });
-        const [apis, setApis] = useState([]);
-        const [selectedApi, setSelectedApi] = useState(null);
+        const [graph, setGraph] = useState(fallbackGraph);
+        const [apis, setApis] = useState(fallbackApis);
+        const [selectedApi, setSelectedApi] = useState('GET /users/{id}');
         const [error, setError] = useState('');
 
         useEffect(() => {
           Promise.all([fetch('/api/graph'), fetch('/api/apis')])
             .then(async ([g, a]) => {
-              if (!g.ok || !a.ok) throw new Error('Cache not found. Run apimap scan .');
+              if (!g.ok || !a.ok) throw new Error('Using demo mode. Run `apimap scan .` to show your live graph data.');
               return [await g.json(), await a.json()];
             })
             .then(([gData, aData]) => {
-              setGraph(gData);
-              setApis(aData.apis || []);
+              if (Array.isArray(gData.nodes) && gData.nodes.length) {
+                const mappedNodes = gData.nodes.map((n, i) => ({
+                  ...n,
+                  meta: n.type === 'database' ? 'Production Cluster' : n.type + ' dependency',
+                  x: 420 + (i % 2) * 250,
+                  y: 220 + i * 180
+                }));
+                setGraph({ nodes: mappedNodes, edges: gData.edges || [] });
+              }
+
+              if (Array.isArray(aData.apis) && aData.apis.length) {
+                setApis(aData.apis);
+                setSelectedApi(`${aData.apis[0].method} ${aData.apis[0].path}`);
+              }
+              setError('');
             })
             .catch((err) => setError(err.message));
         }, []);
 
-        const laidOut = useMemo(() => layoutGraph(graph), [graph]);
+        const selected = useMemo(
+          () => apis.find((api) => `${api.method} ${api.path}` === selectedApi) || apis[0],
+          [apis, selectedApi]
+        );
 
-        const selectedNodeData = selectedApi && apis.find((api) => `${api.method} ${api.path}` === selectedApi);
-
-        return React.createElement('div', { className: 'app' }, [
-          React.createElement('div', { key: 'graph', className: 'panel graph-panel' },
-            error
-              ? React.createElement('p', null, error)
-              : React.createElement('svg', { viewBox: '0 0 980 640' }, [
-                  ...laidOut.edges.map((edge, i) => {
-                    const source = laidOut.nodes.find((n) => n.id === edge.source);
-                    const target = laidOut.nodes.find((n) => n.id === edge.target);
-                    if (!source || !target) return null;
-                    return React.createElement('line', {
-                      key: `e-${i}`,
-                      x1: source.x + 60,
-                      y1: source.y + 22,
-                      x2: target.x + 60,
-                      y2: target.y + 22,
-                      stroke: '#94a3b8',
-                    });
-                  }),
-                  ...laidOut.nodes.map((node) => React.createElement('g', {
-                    key: node.id,
-                    className: `node ${node.type}`,
-                    onClick: () => node.type === 'api' && setSelectedApi(node.label)
-                  }, [
-                    React.createElement('rect', { x: node.x, y: node.y, width: 120, height: 44 }),
-                    React.createElement('text', { x: node.x + 8, y: node.y + 26, fontSize: 11 }, node.label),
-                  ])),
-                ])
-          ),
-          React.createElement('div', { key: 'detail', className: 'panel' }, [
-            React.createElement('h2', { key: 'title' }, 'API Details'),
-            !selectedNodeData
-              ? React.createElement('p', { key: 'hint' }, 'Click an API node to inspect endpoint flow.')
-              : React.createElement('div', { key: 'content' }, [
-                  React.createElement('h3', { key: 'route' }, `${selectedNodeData.method} ${selectedNodeData.path}`),
-                  React.createElement('p', { key: 'summary' }, selectedNodeData.summary),
-                  React.createElement('h4', { key: 'flowTitle' }, 'Flow'),
-                  React.createElement('ol', { key: 'flow' }, selectedNodeData.flow.map((step, i) => React.createElement('li', { key: i }, step))),
-                  React.createElement('h4', { key: 'depsTitle' }, 'Dependencies'),
-                  React.createElement('div', { key: 'tables' }, selectedNodeData.tables.map((x) => React.createElement('span', { className: 'badge', key: `t-${x}` }, `DB: ${x}`))),
-                  React.createElement('div', { key: 'services' }, selectedNodeData.services.map((x) => React.createElement('span', { className: 'badge', key: `s-${x}` }, `Service: ${x}`))),
-                  React.createElement('div', { key: 'caches' }, selectedNodeData.caches.map((x) => React.createElement('span', { className: 'badge', key: `c-${x}` }, `Cache: ${x}`))),
-                  React.createElement('div', { key: 'queues' }, selectedNodeData.queues.map((x) => React.createElement('span', { className: 'badge', key: `q-${x}` }, `Queue: ${x}`))),
-                ]),
+        return React.createElement('div', { className: 'shell' }, [
+          React.createElement('header', { className: 'topbar', key: 't' }, [
+            React.createElement('div', { className: 'brand', key: 'b' }, [
+              React.createElement('div', { className: 'logo', key: 'l' }),
+              React.createElement('h1', { key: 'n' }, 'GraphExplorer')
+            ]),
+            React.createElement('nav', { className: 'tabs', key: 'nav' }, [
+              React.createElement('span', { className: 'tab active', key: 1 }, 'Dashboard'),
+              React.createElement('span', { className: 'tab', key: 2 }, 'Infrastructure'),
+              React.createElement('span', { className: 'tab', key: 3 }, 'Alerts')
+            ]),
+            React.createElement('div', { className: 'search-wrap', key: 's' }, [
+              React.createElement('input', { className: 'search', placeholder: 'Search resources...', key: 'i' }),
+              React.createElement('button', { className: 'icon-bubble', key: 'n1', 'aria-label': 'notifications' }),
+              React.createElement('button', { className: 'icon-bubble', key: 'n2', 'aria-label': 'profile' })
+            ])
           ]),
+
+          React.createElement('div', { className: 'main', key: 'm' }, [
+            React.createElement('aside', { className: 'left-panel', key: 'l' }, [
+              React.createElement('div', { className: 'section-title', key: 'st' }, 'Inventory'),
+              React.createElement('div', { className: 'service-item active', key: 's1' }, [
+                React.createElement('span', { key: 'tx' }, 'Services'),
+                React.createElement('span', { className: 'count-pill', key: 'ct' }, String(apis.length))
+              ]),
+              React.createElement('div', { className: 'service-item', key: 's2' }, 'Databases'),
+              React.createElement('div', { className: 'service-item', key: 's3' }, 'External Auth'),
+
+              React.createElement('div', { className: 'api-list', key: 'apis' }, [
+                React.createElement('div', { className: 'section-title', style: { margin: '10px 4px' }, key: 'at' }, 'Auth Service'),
+                ...apis.map((api, idx) => {
+                  const id = `${api.method} ${api.path}`;
+                  return React.createElement('div', {
+                    className: `api-row ${id === selectedApi ? 'active' : ''}`,
+                    key: idx,
+                    onClick: () => setSelectedApi(id),
+                    style: { cursor: 'pointer' }
+                  }, [
+                    React.createElement('span', { key: 'p' }, api.path),
+                    React.createElement('span', { className: `method-pill ${mapMethodClass(api.method)}`, key: 'm' }, api.method)
+                  ]);
+                }),
+                error ? React.createElement('div', { className: 'error-box', key: 'e' }, error) : null
+              ])
+            ]),
+
+            React.createElement('section', { className: 'canvas', key: 'c' },
+              React.createElement('svg', { viewBox: '0 0 1300 980' }, [
+                ...graph.edges.map((edge, i) => {
+                  const source = graph.nodes.find((n) => n.id === edge.source);
+                  const target = graph.nodes.find((n) => n.id === edge.target);
+                  if (!source || !target) return null;
+                  return React.createElement('path', {
+                    className: 'edge',
+                    key: `e-${i}`,
+                    d: `M ${source.x + 130} ${source.y + 40} C ${source.x + 280} ${source.y + 10}, ${target.x - 120} ${target.y + 20}, ${target.x} ${target.y + 40}`,
+                    stroke: edge.color || '#8a4df5'
+                  });
+                }),
+                ...graph.nodes.map((node) => {
+                  const isEndpoint = node.type === 'api';
+                  return React.createElement('g', { key: node.id, className: isEndpoint ? 'endpoint' : 'node-card' }, [
+                    React.createElement('rect', { x: node.x, y: node.y, width: 320, height: 110 }),
+                    React.createElement('text', { x: node.x + 28, y: node.y + 52, className: 'name' }, node.label),
+                    React.createElement('text', { x: node.x + 28, y: node.y + 84, className: 'meta' }, node.meta || node.type)
+                  ]);
+                })
+              ])
+            ),
+
+            React.createElement('aside', { className: 'right-panel', key: 'r' }, [
+              React.createElement('h2', { className: 'detail-title', key: 'h' }, 'Endpoint Details'),
+              React.createElement('div', { className: 'route', key: 'route' }, [
+                React.createElement('span', { className: `method-pill ${mapMethodClass(selected.method)}`, key: 'm' }, selected.method),
+                React.createElement('span', { className: 'path', key: 'p' }, selected.path)
+              ]),
+              React.createElement('h3', { className: 'main-head', key: 'mh' }, selected.summary || 'Fetch User Profile'),
+              React.createElement('p', { className: 'desc', key: 'd' }, selected.summary || 'Returns detailed information about a specific user including their roles and activity logs.'),
+
+              React.createElement('div', { className: 'subheading', key: 'dep' }, 'Dependency Flow'),
+              React.createElement('ol', { className: 'steps', key: 'steps' },
+                (selected.flow || []).map((step, i) => React.createElement('li', { key: i }, [
+                  React.createElement('span', { className: 'step-num', key: 'n' }, String(i + 1)),
+                  React.createElement('div', { key: 's' }, [
+                    React.createElement('div', { style: { fontWeight: 700 }, key: 't' }, step),
+                    React.createElement('div', { className: 'muted', key: 'm' }, 'Execution step in endpoint request lifecycle')
+                  ])
+                ]))
+              ),
+
+              React.createElement('div', { className: 'subheading', key: 'lr' }, 'Linked Resources'),
+              React.createElement('div', { className: 'resource', key: 'res1' }, [
+                React.createElement('div', { style: { fontWeight: 700 }, key: 't' }, 'API Docs'),
+                React.createElement('div', { className: 'muted', key: 'm' }, 'OpenAPI / Swagger specification')
+              ]),
+              React.createElement('div', { className: 'resource', key: 'res2' }, [
+                React.createElement('div', { style: { fontWeight: 700 }, key: 't' }, 'Traffic Metrics'),
+                React.createElement('div', { className: 'muted', key: 'm' }, 'Live request and latency trends')
+              ]),
+              React.createElement('button', { className: 'run-btn', key: 'btn' }, '▶ Run Test Request')
+            ])
+          ])
         ]);
       }
 
