@@ -4,6 +4,7 @@ const { validateApiSummary } = require('../src/engine/aiValidator');
 const { buildGraph } = require('../src/engine/graphBuilder');
 const { inferNextRoutePath } = require('../src/engine/metadataExtractor');
 const { summarizeApi, resolveAiConfig } = require('../src/engine/aiClient');
+const { generateOpenCodeScanPrompt } = require('../src/engine/workflow');
 
 test('validateApiSummary accepts schema-conform data', () => {
   const payload = {
@@ -115,4 +116,16 @@ test('resolveAiConfig favors APIMAP variables over compatibility aliases', () =>
 test('resolveAiConfig normalizes open provider aliases to openai', () => {
   const config = resolveAiConfig({ aiProvider: 'open' });
   assert.equal(config.provider, 'openai');
+});
+
+test('resolveAiConfig normalizes opencode aliases', () => {
+  const config = resolveAiConfig({ aiProvider: 'open-code' });
+  assert.equal(config.provider, 'opencode');
+});
+
+test('generateOpenCodeScanPrompt includes metadata payload marker', () => {
+  const output = generateOpenCodeScanPrompt(process.cwd());
+  assert.ok(output.fileCount > 0);
+  assert.ok(output.routeCount >= 0);
+  assert.match(output.prompt, /ROUTE_METADATA_JSON:/);
 });

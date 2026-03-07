@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const path = require('path');
 const { ensureCacheDir } = require('./engine/cache');
-const { scanRepository } = require('./engine/workflow');
+const { scanRepository, generateOpenCodeScanPrompt } = require('./engine/workflow');
 const { createServer } = require('./server');
 
 const OPTION_ALIASES = {
@@ -18,10 +18,10 @@ const OPTION_ALIASES = {
 };
 
 function printUsage() {
-  console.log(`Usage: apimap <init|scan|serve> [path] [options]
+  console.log(`Usage: apimap <init|scan|scan-prompt|serve> [path] [options]
 
 Options (scan):
-  --ai-provider <mock|openai>   AI provider (default: mock)
+  --ai-provider <mock|openai|opencode>   AI provider (default: mock)
   --ai-token <token>            API token (for openai)
   --ai-model <model>            Model name (default: gpt-4o-mini)
   --ai-base-url <url>           Override chat completions endpoint
@@ -39,12 +39,13 @@ function parseArgs(argv) {
 
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (!arg.startsWith('--')) {
+    const isOption = arg.startsWith('--') || (arg.startsWith('-') && arg.length > 1);
+    if (!isOption) {
       positional.push(arg);
       continue;
     }
 
-    const [rawKey, inlineValue] = arg.slice(2).split(/=(.*)/s, 2);
+    const [rawKey, inlineValue] = arg.replace(/^--?/, '').split(/=(.*)/s, 2);
     const optionKey = OPTION_ALIASES[rawKey];
     if (!optionKey) {
       throw new Error(`Unknown option: --${rawKey}`);
@@ -53,7 +54,8 @@ function parseArgs(argv) {
     let value = inlineValue;
     if (value === undefined) {
       const next = argv[i + 1];
-      if (!next || next.startsWith('--')) {
+      const nextIsOption = next && (next.startsWith('--') || (next.startsWith('-') && next.length > 1));
+      if (!next || nextIsOption) {
         throw new Error(`Missing value for --${rawKey}`);
       }
       value = next;
@@ -75,6 +77,14 @@ async function main() {
   }
 
   const { positional, options } = parseArgs(rest);
+  if (positional.length > 1) {
+    throw new Error(
+      `Too many positional arguments: ${positional.slice(1).join(' ')}. `
+      + 'Expected at most one optional path argument. '
+      + 'If you are running through npm scripts, pass CLI flags after `--` '
+      + '(example: npm run scan -- --provider openai).',
+    );
+  }
   const argPath = positional[0];
   const targetPath = path.resolve(argPath || '.');
 
@@ -88,6 +98,16 @@ async function main() {
     const result = await scanRepository(targetPath, options);
     console.log('Scan completed successfully.');
     console.log(JSON.stringify(result, null, 2));
+    return;
+  }
+
+  if (command === 'scan-prompt') {
+    const result = generateOpenCodeScanPrompt(targetPath);
+    console.log('OpenCode prompt generated successfully.');
+    console.log(JSON.stringify({ fileCount: result.fileCount, routeCount: result.routeCount }, null, 2));
+    console.log('---BEGIN_APIMAP_OPENCODE_PROMPT---');
+    console.log(result.prompt);
+    console.log('---END_APIMAP_OPENCODE_PROMPT---');
     return;
   }
 

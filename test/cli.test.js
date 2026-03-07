@@ -1,6 +1,6 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { parseArgs } = require('../src/cli');
+const { parseArgs, main } = require('../src/cli');
 
 test('parseArgs supports --key=value format', () => {
   const { positional, options } = parseArgs([
@@ -30,6 +30,30 @@ test('parseArgs supports short aliases used in CLI', () => {
   assert.equal(options.aiBaseUrl, 'https://api.openai.com/v1/chat/completions');
 });
 
+test('parseArgs supports single-dash long aliases', () => {
+  const { options } = parseArgs([
+    '-provider', 'opencode',
+    '-model', 'gpt-4o-mini',
+  ]);
+
+  assert.equal(options.aiProvider, 'opencode');
+  assert.equal(options.aiModel, 'gpt-4o-mini');
+});
+
 test('parseArgs fails fast for unknown options', () => {
   assert.throws(() => parseArgs(['--foo', 'bar']), /Unknown option/);
+});
+
+test('main rejects extra positional args with npm forwarding hint', async () => {
+  const previousArgv = process.argv;
+  try {
+    process.argv = ['node', 'cli.js', 'scan', '.', 'openai'];
+
+    await assert.rejects(
+      () => main(),
+      /Too many positional arguments: openai[\s\S]*npm run scan -- --provider openai/,
+    );
+  } finally {
+    process.argv = previousArgv;
+  }
 });

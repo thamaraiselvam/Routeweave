@@ -1,4 +1,8 @@
 const { buildPrompt } = require('./promptBuilder');
+const { execFile } = require('node:child_process');
+const { promisify } = require('node:util');
+
+const execFileAsync = promisify(execFile);
 
 function firstDefined(values) {
   return values.find((value) => value !== undefined && value !== null && String(value).trim() !== '');
@@ -17,6 +21,8 @@ function resolveAiConfig(options = {}) {
     open: 'openai',
     'open-ai': 'openai',
     oai: 'openai',
+    'open-code': 'opencode',
+    oc: 'opencode',
   };
   const provider = providerAliases[rawProvider] || rawProvider;
 
@@ -118,6 +124,88 @@ async function callOpenAIChat(routeData, options) {
   return JSON.parse(content);
 }
 
+function parseJsonFromText(text) {
+  const trimmed = String(text || '').trim();
+  if (!trimmed) {
+    throw new Error('OpenCode CLI returned empty output');
+  }
+
+  const candidates = [trimmed];
+  const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if (fenceMatch?.[1]) {
+    candidates.push(fenceMatch[1].trim());
+  }
+
+  const start = trimmed.indexOf('{');
+  const end = trimmed.lastIndexOf('}');
+  if (start !== -1 && end !== -1 && end > start) {
+    candidates.push(trimmed.slice(start, end + 1));
+  }
+
+  for (const candidate of candidates) {
+    try {
+      return JSON.parse(candidate);
+    } catch (error) {
+      // Try next candidate.
+    }
+  }
+
+  throw new Error(`OpenCode CLI output did not contain valid JSON: ${trimmed.slice(0, 200)}`);
+}
+
+function parseOpenCodeResponse(stdout) {
+  const textParts = [];
+  const lines = String(stdout || '').split(/\r?\n/).filter(Boolean);
+
+  for (const line of lines) {
+    try {
+      const event = JSON.parse(line);
+      if (event?.type === 'text' && event?.part?.text) {
+        textParts.push(event.part.text);
+      }
+    } catch (error) {
+      // Not JSON events output; handled by fallback parser.
+    }
+  }
+
+  if (textParts.length > 0) {
+    return parseJsonFromText(textParts.join('\n'));
+  }
+
+  return parseJsonFromText(stdout);
+}
+
+async function callOpenCodeCli(routeData) {
+  const prompt = buildPrompt(routeData);
+  const mergedPrompt = [
+    prompt.systemPrompt,
+    prompt.userPrompt,
+    'Return valid JSON only.',
+  ].join('\n\n');
+
+  const attempts = [
+    ['run', '--format', 'json'],
+    ['run'],
+  ];
+  const failures = [];
+
+  for (const args of attempts) {
+    try {
+      const { stdout } = await execFileAsync('opencode', [...args, mergedPrompt], {
+        maxBuffer: 4 * 1024 * 1024,
+        timeout: 240000,
+      });
+      return parseOpenCodeResponse(stdout);
+    } catch (error) {
+      failures.push(`opencode ${args.join(' ')}: ${error.message}`.trim());
+    }
+  }
+
+  throw new Error(
+    `OpenCode CLI invocation failed. Ensure 'opencode' is installed and configured. ${failures.join(' | ')}`,
+  );
+}
+
 async function summarizeApi(routeData, options = {}) {
   const { provider } = resolveAiConfig(options);
 
@@ -129,7 +217,11 @@ async function summarizeApi(routeData, options = {}) {
     return callOpenAIChat(routeData, options);
   }
 
-  throw new Error(`Unsupported ai provider: ${provider}. Supported providers: mock, openai`);
+  if (provider === 'opencode') {
+    return callOpenCodeCli(routeData);
+  }
+
+  throw new Error(`Unsupported ai provider: ${provider}. Supported providers: mock, openai, opencode`);
 }
 
 module.exports = { summarizeApi, buildFallbackSummary, resolveAiConfig };
