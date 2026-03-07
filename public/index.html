@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Knowledge Graph Explorer</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 0; background: #f8fafc; color: #0f172a; }
+      .app { display: grid; grid-template-columns: 2fr 1fr; height: 100vh; }
+      .panel { padding: 1rem; overflow: auto; }
+      .graph-panel { border-right: 1px solid #cbd5e1; background: #fff; }
+      svg { width: 100%; height: 100%; min-height: 600px; }
+      .node { cursor: pointer; }
+      .node.api rect { fill: #dbeafe; stroke: #1d4ed8; }
+      .node.database rect { fill: #dcfce7; stroke: #15803d; }
+      .node.service rect { fill: #fef3c7; stroke: #b45309; }
+      .node.cache rect { fill: #fae8ff; stroke: #a21caf; }
+      .node.queue rect { fill: #fee2e2; stroke: #b91c1c; }
+      .node rect { rx: 8; ry: 8; stroke-width: 1.5; }
+      .badge { display: inline-block; padding: 0.2rem 0.5rem; margin-right: 0.35rem; border-radius: 999px; background: #e2e8f0; font-size: 0.75rem; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      const { useEffect, useMemo, useState } = React;
+
+      function layoutGraph(graph) {
+        const typeGroups = { api: [], database: [], service: [], cache: [], queue: [] };
+        graph.nodes.forEach((node) => typeGroups[node.type]?.push(node));
+
+        const positioned = {};
+        const centerY = 300;
+
+        typeGroups.api.forEach((node, i) => {
+          positioned[node.id] = { ...node, x: 420, y: centerY + i * 120 - ((typeGroups.api.length - 1) * 60) };
+        });
+        typeGroups.database.forEach((node, i) => {
+          positioned[node.id] = { ...node, x: 360 + i * 170, y: 520 };
+        });
+        typeGroups.service.forEach((node, i) => {
+          positioned[node.id] = { ...node, x: 720, y: 160 + i * 130 };
+        });
+        typeGroups.cache.forEach((node, i) => {
+          positioned[node.id] = { ...node, x: 120, y: 160 + i * 130 };
+        });
+        typeGroups.queue.forEach((node, i) => {
+          positioned[node.id] = { ...node, x: 360 + i * 170, y: 60 };
+        });
+
+        return { nodes: Object.values(positioned), edges: graph.edges };
+      }
+
+      function App() {
+        const [graph, setGraph] = useState({ nodes: [], edges: [] });
+        const [apis, setApis] = useState([]);
+        const [selectedApi, setSelectedApi] = useState(null);
+        const [error, setError] = useState('');
+
+        useEffect(() => {
+          Promise.all([fetch('/api/graph'), fetch('/api/apis')])
+            .then(async ([g, a]) => {
+              if (!g.ok || !a.ok) throw new Error('Cache not found. Run apimap scan .');
+              return [await g.json(), await a.json()];
+            })
+            .then(([gData, aData]) => {
+              setGraph(gData);
+              setApis(aData.apis || []);
+            })
+            .catch((err) => setError(err.message));
+        }, []);
+
+        const laidOut = useMemo(() => layoutGraph(graph), [graph]);
+
+        const selectedNodeData = selectedApi && apis.find((api) => `${api.method} ${api.path}` === selectedApi);
+
+        return React.createElement('div', { className: 'app' }, [
+          React.createElement('div', { key: 'graph', className: 'panel graph-panel' },
+            error
+              ? React.createElement('p', null, error)
+              : React.createElement('svg', { viewBox: '0 0 980 640' }, [
+                  ...laidOut.edges.map((edge, i) => {
+                    const source = laidOut.nodes.find((n) => n.id === edge.source);
+                    const target = laidOut.nodes.find((n) => n.id === edge.target);
+                    if (!source || !target) return null;
+                    return React.createElement('line', {
+                      key: `e-${i}`,
+                      x1: source.x + 60,
+                      y1: source.y + 22,
+                      x2: target.x + 60,
+                      y2: target.y + 22,
+                      stroke: '#94a3b8',
+                    });
+                  }),
+                  ...laidOut.nodes.map((node) => React.createElement('g', {
+                    key: node.id,
+                    className: `node ${node.type}`,
+                    onClick: () => node.type === 'api' && setSelectedApi(node.label)
+                  }, [
+                    React.createElement('rect', { x: node.x, y: node.y, width: 120, height: 44 }),
+                    React.createElement('text', { x: node.x + 8, y: node.y + 26, fontSize: 11 }, node.label),
+                  ])),
+                ])
+          ),
+          React.createElement('div', { key: 'detail', className: 'panel' }, [
+            React.createElement('h2', { key: 'title' }, 'API Details'),
+            !selectedNodeData
+              ? React.createElement('p', { key: 'hint' }, 'Click an API node to inspect endpoint flow.')
+              : React.createElement('div', { key: 'content' }, [
+                  React.createElement('h3', { key: 'route' }, `${selectedNodeData.method} ${selectedNodeData.path}`),
+                  React.createElement('p', { key: 'summary' }, selectedNodeData.summary),
+                  React.createElement('h4', { key: 'flowTitle' }, 'Flow'),
+                  React.createElement('ol', { key: 'flow' }, selectedNodeData.flow.map((step, i) => React.createElement('li', { key: i }, step))),
+                  React.createElement('h4', { key: 'depsTitle' }, 'Dependencies'),
+                  React.createElement('div', { key: 'tables' }, selectedNodeData.tables.map((x) => React.createElement('span', { className: 'badge', key: `t-${x}` }, `DB: ${x}`))),
+                  React.createElement('div', { key: 'services' }, selectedNodeData.services.map((x) => React.createElement('span', { className: 'badge', key: `s-${x}` }, `Service: ${x}`))),
+                  React.createElement('div', { key: 'caches' }, selectedNodeData.caches.map((x) => React.createElement('span', { className: 'badge', key: `c-${x}` }, `Cache: ${x}`))),
+                  React.createElement('div', { key: 'queues' }, selectedNodeData.queues.map((x) => React.createElement('span', { className: 'badge', key: `q-${x}` }, `Queue: ${x}`))),
+                ]),
+          ]),
+        ]);
+      }
+
+      ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+    </script>
+  </body>
+</html>
