@@ -1,21 +1,19 @@
 const path = require('path');
 const { walkRepository } = require('./scanner');
 const { extractMetadata } = require('./metadataExtractor');
-const { buildPrompt } = require('./promptBuilder');
 const { summarizeApi } = require('./aiClient');
 const { validateApiSummary } = require('./aiValidator');
 const { buildGraph } = require('./graphBuilder');
 const { writeCache } = require('./cache');
 
-function scanRepository(repoPath) {
+async function scanRepository(repoPath, options = {}) {
   const root = path.resolve(repoPath);
   const files = walkRepository(root);
   const metadata = extractMetadata(files);
 
   const apiKnowledge = [];
   for (const routeData of metadata) {
-    buildPrompt(routeData);
-    const summary = summarizeApi(routeData);
+    const summary = await summarizeApi(routeData, options);
     validateApiSummary(summary);
     apiKnowledge.push(summary);
   }
@@ -28,6 +26,7 @@ function scanRepository(repoPath) {
     routeCount: metadata.length,
     nodeCount: graph.nodes.length,
     edgeCount: graph.edges.length,
+    aiProvider: (options.aiProvider || process.env.APIMAP_AI_PROVIDER || 'mock').toLowerCase(),
   };
 }
 

@@ -1,26 +1,16 @@
 const fs = require('fs');
+const path = require('path');
 
-const FRAMEWORK_PATTERNS = [
-  {
-    framework: 'express',
-    regexes: [
-      /app\.(get|post|put|delete|patch)\(\s*['"`]([^'"`]+)['"`]/g,
-      /router\.(get|post|put|delete|patch)\(\s*['"`]([^'"`]+)['"`]/g,
-    ],
-  },
-  {
-    framework: 'fastapi',
-    regexes: [/@app\.(get|post|put|delete|patch)\(\s*['"`]([^'"`]+)['"`]/g],
-  },
-  {
-    framework: 'spring',
-    regexes: [/@(Get|Post|Put|Delete|Patch)Mapping\(\s*['"`]([^'"`]+)['"`]/g],
-  },
-  {
-    framework: 'nestjs',
-    regexes: [/@(Get|Post|Put|Delete|Patch)\(\s*['"`]([^'"`]+)['"`]/g],
-  },
+const EXPRESS_ROUTE_PATTERNS = [
+  /app\.(get|post|put|delete|patch)\(\s*['"`]([^'"`]+)['"`]/g,
+  /router\.(get|post|put|delete|patch)\(\s*['"`]([^'"`]+)['"`]/g,
 ];
+
+const NEST_ROUTE_PATTERNS = [
+  /@(Get|Post|Put|Delete|Patch)\(\s*['"`]([^'"`]+)['"`]/g,
+];
+
+const NEXT_APP_ROUTE_PATTERN = /export\s+(?:async\s+)?function\s+(GET|POST|PUT|DELETE|PATCH)\s*\(/g;
 
 const TABLE_PATTERNS = [
   /from\s+([a-zA-Z0-9_]+)/gi,
@@ -29,7 +19,7 @@ const TABLE_PATTERNS = [
   /update\s+([a-zA-Z0-9_]+)/gi,
 ];
 
-const SERVICE_PATTERN = /(axios|fetch|http\.get|http\.post|requests\.(get|post)|RestTemplate)/g;
+const SERVICE_PATTERN = /(axios|fetch|http\.get|http\.post|got\.|undici\.|request\()/g;
 const CACHE_PATTERN = /(redis|memcached|cache\.)/gi;
 const QUEUE_PATTERN = /(kafka|rabbitmq|sqs|bullmq|queue\.publish)/gi;
 
@@ -37,23 +27,47 @@ function normalizeMethod(frameworkMethod) {
   return frameworkMethod.toUpperCase();
 }
 
+function inferNextRoutePath(filePath) {
+  const normalized = filePath.split(path.sep).join('/');
+  const marker = '/app/api/';
+  const index = normalized.indexOf(marker);
+  if (index === -1 || !normalized.endsWith('/route.ts') && !normalized.endsWith('/route.js')) {
+    return null;
+  }
+
+  const routePath = normalized.slice(index + marker.length, normalized.lastIndexOf('/route.'));
+  if (!routePath) {
+    return '/api';
+  }
+
+  return `/${routePath.split('/').map((segment) => segment.replace(/^\[(.+)\]$/, ':$1')).join('/')}`;
+}
+
 function extractRoutes(content, filePath) {
   const routes = [];
-  for (const framework of FRAMEWORK_PATTERNS) {
-    for (const regex of framework.regexes) {
-      const cloned = new RegExp(regex.source, regex.flags);
-      let match;
-      while ((match = cloned.exec(content)) !== null) {
-        const rawMethod = match[1];
-        const method = normalizeMethod(rawMethod);
-        const endpoint = match[2];
-        routes.push({
-          method,
-          path: endpoint,
-          framework: framework.framework,
-          filePath,
-        });
-      }
+
+  for (const regex of EXPRESS_ROUTE_PATTERNS) {
+    const cloned = new RegExp(regex.source, regex.flags);
+    let match;
+    while ((match = cloned.exec(content)) !== null) {
+      routes.push({ method: normalizeMethod(match[1]), path: match[2], framework: 'express', filePath });
+    }
+  }
+
+  for (const regex of NEST_ROUTE_PATTERNS) {
+    const cloned = new RegExp(regex.source, regex.flags);
+    let match;
+    while ((match = cloned.exec(content)) !== null) {
+      routes.push({ method: normalizeMethod(match[1]), path: match[2], framework: 'nestjs', filePath });
+    }
+  }
+
+  const nextPath = inferNextRoutePath(filePath);
+  if (nextPath) {
+    const cloned = new RegExp(NEXT_APP_ROUTE_PATTERN.source, NEXT_APP_ROUTE_PATTERN.flags);
+    let match;
+    while ((match = cloned.exec(content)) !== null) {
+      routes.push({ method: normalizeMethod(match[1]), path: nextPath, framework: 'nextjs-app-router', filePath });
     }
   }
 
@@ -72,34 +86,14 @@ function extractTables(content) {
   return [...tables];
 }
 
-function extractServices(content) {
-  const services = new Set();
-  const cloned = new RegExp(SERVICE_PATTERN.source, SERVICE_PATTERN.flags);
+function extractByPattern(content, pattern, transform = (x) => x) {
+  const values = new Set();
+  const cloned = new RegExp(pattern.source, pattern.flags);
   let match;
   while ((match = cloned.exec(content)) !== null) {
-    services.add(match[1]);
+    values.add(transform(match[1]));
   }
-  return [...services];
-}
-
-function extractCaches(content) {
-  const caches = new Set();
-  const cloned = new RegExp(CACHE_PATTERN.source, CACHE_PATTERN.flags);
-  let match;
-  while ((match = cloned.exec(content)) !== null) {
-    caches.add(match[1].toLowerCase());
-  }
-  return [...caches];
-}
-
-function extractQueues(content) {
-  const queues = new Set();
-  const cloned = new RegExp(QUEUE_PATTERN.source, QUEUE_PATTERN.flags);
-  let match;
-  while ((match = cloned.exec(content)) !== null) {
-    queues.add(match[1].toLowerCase());
-  }
-  return [...queues];
+  return [...values];
 }
 
 function extractMetadata(filePaths) {
@@ -113,9 +107,9 @@ function extractMetadata(filePaths) {
     }
 
     const tables = extractTables(content);
-    const services = extractServices(content);
-    const caches = extractCaches(content);
-    const queues = extractQueues(content);
+    const services = extractByPattern(content, SERVICE_PATTERN);
+    const caches = extractByPattern(content, CACHE_PATTERN, (x) => x.toLowerCase());
+    const queues = extractByPattern(content, QUEUE_PATTERN, (x) => x.toLowerCase());
 
     for (const route of routes) {
       routeMetadata.push({
@@ -132,4 +126,4 @@ function extractMetadata(filePaths) {
   return routeMetadata;
 }
 
-module.exports = { extractMetadata };
+module.exports = { extractMetadata, inferNextRoutePath };

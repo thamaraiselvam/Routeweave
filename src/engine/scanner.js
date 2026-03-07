@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const CODE_EXTENSIONS = new Set(['.js', '.ts', '.py', '.java']);
-const SKIP_DIRS = new Set(['.git', 'node_modules', '.apimap', 'dist', 'build']);
+const CODE_EXTENSIONS = new Set(['.js', '.jsx', '.ts', '.tsx', '.mjs', '.cjs']);
+const SKIP_DIRS = new Set(['.git', 'node_modules', '.apimap', 'dist', 'build', '.next', 'coverage']);
 
 function walkRepository(rootDir) {
   const discoveredFiles = [];
