@@ -1,0 +1,14 @@
+{
+  "name": "apiflow",
+  "version": "1.0.0",
+  "description": "API Knowledge Graph Explorer",
+  "type": "commonjs",
+  "bin": {
+    "apimap": "src/cli.js"
+  },
+  "scripts": {
+    "scan": "node src/cli.js scan .",
+    "serve": "node src/cli.js serve",
+    "test": "node --test"
+  }
+}
