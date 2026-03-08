@@ -1,6 +1,6 @@
 <div align="center">
 
-# APIFlow
+# APILens
 
 **AI-powered API knowledge graph for Node.js backends**
 
@@ -8,15 +8,15 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org)
-[![npm](https://img.shields.io/badge/npx-apimap-red.svg)](https://npmjs.com/package/apimap)
+[![npm](https://img.shields.io/badge/npx-apilens-red.svg)](https://npmjs.com/package/apilens)
 
 </div>
 
 ---
 
-## What is APIFlow?
+## What is APILens?
 
-APIFlow scans your Node.js/TypeScript backend with an AI coding agent and builds a rich, interactive knowledge graph. No manual documentation. No API keys required for serving.
+APILens scans your Node.js/TypeScript backend with an AI coding agent and builds a rich, interactive knowledge graph. No manual documentation. No API keys required for serving.
 
 | Feature | Description |
 |---|---|
@@ -66,17 +66,17 @@ APIFlow scans your Node.js/TypeScript backend with an AI coding agent and builds
 ### 1. Generate scan instructions
 
 ```bash
-npx apimap scan-prompt /path/to/your/repo
+npx apilens scan-prompt /path/to/your/repo
 ```
 
-This creates `.apimap/SCAN_INSTRUCTIONS.md` inside your target repo and prints:
+This creates `.apilens/SCAN_INSTRUCTIONS.md` inside your target repo and prints:
 
 ```
 ╔══════════════════════════════════════════════════════════╗
-║            APIFlow Scan Instructions Ready               ║
+║           APILens Scan Instructions Ready                ║
 ╠══════════════════════════════════════════════════════════╣
 ║  📄 Instruction file created at:                         ║
-║     /your/repo/.apimap/SCAN_INSTRUCTIONS.md              ║
+║     /your/repo/.apilens/SCAN_INSTRUCTIONS.md              ║
 ╠══════════════════════════════════════════════════════════╣
 ║  Next step — open this file in your AI coding agent      ║
 ║  (Claude Code, Cursor, Copilot, etc.) and run:           ║
@@ -84,29 +84,29 @@ This creates `.apimap/SCAN_INSTRUCTIONS.md` inside your target repo and prints:
 ║    "Follow the instructions in SCAN_INSTRUCTIONS.md"    ║
 ║                                                          ║
 ║  The AI will scan your repo and create:                  ║
-║    • .apimap/api_knowledge.json  (required)              ║
-║    • .apimap/metadata.json       (audit trail)           ║
+║    • .apilens/api_knowledge.json  (required)              ║
+║    • .apilens/metadata.json       (audit trail)           ║
 ║                                                          ║
-║  Then run:  npx apimap serve .                           ║
+║  Then run:  npx apilens serve .                           ║
 ╚══════════════════════════════════════════════════════════╝
 ```
 
 ### 2. Run the AI scan
 
-Open `.apimap/SCAN_INSTRUCTIONS.md` in your AI coding agent (Claude Code, Cursor, GitHub Copilot, etc.) and say:
+Open `.apilens/SCAN_INSTRUCTIONS.md` in your AI coding agent (Claude Code, Cursor, GitHub Copilot, etc.) and say:
 
 > **"Follow the instructions in SCAN_INSTRUCTIONS.md"**
 
 The agent will scan every route, trace through controllers → services → repositories, and write:
-- `.apimap/api_knowledge.json` — full API knowledge (required by dashboard)
-- `.apimap/metadata.json` — raw route metadata and audit trail
+- `.apilens/api_knowledge.json` — full API knowledge (required by dashboard)
+- `.apilens/metadata.json` — raw route metadata and audit trail
 
 `graph.json` and `scan_state.json` are derived automatically by the server on first boot — no extra steps needed.
 
 ### 3. Launch the dashboard
 
 ```bash
-npx apimap serve /path/to/your/repo
+npx apilens serve /path/to/your/repo
 ```
 
 Open **http://localhost:3789** — the full dashboard is ready.
@@ -117,10 +117,10 @@ Open **http://localhost:3789** — the full dashboard is ready.
 
 | Command | Description |
 |---|---|
-| `npx apimap init [path]` | Create the `.apimap/` cache directory |
-| `npx apimap scan-prompt [path]` | Generate AI scan instructions → writes `.apimap/SCAN_INSTRUCTIONS.md` |
-| `npx apimap scan [path]` | Run a local (non-AI) metadata-only scan |
-| `npx apimap serve [path]` | Launch the dashboard server on port 3789 |
+| `npx apilens init [path]` | Create the `.apilens/` cache directory |
+| `npx apilens scan-prompt [path]` | Generate AI scan instructions → writes `.apilens/SCAN_INSTRUCTIONS.md` |
+| `npx apilens scan [path]` | Run a local (non-AI) metadata-only scan |
+| `npx apilens serve [path]` | Launch the dashboard server on port 3789 |
 
 **Path behaviour:**
 - For `init`, `scan`, `scan-prompt`: defaults to the nearest git repository root if no path is given.
@@ -147,7 +147,7 @@ npm run serve       -- /path/to/project
 
 ## Cache Files
 
-The AI scan writes to `.apimap/` inside your project:
+The AI scan writes to `.apilens/` inside your project:
 
 | File | Required | Description |
 |---|---|---|

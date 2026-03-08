@@ -1,13 +1,13 @@
 {
-  "name": "apiflow",
+  "name": "apilens",
   "version": "1.0.0",
-  "description": "API Knowledge Graph Explorer",
+  "description": "AI-powered API knowledge graph — explore endpoints, trace business logic, and analyse database impact across your Node.js backend.",
   "type": "commonjs",
   "bin": {
-    "apimap": "src/cli.js"
+    "apilens": "src/cli.js"
   },
   "scripts": {
-    "apimap": "node src/cli.js",
+    "apilens": "node src/cli.js",
     "scan": "node src/cli.js scan",
     "scan:prompt": "node src/cli.js scan-prompt",
     "server": "node src/cli.js serve",

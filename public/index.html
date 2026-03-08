@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>APIFlow</title>
+    <title>APILens</title>
     <link rel="icon" href="data:," />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -434,14 +434,14 @@
         {
           method: 'GET', path: '/api/graph',
           summary: 'Returns generated API dependency graph data for visualization.',
-          flow: ['Receive request from UI explorer', 'Read .apimap/graph.json from cache files', 'Respond with graph payload'],
-          tables: [], services: [], caches: ['.apimap/graph.json'], queues: [], tableAccess: []
+          flow: ['Receive request from UI explorer', 'Read .apilens/graph.json from cache files', 'Respond with graph payload'],
+          tables: [], services: [], caches: ['.apilens/graph.json'], queues: [], tableAccess: []
         },
         {
           method: 'GET', path: '/api/apis',
           summary: 'Returns API knowledge summaries from cache for endpoint navigation.',
-          flow: ['Receive request from UI explorer', 'Read .apimap/api_knowledge.json from cache', 'Flatten API entries and return list'],
-          tables: [], services: [], caches: ['.apimap/api_knowledge.json'], queues: [], tableAccess: []
+          flow: ['Receive request from UI explorer', 'Read .apilens/api_knowledge.json from cache', 'Flatten API entries and return list'],
+          tables: [], services: [], caches: ['.apilens/api_knowledge.json'], queues: [], tableAccess: []
         },
         {
           method: 'GET', path: '/api/accounts/:accountId',
@@ -1440,7 +1440,7 @@
             addLog('Loading API knowledge...', 'ok');
             try {
               const res = await fetch('/api/apis');
-              if (!res.ok) throw new Error('Using demo data. Run `apimap scan .` to load live cache.');
+              if (!res.ok) throw new Error('Using demo data. Run `apilens scan .` to load live cache.');
               const payload = await res.json();
               const loaded = Array.isArray(payload.apis) ? payload.apis : fallbackApis;
               setRawApis(loaded);
@@ -1479,7 +1479,7 @@
 
         /* ---- Issue #6: Icon Sidebar (fixed nav with Impact Analysis) ---- */
         const iconSidebar = h('nav', { className: 'icon-sidebar', key: 'icon-sidebar' }, [
-          h('div', { className: 'logo', key: 'logo' }, 'AF'),
+          h('div', { className: 'logo', key: 'logo' }, 'AL'),
           /* Explorer */
           h('button', {
             className: 'icon-btn' + (activeNav === 'explorer' ? ' active' : ''),
@@ -1505,7 +1505,7 @@
         const topbar = h('header', { className: 'topbar', key: 'topbar' }, [
           h('div', { className: 'topbar-brand', key: 'brand' }, [
             h('span', { className: 'highlight', key: 'h' }, 'API'),
-            'Flow ',
+            'Lens ',
             h('span', { style: { color: '#5a6478', fontSize: 10, fontWeight: 500 }, key: 'v' }, 'v2.0')
           ]),
           h('div', { className: 'topbar-search', key: 'search' }, [

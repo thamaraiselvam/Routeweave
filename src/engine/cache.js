@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const CACHE_DIR = '.apimap';
+const CACHE_DIR = '.apilens';
 
 function ensureCacheDir(rootDir) {
   const cacheDir = path.join(rootDir, CACHE_DIR);
@@ -21,7 +21,7 @@ function writeCache(rootDir, data) {
 }
 
 /**
- * Reads the API knowledge cache from rootDir/.apimap/.
+ * Reads the API knowledge cache from rootDir/.apilens/.
  *
  * Only api_knowledge.json is strictly required (it drives all dashboard views).
  * graph.json and scan_state.json are derived artifacts — they are auto-generated
