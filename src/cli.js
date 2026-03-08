@@ -133,11 +133,33 @@ async function main() {
 
   if (command === 'scan-prompt') {
     const result = generateOpenCodeScanPrompt(targetPath);
-    console.log('OpenCode prompt generated successfully.');
-    console.log(JSON.stringify({ fileCount: result.fileCount, routeCount: result.routeCount }, null, 2));
-    console.log('---BEGIN_APIMAP_OPENCODE_PROMPT---');
-    console.log(result.prompt);
-    console.log('---END_APIMAP_OPENCODE_PROMPT---');
+
+    // Write the instruction file into the target repo's .apimap directory
+    const apimapDir = path.join(targetPath, '.apimap');
+    fs.mkdirSync(apimapDir, { recursive: true });
+    const instructionFile = path.join(apimapDir, 'SCAN_INSTRUCTIONS.md');
+    fs.writeFileSync(instructionFile, result.prompt, 'utf8');
+
+    console.log('');
+    console.log('╔══════════════════════════════════════════════════════════╗');
+    console.log('║            APIFlow Scan Instructions Ready               ║');
+    console.log('╠══════════════════════════════════════════════════════════╣');
+    console.log(`║  📄 Instruction file created at:                         ║`);
+    console.log(`║     ${instructionFile.padEnd(54)}║`);
+    console.log('╠══════════════════════════════════════════════════════════╣');
+    console.log('║  Next step — open this file in your AI coding agent      ║');
+    console.log('║  (Claude Code, Cursor, Copilot, etc.) and run:           ║');
+    console.log('║                                                          ║');
+    console.log('║    "Follow the instructions in SCAN_INSTRUCTIONS.md"    ║');
+    console.log('║                                                          ║');
+    console.log('║  The AI will scan your repo and create:                  ║');
+    console.log('║    • .apimap/api_knowledge.json  (required)              ║');
+    console.log('║    • .apimap/metadata.json       (audit trail)           ║');
+    console.log('║                                                          ║');
+    console.log('║  Then run:  npx apimap serve .                           ║');
+    console.log('╚══════════════════════════════════════════════════════════╝');
+    console.log('');
+    console.log(JSON.stringify({ fileCount: result.fileCount, routeCount: result.routeCount, instructionFile }, null, 2));
     return;
   }
 
