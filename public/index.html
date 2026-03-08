@@ -4,216 +4,526 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>APIFlow Constellation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@500;700;800&display=swap"
+      rel="stylesheet"
+    />
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <style>
       :root {
-        --bg-a: #021620;
-        --bg-b: #132739;
-        --bg-c: #2b1d34;
-        --panel: rgba(9, 24, 37, 0.76);
-        --panel-border: rgba(168, 226, 255, 0.28);
-        --text: #eaf8ff;
-        --muted: #a7c5d8;
-        --teal: #2dd4bf;
-        --cyan: #38bdf8;
-        --orange: #fb923c;
-        --rose: #fb7185;
-        --lime: #84cc16;
+        --ink: #0f1f44;
+        --ink-soft: #3f5183;
+        --line: rgba(25, 49, 104, 0.16);
+        --shell: rgba(255, 255, 255, 0.84);
+        --shell-strong: rgba(255, 255, 255, 0.96);
+        --primary: #245fe4;
+        --teal: #0cae96;
+        --amber: #f29a2b;
+        --rose: #e75173;
+        --violet: #6f53ff;
       }
 
-      * { box-sizing: border-box; }
+      * {
+        box-sizing: border-box;
+      }
 
       body {
         margin: 0;
         min-height: 100vh;
-        color: var(--text);
-        font-family: "Sora", "Trebuchet MS", "Segoe UI", sans-serif;
+        font-family: "Manrope", sans-serif;
+        color: var(--ink);
         background:
-          radial-gradient(circle at 8% 14%, rgba(45, 212, 191, 0.25), transparent 40%),
-          radial-gradient(circle at 84% 14%, rgba(251, 146, 60, 0.22), transparent 35%),
-          radial-gradient(circle at 70% 82%, rgba(56, 189, 248, 0.2), transparent 40%),
-          linear-gradient(145deg, var(--bg-a), var(--bg-b) 50%, var(--bg-c));
+          radial-gradient(circle at 8% 8%, rgba(42, 120, 255, 0.34), transparent 36%),
+          radial-gradient(circle at 92% 8%, rgba(255, 137, 67, 0.34), transparent 35%),
+          radial-gradient(circle at 85% 88%, rgba(115, 90, 255, 0.27), transparent 36%),
+          radial-gradient(circle at 12% 86%, rgba(22, 180, 157, 0.23), transparent 34%),
+          linear-gradient(145deg, #fff7e7, #edf3ff 48%, #f4efff 100%);
       }
 
       .shell {
         min-height: 100vh;
+        padding: 20px;
         display: grid;
-        grid-template-rows: 84px 1fr;
+        grid-template-rows: auto 1fr;
+        gap: 14px;
       }
 
       .topbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 22px;
-        border-bottom: 1px solid rgba(168, 226, 255, 0.24);
-        background: rgba(5, 17, 28, 0.45);
-        backdrop-filter: blur(10px);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 16px 18px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 16px;
+        background: var(--shell);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 18px 48px rgba(25, 49, 104, 0.14);
+        animation: rise 420ms ease;
       }
 
       .brand h1 {
         margin: 0;
-        font-size: 28px;
-        letter-spacing: -0.02em;
+        font-family: "Syne", sans-serif;
+        font-size: 34px;
+        letter-spacing: -0.05em;
       }
 
       .brand p {
-        margin: 4px 0 0;
-        color: var(--muted);
-        font-size: 12px;
-        letter-spacing: 0.05em;
+        margin: 7px 0 0;
+        color: var(--ink-soft);
+        max-width: 760px;
+        font-size: 14px;
+      }
+
+      .badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .badge {
+        border: 1px solid rgba(25, 49, 104, 0.2);
+        border-radius: 999px;
+        background: var(--shell-strong);
+        color: #1f3f76;
+        font-size: 11px;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        padding: 7px 11px;
       }
 
       .stats {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(120px, 172px));
         gap: 10px;
       }
 
-      .pill {
-        border: 1px solid rgba(168, 226, 255, 0.35);
-        background: rgba(12, 36, 54, 0.72);
-        border-radius: 999px;
-        padding: 7px 12px;
-        font-size: 12px;
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
       }
 
-      .layout {
-        display: grid;
-        grid-template-columns: 1fr 360px;
-        gap: 14px;
-        padding: 14px;
+      .back-main-btn {
+        border: 1px solid rgba(25, 49, 104, 0.22);
+        border-radius: 12px;
+        background: linear-gradient(120deg, #e75173, #6f53ff);
+        color: #ffffff;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 800;
+        padding: 10px 13px;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .stat {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: var(--shell-strong);
+        padding: 10px 12px;
+      }
+
+      .stat strong {
+        display: block;
+        font-family: "Syne", sans-serif;
+        font-size: 23px;
+      }
+
+      .stat span {
+        color: var(--ink-soft);
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .view-grid {
         min-height: 0;
+        display: grid;
+        gap: 12px;
+      }
+
+      .overview-grid {
+        grid-template-columns: 300px minmax(760px, 1fr) 360px;
+      }
+
+      .detail-grid {
+        grid-template-columns: minmax(780px, 1fr) 380px;
       }
 
       .panel {
-        background: var(--panel);
-        border: 1px solid var(--panel-border);
-        border-radius: 18px;
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        background: var(--shell);
+        box-shadow: 0 14px 36px rgba(28, 51, 101, 0.11);
         overflow: hidden;
-      }
-
-      .panel-title {
-        margin: 0;
-        padding: 14px 16px;
-        border-bottom: 1px solid rgba(168, 226, 255, 0.2);
-        font-size: 12px;
-        text-transform: uppercase;
-        letter-spacing: 0.11em;
-        color: var(--muted);
-      }
-
-      .graph-wrap {
-        position: relative;
         min-height: 0;
+        animation: rise 380ms ease;
       }
 
-      .graph-hint {
-        position: absolute;
-        left: 16px;
-        right: 16px;
-        bottom: 12px;
-        border: 1px solid rgba(251, 146, 60, 0.45);
-        background: rgba(61, 34, 14, 0.55);
+      .panel-head {
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.66);
+      }
+
+      .panel-head h2 {
+        margin: 0;
+        font-family: "Syne", sans-serif;
+        font-size: 17px;
+        letter-spacing: -0.02em;
+      }
+
+      .panel-head p {
+        margin: 4px 0 0;
+        color: var(--ink-soft);
+        font-size: 12px;
+      }
+
+      .navigator-body {
+        padding: 12px;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 10px;
+        height: calc(100% - 72px);
+      }
+
+      .search input {
+        width: 100%;
+        border: 1px solid var(--line);
         border-radius: 12px;
         padding: 10px 12px;
-        color: #ffd9bd;
+        font: inherit;
+        font-size: 13px;
+        background: #fff;
+        outline: none;
+      }
+
+      .search input:focus {
+        border-color: rgba(36, 95, 228, 0.62);
+        box-shadow: 0 0 0 3px rgba(36, 95, 228, 0.18);
+      }
+
+      .endpoint-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        overflow: auto;
+        display: grid;
+        gap: 8px;
+      }
+
+      .endpoint-btn {
+        width: 100%;
+        text-align: left;
+        border: 1px solid rgba(25, 49, 104, 0.16);
+        border-radius: 14px;
+        background: linear-gradient(140deg, #ffffff, #f6f9ff);
+        padding: 10px;
+        cursor: pointer;
+        transition: transform 130ms ease, box-shadow 130ms ease, border-color 130ms ease;
+      }
+
+      .endpoint-btn:hover {
+        transform: translateY(-1px);
+        border-color: rgba(36, 95, 228, 0.52);
+        box-shadow: 0 9px 24px rgba(36, 95, 228, 0.16);
+      }
+
+      .endpoint-btn.active {
+        border-color: rgba(231, 81, 115, 0.52);
+        box-shadow: 0 9px 24px rgba(231, 81, 115, 0.16);
+        background: linear-gradient(145deg, #ffffff, #fff3f6);
+      }
+
+      .endpoint-top {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .method {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 52px;
+        height: 22px;
+        border-radius: 999px;
+        padding: 0 8px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+      }
+
+      .m-get {
+        background: rgba(12, 174, 150, 0.2);
+        color: #0b7c6c;
+      }
+
+      .m-post {
+        background: rgba(36, 95, 228, 0.2);
+        color: #244eb5;
+      }
+
+      .m-put {
+        background: rgba(242, 154, 43, 0.24);
+        color: #9a5a0a;
+      }
+
+      .m-patch {
+        background: rgba(111, 83, 255, 0.22);
+        color: #5239c4;
+      }
+
+      .m-delete {
+        background: rgba(231, 81, 115, 0.24);
+        color: #a72c48;
+      }
+
+      .endpoint-path {
+        font-weight: 700;
+        color: #18366b;
         font-size: 13px;
       }
 
-      svg {
-        display: block;
+      .endpoint-summary {
+        margin: 7px 0 0;
+        font-size: 12px;
+        color: var(--ink-soft);
+        line-height: 1.38;
+      }
+
+      .map-panel,
+      .journey-panel {
+        display: grid;
+        grid-template-rows: auto 1fr;
+      }
+
+      .map-wrap {
+        min-height: 0;
+        padding: 12px;
+        position: relative;
+      }
+
+      .map-note {
+        position: absolute;
+        left: 20px;
+        right: 20px;
+        bottom: 20px;
+        border: 1px solid rgba(25, 49, 104, 0.2);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #224379;
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .overview-svg {
         width: 100%;
-        height: calc(100vh - 130px);
-        min-height: 520px;
-      }
-
-      .orbit-line {
-        fill: none;
-        stroke: rgba(143, 211, 243, 0.22);
-        stroke-width: 1.2;
-        stroke-dasharray: 5 8;
-      }
-
-      .flow-edge {
-        fill: none;
-        stroke: rgba(143, 211, 243, 0.62);
-        stroke-width: 2;
+        height: calc(100vh - 188px);
+        min-height: 540px;
+        display: block;
+        border-radius: 16px;
+        border: 1px solid rgba(25, 49, 104, 0.15);
+        background: linear-gradient(155deg, #f8f2ff, #ebf4ff 48%, #f9fff1);
       }
 
       .bubble {
         cursor: pointer;
       }
 
-      .bubble circle {
-        transition: transform 150ms ease, filter 150ms ease, opacity 150ms ease;
+      .bubble .surface {
+        transition: transform 140ms ease, filter 140ms ease;
+        transform-origin: center;
       }
 
-      .bubble:hover circle {
-        filter: brightness(1.07);
+      .bubble:hover .surface {
+        transform: scale(1.03);
       }
 
-      .bubble.selected circle {
-        filter: drop-shadow(0 0 18px rgba(56, 189, 248, 0.7));
+      .bubble.selected .surface {
+        filter: drop-shadow(0 10px 20px rgba(231, 81, 115, 0.35));
       }
 
       .api-label {
-        fill: #f4fdff;
+        fill: #112d5e;
+        text-anchor: middle;
+      }
+
+      .api-label.method {
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .api-label.path {
         font-size: 12px;
         font-weight: 700;
+      }
+
+      .overview-side {
+        padding: 14px;
+        display: grid;
+        gap: 12px;
+        align-content: start;
+      }
+
+      .showcase {
+        border: 1px solid rgba(25, 49, 104, 0.18);
+        border-radius: 14px;
+        padding: 12px;
+        background: var(--shell-strong);
+      }
+
+      .showcase h3 {
+        margin: 0;
+        font-family: "Syne", sans-serif;
+        font-size: 15px;
+      }
+
+      .showcase p {
+        margin: 7px 0 0;
+        color: var(--ink-soft);
+        font-size: 13px;
+        line-height: 1.42;
+      }
+
+      .primary-btn,
+      .ghost-btn {
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 9px 12px;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .primary-btn {
+        background: linear-gradient(120deg, #265fe4, #6f53ff);
+        color: #fff;
+      }
+
+      .ghost-btn {
+        border-color: rgba(25, 49, 104, 0.2);
+        background: rgba(255, 255, 255, 0.92);
+        color: #1e4178;
+      }
+
+      .journey-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .journey-toolbar .route {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .journey-toolbar .route span {
+        font-family: "Syne", sans-serif;
+        font-size: 19px;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .journey-wrap {
+        min-height: 0;
+        padding: 12px;
+      }
+
+      .journey-scroll {
+        width: 100%;
+        height: calc(100vh - 198px);
+        min-height: 520px;
+        overflow: auto;
+        border-radius: 16px;
+        border: 1px solid rgba(25, 49, 104, 0.16);
+        background: linear-gradient(160deg, #f2f8ff, #fff5ec 60%, #f5efff);
+      }
+
+      .journey-svg {
+        display: block;
+      }
+
+      .flow-edge {
+        fill: none;
+        stroke: rgba(37, 88, 179, 0.62);
+        stroke-width: 2;
+      }
+
+      .resource-edge {
+        fill: none;
+        stroke: rgba(56, 94, 168, 0.34);
+        stroke-width: 1.4;
+      }
+
+      .flow-label,
+      .resource-label {
         text-anchor: middle;
       }
 
-      .api-sub {
-        fill: #d0ebf8;
+      .flow-label.step {
+        fill: #fff;
         font-size: 11px;
-        text-anchor: middle;
+        font-weight: 800;
       }
 
-      .flow-label {
-        fill: #f6faff;
+      .flow-label.body {
+        fill: #ebf3ff;
         font-size: 10px;
-        text-anchor: middle;
+      }
+
+      .resource-label {
+        fill: #13305f;
+        font-size: 10px;
+        font-weight: 800;
+      }
+
+      .details-panel {
+        display: grid;
+        grid-template-rows: auto 1fr;
       }
 
       .details {
-        padding: 16px;
-        max-height: calc(100vh - 130px);
+        min-height: 0;
         overflow: auto;
+        padding: 12px;
+        display: grid;
+        gap: 10px;
       }
 
-      .method {
+      .card,
+      .focus,
+      .section {
+        border: 1px solid rgba(25, 49, 104, 0.16);
+        border-radius: 14px;
+        padding: 12px;
+        background: var(--shell-strong);
+      }
+
+      .route-path {
         display: inline-block;
-        padding: 4px 9px;
-        border-radius: 999px;
-        font-size: 11px;
-        font-weight: 800;
-        margin-right: 8px;
-      }
-
-      .m-get { background: rgba(45, 212, 191, 0.22); color: #8ff5e7; }
-      .m-post { background: rgba(56, 189, 248, 0.23); color: #a5e5ff; }
-      .m-put { background: rgba(251, 146, 60, 0.24); color: #ffd1a7; }
-      .m-patch { background: rgba(251, 113, 133, 0.22); color: #ffc3ce; }
-      .m-delete { background: rgba(244, 63, 94, 0.24); color: #ffbac8; }
-
-      .path {
+        margin-left: 8px;
+        font-family: "Syne", sans-serif;
         font-size: 20px;
-        font-weight: 800;
       }
 
       .summary {
-        color: var(--muted);
-        line-height: 1.45;
-        margin: 12px 0 16px;
-      }
-
-      .focus {
-        border: 1px solid rgba(132, 204, 22, 0.4);
-        background: rgba(46, 68, 16, 0.42);
-        border-radius: 12px;
-        padding: 10px;
-        margin-bottom: 14px;
+        margin: 9px 0 0;
+        color: var(--ink-soft);
+        font-size: 14px;
+        line-height: 1.42;
       }
 
       .focus b {
@@ -221,23 +531,29 @@
         margin-bottom: 4px;
       }
 
-      .section {
-        margin-top: 16px;
-      }
-
       .section h3 {
         margin: 0 0 8px;
-        color: var(--muted);
-        font-size: 12px;
+        color: var(--ink-soft);
         text-transform: uppercase;
+        font-size: 11px;
         letter-spacing: 0.08em;
       }
 
       .steps {
         margin: 0;
-        padding-left: 18px;
+        padding: 0;
+        list-style: none;
         display: grid;
-        gap: 6px;
+        gap: 7px;
+      }
+
+      .steps li {
+        border: 1px solid rgba(25, 49, 104, 0.14);
+        border-radius: 10px;
+        background: #f9fbff;
+        font-size: 13px;
+        line-height: 1.35;
+        padding: 8px 9px;
       }
 
       .chips {
@@ -247,41 +563,113 @@
       }
 
       .chip {
-        border: 1px solid rgba(168, 226, 255, 0.28);
-        background: rgba(14, 34, 50, 0.7);
+        border: 1px solid rgba(25, 49, 104, 0.2);
         border-radius: 999px;
+        background: #f6faff;
+        color: #1d3c72;
         font-size: 12px;
         padding: 5px 10px;
       }
 
       .empty {
-        color: var(--muted);
-        margin: 8px 0;
-      }
-
-      .error {
-        border: 1px solid rgba(251, 113, 133, 0.45);
-        background: rgba(79, 18, 32, 0.45);
-        color: #ffd1da;
-        border-radius: 12px;
-        padding: 10px;
-        margin-top: 10px;
+        margin: 0;
+        color: var(--ink-soft);
         font-size: 13px;
       }
 
-      @media (max-width: 1100px) {
-        .layout {
+      .error {
+        border: 1px solid rgba(231, 81, 115, 0.45);
+        border-radius: 12px;
+        background: rgba(255, 236, 242, 0.95);
+        color: #a62948;
+        font-size: 13px;
+        padding: 10px;
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 1460px) {
+        .overview-grid {
+          grid-template-columns: 280px minmax(600px, 1fr) 330px;
+        }
+
+        .detail-grid {
+          grid-template-columns: minmax(640px, 1fr) 340px;
+        }
+      }
+
+      @media (max-width: 1240px) {
+        .shell {
+          padding: 12px;
+        }
+
+        .topbar {
           grid-template-columns: 1fr;
-          grid-template-rows: 65vh auto;
         }
 
-        svg {
-          height: 65vh;
-          min-height: 420px;
+        .stats {
+          grid-template-columns: repeat(3, minmax(100px, 1fr));
         }
 
+        .topbar-right {
+          justify-content: flex-start;
+          flex-wrap: wrap;
+        }
+
+        .overview-grid,
+        .detail-grid {
+          grid-template-columns: 1fr;
+          grid-template-rows: auto;
+        }
+
+        .navigator-body,
         .details {
+          height: auto;
           max-height: none;
+        }
+
+        .overview-svg,
+        .journey-scroll {
+          height: 62vh;
+          min-height: 430px;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .brand h1 {
+          font-size: 26px;
+        }
+
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar-right {
+          width: 100%;
+        }
+
+        .back-main-btn {
+          width: 100%;
+        }
+
+        .route-path {
+          display: block;
+          margin: 8px 0 0;
+          font-size: 18px;
+        }
+
+        .journey-toolbar {
+          display: grid;
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -322,8 +710,25 @@
         }
       ];
 
+      const resourceMeta = {
+        table: { color: '#a3dd60', title: 'TABLE' },
+        service: { color: '#74b8ff', title: 'SERVICE' },
+        cache: { color: '#5bd8c2', title: 'CACHE' },
+        queue: { color: '#f59ab0', title: 'QUEUE' }
+      };
+
       function methodClass(method) {
         return `m-${String(method || '').toLowerCase()}`;
+      }
+
+      function methodGradient(method) {
+        const value = String(method || '').toUpperCase();
+        if (value === 'GET') return 'url(#mGet)';
+        if (value === 'POST') return 'url(#mPost)';
+        if (value === 'PUT') return 'url(#mPut)';
+        if (value === 'PATCH') return 'url(#mPatch)';
+        if (value === 'DELETE') return 'url(#mDelete)';
+        return 'url(#mPost)';
       }
 
       function normalizeApis(raw) {
@@ -361,57 +766,71 @@
       }
 
       function buildApiPositions(apis) {
-        const cx = 470;
-        const cy = 330;
-        const radius = Math.max(170, 210 + apis.length * 4);
+        const cx = 590;
+        const cy = 360;
+        const radius = Math.max(210, 250 + apis.length * 6);
         return apis.map((api, i) => {
           const angle = (Math.PI * 2 * i) / Math.max(apis.length, 1) - Math.PI / 2;
           return {
             id: `${api.method} ${api.path}`,
             x: cx + Math.cos(angle) * radius,
             y: cy + Math.sin(angle) * radius,
-            r: 58
+            r: 66
           };
         });
       }
 
-      function buildFlowNodes(flow, selected) {
-        if (!selected) return [];
-        const sx = selected.x;
-        const sy = selected.y;
-        const stepGap = 96;
-        const startX = Math.min(960, sx + 170);
-        const startY = Math.max(100, sy - ((flow.length - 1) * stepGap) / 2);
-        return flow.map((step, i) => ({
+      function buildJourney(api) {
+        if (!api) {
+          return {
+            apiNode: null,
+            flowNodes: [],
+            resourceNodes: [],
+            width: 1200,
+            height: 560,
+            anchor: null
+          };
+        }
+
+        const apiNode = { x: 140, y: 260, r: 64 };
+        const flowNodes = (api.flow || []).map((step, i) => ({
           id: `flow-${i}`,
           label: step,
-          x: startX,
-          y: startY + i * stepGap,
-          r: 38,
-          index: i
+          index: i,
+          x: 360 + i * 230,
+          y: 260 + (i % 2 === 0 ? -76 : 76),
+          w: 172,
+          h: 70
         }));
-      }
 
-      function buildResourceNodes(api, flowNodes) {
-        if (!api || !flowNodes.length) return [];
+        const resources = [];
+        for (const table of api.tables) resources.push({ type: 'table', label: table, ...resourceMeta.table });
+        for (const service of api.services) resources.push({ type: 'service', label: service, ...resourceMeta.service });
+        for (const cache of api.caches) resources.push({ type: 'cache', label: cache, ...resourceMeta.cache });
+        for (const queue of api.queues) resources.push({ type: 'queue', label: queue, ...resourceMeta.queue });
 
-        const items = [];
-        for (const table of api.tables) items.push({ type: 'table', label: table, color: '#84cc16' });
-        for (const service of api.services) items.push({ type: 'service', label: service, color: '#38bdf8' });
-        for (const cache of api.caches) items.push({ type: 'cache', label: cache, color: '#2dd4bf' });
-        for (const queue of api.queues) items.push({ type: 'queue', label: queue, color: '#fb7185' });
+        const anchor = flowNodes.length
+          ? { x: flowNodes[flowNodes.length - 1].x + flowNodes[flowNodes.length - 1].w / 2, y: flowNodes[flowNodes.length - 1].y }
+          : { x: apiNode.x + apiNode.r, y: apiNode.y };
 
-        const anchor = flowNodes[Math.max(flowNodes.length - 1, 0)];
-        const baseX = anchor.x;
-        const baseY = anchor.y + 90;
-
-        return items.slice(0, 12).map((item, i) => ({
-          ...item,
-          id: `resource-${item.type}-${i}`,
-          x: baseX + (i % 4) * 90 - 130,
-          y: baseY + Math.floor(i / 4) * 78,
-          r: 28
+        const columns = resources.length > 8 ? 3 : 2;
+        const resourceStartX = Math.max(anchor.x + 240, 660);
+        const resourceNodes = resources.map((resource, i) => ({
+          ...resource,
+          id: `resource-${resource.type}-${i}`,
+          x: resourceStartX + (i % columns) * 194,
+          y: 120 + Math.floor(i / columns) * 108,
+          r: 36
         }));
+
+        const width = Math.max(
+          1200,
+          flowNodes.length ? flowNodes[flowNodes.length - 1].x + 360 : 900,
+          resourceNodes.length ? resourceNodes[resourceNodes.length - 1].x + 120 : 900
+        );
+        const height = Math.max(560, 220 + Math.ceil(Math.max(resourceNodes.length, 1) / columns) * 108);
+
+        return { apiNode, flowNodes, resourceNodes, width, height, anchor };
       }
 
       function Chips({ items, empty }) {
@@ -431,8 +850,16 @@
         const [selectedId, setSelectedId] = useState('');
         const [focused, setFocused] = useState(null);
         const [error, setError] = useState('');
+        const [search, setSearch] = useState('');
+        const [view, setView] = useState('overview');
 
         const apis = useMemo(() => normalizeApis(rawApis), [rawApis]);
+        const filteredApis = useMemo(() => {
+          const value = search.trim().toLowerCase();
+          if (!value) return apis;
+          return apis.filter((api) => `${api.method} ${api.path} ${api.summary}`.toLowerCase().includes(value));
+        }, [apis, search]);
+
         const apiPositions = useMemo(() => buildApiPositions(apis), [apis]);
 
         useEffect(() => {
@@ -459,6 +886,7 @@
           if (!apis.length) {
             setSelectedId('');
             setFocused(null);
+            setView('overview');
             return;
           }
 
@@ -466,6 +894,7 @@
           if (!exists && selectedId) {
             setSelectedId('');
             setFocused(null);
+            setView('overview');
           }
         }, [apis, selectedId]);
 
@@ -474,288 +903,502 @@
           return apis.find((api) => `${api.method} ${api.path}` === selectedId) || null;
         }, [apis, selectedId]);
 
-        const selectedApiPos = useMemo(() => {
-          if (!selectedApi) return null;
-          return apiPositions.find((p) => p.id === `${selectedApi.method} ${selectedApi.path}`) || null;
-        }, [selectedApi, apiPositions]);
+        const selectedResourceCount = selectedApi
+          ? selectedApi.tables.length + selectedApi.services.length + selectedApi.caches.length + selectedApi.queues.length
+          : 0;
 
-        const flowNodes = useMemo(
-          () => buildFlowNodes(selectedApi ? selectedApi.flow : [], selectedApiPos),
-          [selectedApi, selectedApiPos]
-        );
+        const journey = useMemo(() => buildJourney(selectedApi), [selectedApi]);
 
-        const resourceNodes = useMemo(
-          () => buildResourceNodes(selectedApi, flowNodes),
-          [selectedApi, flowNodes]
-        );
-
-        function onApiClick(api) {
+        function onSelectApi(api, goDetail) {
           const id = `${api.method} ${api.path}`;
           setSelectedId(id);
           setFocused({ title: `${api.method} ${api.path}`, body: api.summary });
+          if (goDetail) setView('detail');
         }
 
-        function renderApiBubble(api, pos) {
-          const isSelected = selectedId === `${api.method} ${api.path}`;
-          return React.createElement(
-            'g',
-            {
-              className: `bubble ${isSelected ? 'selected' : ''}`,
-              key: pos.id,
-              onClick: () => onApiClick(api),
-              role: 'button',
-              tabIndex: 0,
-              onKeyDown: (e) => {
-                if (e.key === 'Enter' || e.key === ' ') onApiClick(api);
-              }
-            },
-            [
-              React.createElement('circle', {
-                key: 'c',
-                cx: pos.x,
-                cy: pos.y,
-                r: pos.r,
-                fill: isSelected ? 'url(#apiBubbleSelected)' : 'url(#apiBubble)',
-                stroke: isSelected ? '#80f5e7' : '#8fd3f3',
-                'stroke-width': isSelected ? 2.4 : 1.5
-              }),
-              React.createElement('text', { key: 'm', className: 'api-label', x: pos.x, y: pos.y - 6 }, api.method),
-              React.createElement('text', { key: 'p', className: 'api-sub', x: pos.x, y: pos.y + 14 }, truncate(api.path, 19))
-            ]
-          );
-        }
+        function detailsContent() {
+          return React.createElement('div', { className: 'details' }, [
+            selectedApi
+              ? React.createElement('div', { className: 'card', key: 'route' }, [
+                  React.createElement('span', { className: `method ${methodClass(selectedApi.method)}`, key: 'm' }, selectedApi.method),
+                  React.createElement('span', { className: 'route-path', key: 'p' }, selectedApi.path),
+                  React.createElement('p', { className: 'summary', key: 's' }, selectedApi.summary)
+                ])
+              : React.createElement('p', { className: 'empty', key: 'empty-route' }, 'No API selected yet.'),
 
-        return React.createElement('div', { className: 'shell' }, [
-          React.createElement('header', { className: 'topbar', key: 'header' }, [
-            React.createElement('div', { className: 'brand', key: 'brand' }, [
-              React.createElement('h1', { key: 't' }, 'APIFlow Constellation'),
-              React.createElement('p', { key: 's' }, 'Click an API bubble to expand its end-to-end flow map')
+            focused
+              ? React.createElement('div', { className: 'focus', key: 'focus' }, [
+                  React.createElement('b', { key: 't' }, focused.title),
+                  React.createElement('span', { key: 'b' }, focused.body)
+                ])
+              : null,
+
+            React.createElement('div', { className: 'section', key: 'flow' }, [
+              React.createElement('h3', { key: 'h' }, 'Flow'),
+              selectedApi && selectedApi.flow.length
+                ? React.createElement(
+                    'ol',
+                    { className: 'steps', key: 'list' },
+                    selectedApi.flow.map((step, i) => React.createElement('li', { key: `step-${i}` }, `Step ${i + 1}: ${step}`))
+                  )
+                : React.createElement('p', { className: 'empty', key: 'e' }, 'Select an API to view flow steps.')
             ]),
-            React.createElement('div', { className: 'stats', key: 'stats' }, [
-              React.createElement('span', { className: 'pill', key: 'a' }, `${apis.length} APIs`),
-              React.createElement('span', { className: 'pill', key: 'f' }, `${selectedApi ? selectedApi.flow.length : 0} Flow Steps`)
-            ])
-          ]),
 
-          React.createElement('main', { className: 'layout', key: 'layout' }, [
-            React.createElement('section', { className: 'panel graph-wrap', key: 'graph' }, [
-              React.createElement('h2', { className: 'panel-title', key: 'h' }, 'Interactive API Bubble Graph'),
-              React.createElement(
-                'svg',
-                { viewBox: '0 0 1200 760', key: 'svg' },
-                [
-                  React.createElement('defs', { key: 'defs' }, [
-                    React.createElement('linearGradient', { id: 'apiBubble', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g1' }, [
-                      React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#38bdf8' }),
-                      React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#2dd4bf' })
+            React.createElement('div', { className: 'section', key: 'tables' }, [
+              React.createElement('h3', { key: 'h' }, 'Tables'),
+              React.createElement(Chips, { key: 'c', items: selectedApi ? selectedApi.tables : [], empty: 'No linked tables.' })
+            ]),
+
+            React.createElement('div', { className: 'section', key: 'services' }, [
+              React.createElement('h3', { key: 'h' }, 'Services'),
+              React.createElement(Chips, { key: 'c', items: selectedApi ? selectedApi.services : [], empty: 'No linked services.' })
+            ]),
+
+            React.createElement('div', { className: 'section', key: 'caches' }, [
+              React.createElement('h3', { key: 'h' }, 'Caches'),
+              React.createElement(Chips, { key: 'c', items: selectedApi ? selectedApi.caches : [], empty: 'No linked caches.' })
+            ]),
+
+            React.createElement('div', { className: 'section', key: 'queues' }, [
+              React.createElement('h3', { key: 'h' }, 'Queues'),
+              React.createElement(Chips, { key: 'c', items: selectedApi ? selectedApi.queues : [], empty: 'No linked queues.' })
+            ]),
+
+            error ? React.createElement('div', { className: 'error', key: 'err' }, error) : null
+          ]);
+        }
+
+        function renderOverview() {
+          return React.createElement('main', { className: 'view-grid overview-grid' }, [
+            React.createElement('section', { className: 'panel', key: 'nav' }, [
+              React.createElement('div', { className: 'panel-head', key: 'h' }, [
+                React.createElement('h2', { key: 't' }, 'Endpoint Navigator'),
+                React.createElement('p', { key: 's' }, 'Search endpoints, then click to open a dedicated journey screen.')
+              ]),
+              React.createElement('div', { className: 'navigator-body', key: 'b' }, [
+                React.createElement('div', { className: 'search', key: 'search' }, [
+                  React.createElement('input', {
+                    key: 'i',
+                    value: search,
+                    onChange: (e) => setSearch(e.target.value),
+                    placeholder: 'Search by method, path, or summary'
+                  })
+                ]),
+                React.createElement(
+                  'ul',
+                  { className: 'endpoint-list', key: 'list' },
+                  filteredApis.length
+                    ? filteredApis.map((api, i) => {
+                        const id = `${api.method} ${api.path}`;
+                        const isActive = id === selectedId;
+                        return React.createElement('li', { key: `${id}-${i}` },
+                          React.createElement('button', {
+                            type: 'button',
+                            className: `endpoint-btn ${isActive ? 'active' : ''}`,
+                            onClick: () => onSelectApi(api, true)
+                          }, [
+                            React.createElement('div', { className: 'endpoint-top', key: 'top' }, [
+                              React.createElement('span', { className: `method ${methodClass(api.method)}`, key: 'm' }, api.method),
+                              React.createElement('span', { className: 'endpoint-path', key: 'p' }, truncate(api.path, 22))
+                            ]),
+                            React.createElement('p', { className: 'endpoint-summary', key: 's' }, truncate(api.summary, 96))
+                          ])
+                        );
+                      })
+                    : [React.createElement('p', { className: 'empty', key: 'none' }, 'No APIs match this search.')]
+                )
+              ])
+            ]),
+
+            React.createElement('section', { className: 'panel map-panel', key: 'map' }, [
+              React.createElement('div', { className: 'panel-head', key: 'h' }, [
+                React.createElement('h2', { key: 't' }, 'Color-Rich Constellation Map'),
+                React.createElement('p', { key: 's' }, 'Click any API bubble to move to a focused detail screen with no overlap.')
+              ]),
+              React.createElement('div', { className: 'map-wrap', key: 'm' }, [
+                React.createElement(
+                  'svg',
+                  { className: 'overview-svg', viewBox: '0 0 1240 820', key: 'svg' },
+                  [
+                    React.createElement('defs', { key: 'defs' }, [
+                      React.createElement('pattern', {
+                        key: 'grid',
+                        id: 'grid',
+                        width: '42',
+                        height: '42',
+                        patternUnits: 'userSpaceOnUse'
+                      }, [
+                        React.createElement('path', {
+                          key: 'path',
+                          d: 'M 42 0 L 0 0 0 42',
+                          fill: 'none',
+                          stroke: 'rgba(44, 82, 155, 0.08)',
+                          'stroke-width': '1'
+                        })
+                      ]),
+                      React.createElement('linearGradient', { id: 'mGet', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g1' }, [
+                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#89f0d8' }),
+                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#4ed3bf' })
+                      ]),
+                      React.createElement('linearGradient', { id: 'mPost', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g2' }, [
+                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#7db8ff' }),
+                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#4f88ff' })
+                      ]),
+                      React.createElement('linearGradient', { id: 'mPut', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g3' }, [
+                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#ffd48f' }),
+                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#f5ac54' })
+                      ]),
+                      React.createElement('linearGradient', { id: 'mPatch', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g4' }, [
+                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#b9a0ff' }),
+                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#8e70ff' })
+                      ]),
+                      React.createElement('linearGradient', { id: 'mDelete', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g5' }, [
+                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#ffb0c3' }),
+                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#ff7f9e' })
+                      ])
                     ]),
-                    React.createElement('linearGradient', { id: 'apiBubbleSelected', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g2' }, [
-                      React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#fb923c' }),
-                      React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#fb7185' })
-                    ])
-                  ]),
 
-                  React.createElement('circle', {
-                    className: 'orbit-line',
-                    key: 'orbit',
-                    cx: 470,
-                    cy: 330,
-                    r: Math.max(170, 210 + apis.length * 4)
-                  }),
+                    React.createElement('rect', {
+                      key: 'back-grid',
+                      x: 0,
+                      y: 0,
+                      width: 1240,
+                      height: 820,
+                      fill: 'url(#grid)'
+                    }),
 
-                  ...apiPositions.map((pos) => {
-                    const api = apis.find((x) => `${x.method} ${x.path}` === pos.id);
-                    return api ? renderApiBubble(api, pos) : null;
-                  }),
+                    React.createElement('circle', {
+                      key: 'ring-1',
+                      cx: 590,
+                      cy: 360,
+                      r: Math.max(210, 250 + apis.length * 6),
+                      fill: 'none',
+                      stroke: 'rgba(58, 89, 164, 0.25)',
+                      'stroke-width': '1.2',
+                      'stroke-dasharray': '6 9'
+                    }),
 
-                  selectedApiPos && flowNodes.length
-                    ? React.createElement(
+                    React.createElement('circle', {
+                      key: 'ring-2',
+                      cx: 590,
+                      cy: 360,
+                      r: Math.max(168, 214 + apis.length * 5),
+                      fill: 'none',
+                      stroke: 'rgba(58, 89, 164, 0.16)',
+                      'stroke-width': '1.2',
+                      'stroke-dasharray': '6 9'
+                    }),
+
+                    ...apiPositions.map((pos) => {
+                      const api = apis.find((x) => `${x.method} ${x.path}` === pos.id);
+                      if (!api) return null;
+                      const isSelected = selectedId === pos.id;
+                      return React.createElement(
                         'g',
-                        { key: 'flow' },
+                        {
+                          key: pos.id,
+                          className: `bubble ${isSelected ? 'selected' : ''}`,
+                          role: 'button',
+                          tabIndex: 0,
+                          onClick: () => onSelectApi(api, true),
+                          onKeyDown: (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') onSelectApi(api, true);
+                          }
+                        },
                         [
-                          ...flowNodes.map((node, i) => {
-                            const prev = i === 0 ? selectedApiPos : flowNodes[i - 1];
-                            return React.createElement('path', {
-                              className: 'flow-edge',
-                              key: `edge-${node.id}`,
-                              d: `M ${prev.x + 46} ${prev.y} C ${prev.x + 90} ${prev.y}, ${node.x - 65} ${node.y}, ${node.x - node.r} ${node.y}`
-                            });
+                          React.createElement('circle', {
+                            key: 'halo',
+                            cx: pos.x,
+                            cy: pos.y,
+                            r: pos.r + 10,
+                            fill: isSelected ? 'rgba(231, 81, 115, 0.2)' : 'rgba(36, 95, 228, 0.12)'
                           }),
-                          ...flowNodes.map((node) =>
-                            React.createElement(
-                              'g',
-                              {
-                                className: 'bubble',
-                                key: node.id,
-                                onClick: () => setFocused({
-                                  title: `Flow Step ${node.index + 1}`,
-                                  body: node.label
-                                }),
-                                role: 'button',
-                                tabIndex: 0,
-                                onKeyDown: (e) => {
-                                  if (e.key === 'Enter' || e.key === ' ') {
-                                    setFocused({ title: `Flow Step ${node.index + 1}`, body: node.label });
-                                  }
-                                }
-                              },
-                              [
-                                React.createElement('circle', {
-                                  key: 'c',
-                                  cx: node.x,
-                                  cy: node.y,
-                                  r: node.r,
-                                  fill: '#1f4f72',
-                                  stroke: '#9edbff',
-                                  'stroke-width': 1.8
-                                }),
-                                React.createElement('text', {
-                                  key: 'n',
-                                  className: 'flow-label',
-                                  x: node.x,
-                                  y: node.y - 5
-                                }, `Step ${node.index + 1}`),
-                                React.createElement('text', {
-                                  key: 'l',
-                                  className: 'flow-label',
-                                  x: node.x,
-                                  y: node.y + 12
-                                }, truncate(node.label, 20))
-                              ]
-                            )
-                          ),
-                          ...resourceNodes.map((resource) =>
-                            React.createElement(
-                              'g',
-                              {
-                                className: 'bubble',
-                                key: resource.id,
-                                onClick: () => setFocused({
-                                  title: `${resource.type.toUpperCase()} Resource`,
-                                  body: resource.label
-                                }),
-                                role: 'button',
-                                tabIndex: 0,
-                                onKeyDown: (e) => {
-                                  if (e.key === 'Enter' || e.key === ' ') {
-                                    setFocused({ title: `${resource.type.toUpperCase()} Resource`, body: resource.label });
-                                  }
-                                }
-                              },
-                              [
-                                React.createElement('line', {
-                                  key: 'line',
-                                  x1: flowNodes[flowNodes.length - 1].x,
-                                  y1: flowNodes[flowNodes.length - 1].y,
-                                  x2: resource.x,
-                                  y2: resource.y,
-                                  stroke: 'rgba(168, 226, 255, 0.38)',
-                                  'stroke-width': 1.2
-                                }),
-                                React.createElement('circle', {
-                                  key: 'c',
-                                  cx: resource.x,
-                                  cy: resource.y,
-                                  r: resource.r,
-                                  fill: resource.color,
-                                  opacity: 0.9,
-                                  stroke: '#ffffff',
-                                  'stroke-width': 1.1
-                                }),
-                                React.createElement('text', {
-                                  key: 't',
-                                  className: 'flow-label',
-                                  x: resource.x,
-                                  y: resource.y + 4
-                                }, truncate(resource.label, 12))
-                              ]
-                            )
-                          )
+                          React.createElement('circle', {
+                            key: 'surface',
+                            className: 'surface',
+                            cx: pos.x,
+                            cy: pos.y,
+                            r: pos.r,
+                            fill: methodGradient(api.method),
+                            stroke: isSelected ? '#d04263' : '#2f66d8',
+                            'stroke-width': isSelected ? 2.6 : 1.7
+                          }),
+                          React.createElement('text', { key: 'm', className: 'api-label method', x: pos.x, y: pos.y - 8 }, api.method),
+                          React.createElement('text', { key: 'p', className: 'api-label path', x: pos.x, y: pos.y + 14 }, truncate(api.path, 21))
                         ]
-                      )
-                    : null
-                ]
-              ),
-              React.createElement(
-                'div',
-                { className: 'graph-hint', key: 'hint' },
-                selectedApi
-                  ? 'Flow graph is expanded. Click any flow or resource bubble to inspect details.'
-                  : 'Start by clicking one API bubble. Flow and dependencies will pop out as an interactive graph.'
-              )
+                      );
+                    })
+                  ]
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'map-note', key: 'n' },
+                  'This view only shows endpoint bubbles. Selecting one opens a dedicated journey screen so flow bubbles never overlap other endpoint bubbles.'
+                )
+              ])
             ]),
 
-            React.createElement('section', { className: 'panel', key: 'details' }, [
-              React.createElement('h2', { className: 'panel-title', key: 'h' }, 'Human-Readable Details'),
-              React.createElement('div', { className: 'details', key: 'd' }, [
+            React.createElement('aside', { className: 'panel', key: 'side' }, [
+              React.createElement('div', { className: 'panel-head', key: 'h' }, [
+                React.createElement('h2', { key: 't' }, 'Guided UX Flow'),
+                React.createElement('p', { key: 's' }, 'The same data and features, now split into cleaner interaction steps.')
+              ]),
+              React.createElement('div', { className: 'overview-side', key: 'b' }, [
+                React.createElement('div', { className: 'showcase', key: 'a' }, [
+                  React.createElement('h3', { key: 't' }, '1. Discover'),
+                  React.createElement('p', { key: 'p' }, 'Use search or the constellation map to pick an API endpoint.'),
+                  React.createElement('h3', { key: 't2', style: { marginTop: '12px' } }, '2. Dive Deep'),
+                  React.createElement('p', { key: 'p2' }, 'Open a focused screen where flow steps and dependencies are laid out with dedicated space.')
+                ]),
                 selectedApi
-                  ? React.createElement('div', { key: 'route' }, [
-                      React.createElement('span', { className: `method ${methodClass(selectedApi.method)}`, key: 'm' }, selectedApi.method),
-                      React.createElement('span', { className: 'path', key: 'p' }, selectedApi.path),
-                      React.createElement('p', { className: 'summary', key: 's' }, selectedApi.summary)
+                  ? React.createElement('div', { className: 'showcase', key: 's' }, [
+                      React.createElement('h3', { key: 't' }, `${selectedApi.method} ${selectedApi.path}`),
+                      React.createElement('p', { key: 'p' }, selectedApi.summary),
+                      React.createElement('button', {
+                        key: 'btn',
+                        type: 'button',
+                        className: 'primary-btn',
+                        onClick: () => setView('detail'),
+                        style: { marginTop: '12px' }
+                      }, 'Open Detail Screen')
                     ])
-                  : React.createElement('p', { className: 'empty', key: 'empty-route' }, 'No API selected yet.'),
-
-                focused
-                  ? React.createElement('div', { className: 'focus', key: 'focus' }, [
-                      React.createElement('b', { key: 't' }, focused.title),
-                      React.createElement('span', { key: 'b' }, focused.body)
-                    ])
-                  : null,
-
-                React.createElement('div', { className: 'section', key: 'flow' }, [
-                  React.createElement('h3', { key: 'h' }, 'Flow'),
-                  selectedApi && selectedApi.flow.length
-                    ? React.createElement(
-                        'ol',
-                        { className: 'steps', key: 'list' },
-                        selectedApi.flow.map((step, i) =>
-                          React.createElement('li', { key: `step-${i}` }, `Step ${i + 1}: ${step}`)
-                        )
-                      )
-                    : React.createElement('p', { className: 'empty', key: 'e' }, 'Select an API to view flow steps.')
-                ]),
-
-                React.createElement('div', { className: 'section', key: 'tables' }, [
-                  React.createElement('h3', { key: 'h' }, 'Tables'),
-                  React.createElement(Chips, {
-                    key: 'c',
-                    items: selectedApi ? selectedApi.tables : [],
-                    empty: 'No linked tables.'
-                  })
-                ]),
-
-                React.createElement('div', { className: 'section', key: 'services' }, [
-                  React.createElement('h3', { key: 'h' }, 'Services'),
-                  React.createElement(Chips, {
-                    key: 'c',
-                    items: selectedApi ? selectedApi.services : [],
-                    empty: 'No linked services.'
-                  })
-                ]),
-
-                React.createElement('div', { className: 'section', key: 'caches' }, [
-                  React.createElement('h3', { key: 'h' }, 'Caches'),
-                  React.createElement(Chips, {
-                    key: 'c',
-                    items: selectedApi ? selectedApi.caches : [],
-                    empty: 'No linked caches.'
-                  })
-                ]),
-
-                React.createElement('div', { className: 'section', key: 'queues' }, [
-                  React.createElement('h3', { key: 'h' }, 'Queues'),
-                  React.createElement(Chips, {
-                    key: 'c',
-                    items: selectedApi ? selectedApi.queues : [],
-                    empty: 'No linked queues.'
-                  })
-                ]),
-
+                  : React.createElement('div', { className: 'showcase', key: 'empty' }, [
+                      React.createElement('h3', { key: 't' }, 'No endpoint selected'),
+                      React.createElement('p', { key: 'p' }, 'Pick any bubble to continue to the detailed journey layout.')
+                    ]),
                 error ? React.createElement('div', { className: 'error', key: 'err' }, error) : null
               ])
             ])
-          ])
+          ]);
+        }
+
+        function renderDetail() {
+          if (!selectedApi) return renderOverview();
+
+          return React.createElement('main', { className: 'view-grid detail-grid' }, [
+            React.createElement('section', { className: 'panel journey-panel', key: 'journey' }, [
+              React.createElement('div', { className: 'panel-head journey-toolbar', key: 'h' }, [
+                React.createElement('div', { className: 'route', key: 'r' }, [
+                  React.createElement('span', { className: `method ${methodClass(selectedApi.method)}`, key: 'm' }, selectedApi.method),
+                  React.createElement('span', { key: 'p' }, selectedApi.path)
+                ]),
+                React.createElement('button', {
+                  key: 'back',
+                  type: 'button',
+                  className: 'ghost-btn',
+                  onClick: () => setView('overview')
+                }, 'Back to Constellation')
+              ]),
+
+              React.createElement('div', { className: 'journey-wrap', key: 'g' }, [
+                React.createElement('div', { className: 'journey-scroll', key: 'scroll' }, [
+                  React.createElement(
+                    'svg',
+                    {
+                      className: 'journey-svg',
+                      viewBox: `0 0 ${journey.width} ${journey.height}`,
+                      width: journey.width,
+                      height: journey.height,
+                      key: 'svg'
+                    },
+                    [
+                      React.createElement('defs', { key: 'defs' }, [
+                        React.createElement('linearGradient', { id: 'apiCore', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'a' }, [
+                          React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#ffd36b' }),
+                          React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#ff9f5d' })
+                        ]),
+                        React.createElement('linearGradient', { id: 'stepCore', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'b' }, [
+                          React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#4d8cff' }),
+                          React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#2a62da' })
+                        ])
+                      ]),
+
+                      React.createElement('rect', {
+                        key: 'bg',
+                        x: 0,
+                        y: 0,
+                        width: journey.width,
+                        height: journey.height,
+                        fill: 'rgba(255,255,255,0.26)'
+                      }),
+
+                      journey.flowNodes.length
+                        ? React.createElement('path', {
+                            key: 'api-edge',
+                            className: 'flow-edge',
+                            d: `M ${journey.apiNode.x + journey.apiNode.r} ${journey.apiNode.y} C ${journey.apiNode.x + 112} ${journey.apiNode.y}, ${journey.flowNodes[0].x - 120} ${journey.flowNodes[0].y}, ${journey.flowNodes[0].x - journey.flowNodes[0].w / 2} ${journey.flowNodes[0].y}`
+                          })
+                        : null,
+
+                      ...journey.flowNodes.map((node, i) => {
+                        if (i === journey.flowNodes.length - 1) return null;
+                        const next = journey.flowNodes[i + 1];
+                        return React.createElement('path', {
+                          key: `flow-edge-${node.id}`,
+                          className: 'flow-edge',
+                          d: `M ${node.x + node.w / 2} ${node.y} C ${node.x + 110} ${node.y}, ${next.x - 110} ${next.y}, ${next.x - next.w / 2} ${next.y}`
+                        });
+                      }),
+
+                      ...journey.resourceNodes.map((resource) =>
+                        React.createElement('path', {
+                          key: `res-edge-${resource.id}`,
+                          className: 'resource-edge',
+                          d: `M ${journey.anchor.x} ${journey.anchor.y} C ${journey.anchor.x + 92} ${journey.anchor.y}, ${resource.x - 80} ${resource.y}, ${resource.x - resource.r} ${resource.y}`
+                        })
+                      ),
+
+                      React.createElement(
+                        'g',
+                        {
+                          key: 'api-node',
+                          className: 'bubble',
+                          role: 'button',
+                          tabIndex: 0,
+                          onClick: () => setFocused({ title: `${selectedApi.method} ${selectedApi.path}`, body: selectedApi.summary }),
+                          onKeyDown: (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              setFocused({ title: `${selectedApi.method} ${selectedApi.path}`, body: selectedApi.summary });
+                            }
+                          }
+                        },
+                        [
+                          React.createElement('circle', {
+                            key: 'halo',
+                            cx: journey.apiNode.x,
+                            cy: journey.apiNode.y,
+                            r: journey.apiNode.r + 9,
+                            fill: 'rgba(242, 154, 43, 0.24)'
+                          }),
+                          React.createElement('circle', {
+                            key: 'node',
+                            className: 'surface',
+                            cx: journey.apiNode.x,
+                            cy: journey.apiNode.y,
+                            r: journey.apiNode.r,
+                            fill: 'url(#apiCore)',
+                            stroke: '#dc7f20',
+                            'stroke-width': 2
+                          }),
+                          React.createElement('text', { key: 'm', className: 'api-label method', x: journey.apiNode.x, y: journey.apiNode.y - 8 }, selectedApi.method),
+                          React.createElement('text', { key: 'p', className: 'api-label path', x: journey.apiNode.x, y: journey.apiNode.y + 14 }, truncate(selectedApi.path, 17))
+                        ]
+                      ),
+
+                      ...journey.flowNodes.map((node) =>
+                        React.createElement(
+                          'g',
+                          {
+                            key: node.id,
+                            className: 'bubble',
+                            role: 'button',
+                            tabIndex: 0,
+                            onClick: () => setFocused({ title: `Flow Step ${node.index + 1}`, body: node.label }),
+                            onKeyDown: (e) => {
+                              if (e.key === 'Enter' || e.key === ' ') setFocused({ title: `Flow Step ${node.index + 1}`, body: node.label });
+                            }
+                          },
+                          [
+                            React.createElement('rect', {
+                              key: 'rect',
+                              className: 'surface',
+                              x: node.x - node.w / 2,
+                              y: node.y - node.h / 2,
+                              width: node.w,
+                              height: node.h,
+                              rx: 14,
+                              fill: 'url(#stepCore)',
+                              stroke: '#95bfff',
+                              'stroke-width': 1.5
+                            }),
+                            React.createElement('text', { key: 'step', className: 'flow-label step', x: node.x, y: node.y - 9 }, `STEP ${node.index + 1}`),
+                            React.createElement('text', { key: 'body', className: 'flow-label body', x: node.x, y: node.y + 13 }, truncate(node.label, 24))
+                          ]
+                        )
+                      ),
+
+                      ...journey.resourceNodes.map((resource) =>
+                        React.createElement(
+                          'g',
+                          {
+                            key: resource.id,
+                            className: 'bubble',
+                            role: 'button',
+                            tabIndex: 0,
+                            onClick: () => setFocused({ title: `${resource.title} Resource`, body: resource.label }),
+                            onKeyDown: (e) => {
+                              if (e.key === 'Enter' || e.key === ' ') setFocused({ title: `${resource.title} Resource`, body: resource.label });
+                            }
+                          },
+                          [
+                            React.createElement('circle', {
+                              key: 'c',
+                              className: 'surface',
+                              cx: resource.x,
+                              cy: resource.y,
+                              r: resource.r,
+                              fill: resource.color,
+                              stroke: '#ffffff',
+                              'stroke-width': 1.2
+                            }),
+                            React.createElement('text', { key: 't', className: 'resource-label', x: resource.x, y: resource.y + 4 }, truncate(resource.label, 14))
+                          ]
+                        )
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ]),
+
+            React.createElement('section', { className: 'panel details-panel', key: 'details' }, [
+              React.createElement('div', { className: 'panel-head', key: 'h' }, [
+                React.createElement('h2', { key: 't' }, 'Route Intelligence'),
+                React.createElement('p', { key: 's' }, 'Same feature set, clearer structure: route summary, flow list, and linked resources.')
+              ]),
+              detailsContent()
+            ])
+          ]);
+        }
+
+        return React.createElement('div', { className: 'shell' }, [
+          React.createElement('header', { className: 'topbar', key: 'head' }, [
+            React.createElement('div', { className: 'brand', key: 'brand' }, [
+              React.createElement('h1', { key: 'h' }, 'APIFlow Constellation'),
+              React.createElement('p', { key: 'p' }, 'A richer and more colorful UX: discover endpoints in the constellation, then enter a dedicated screen to inspect full API journeys without visual overlap.'),
+              React.createElement('div', { className: 'badge-row', key: 'badges' }, [
+                React.createElement('span', { className: 'badge', key: 'b1' }, 'Discover'),
+                React.createElement('span', { className: 'badge', key: 'b2' }, 'Detail Screen'),
+                React.createElement('span', { className: 'badge', key: 'b3' }, 'Flow + Dependencies')
+              ])
+            ]),
+            React.createElement('div', { className: 'topbar-right', key: 'right' }, [
+              React.createElement('div', { className: 'stats', key: 'stats' }, [
+                React.createElement('div', { className: 'stat', key: 's1' }, [
+                  React.createElement('strong', { key: 'v' }, String(apis.length)),
+                  React.createElement('span', { key: 'l' }, 'Endpoints')
+                ]),
+                React.createElement('div', { className: 'stat', key: 's2' }, [
+                  React.createElement('strong', { key: 'v' }, String(selectedApi ? selectedApi.flow.length : 0)),
+                  React.createElement('span', { key: 'l' }, 'Flow Steps')
+                ]),
+                React.createElement('div', { className: 'stat', key: 's3' }, [
+                  React.createElement('strong', { key: 'v' }, String(selectedResourceCount)),
+                  React.createElement('span', { key: 'l' }, 'Resources')
+                ])
+              ]),
+              view === 'detail' && selectedApi
+                ? React.createElement('button', {
+                    key: 'back-main',
+                    type: 'button',
+                    className: 'back-main-btn',
+                    onClick: () => setView('overview')
+                  }, 'Back to Main Screen')
+                : null
+            ])
+          ]),
+
+          view === 'detail' && selectedApi ? renderDetail() : renderOverview()
         ]);
       }
 
