@@ -7,10 +7,7 @@
     <link rel="icon" href="data:," />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
@@ -36,17 +33,8 @@
         --violet: #a78bfa;
         --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       }
-
       * { box-sizing: border-box; margin: 0; padding: 0; }
-
-      body {
-        font-family: var(--font);
-        background: var(--bg-deep);
-        color: var(--text-primary);
-        min-height: 100vh;
-        overflow: hidden;
-      }
-
+      body { font-family: var(--font); background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; overflow: hidden; }
       ::-webkit-scrollbar { width: 6px; }
       ::-webkit-scrollbar-track { background: transparent; }
       ::-webkit-scrollbar-thumb { background: rgba(79, 124, 255, 0.2); border-radius: 3px; }
@@ -72,56 +60,33 @@
         gap: 4px;
         z-index: 10;
       }
-
       .icon-sidebar .logo {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
+        width: 34px; height: 34px; border-radius: 10px;
         background: linear-gradient(135deg, var(--blue), var(--teal));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 800;
-        font-size: 14px;
-        color: #fff;
-        margin-bottom: 16px;
-        box-shadow: 0 0 20px var(--blue-glow);
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 14px; color: #fff;
+        margin-bottom: 16px; box-shadow: 0 0 20px var(--blue-glow);
       }
-
       .icon-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        border: none;
-        background: transparent;
-        color: var(--text-muted);
-        font-size: 16px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        position: relative;
+        width: 40px; height: 40px; border-radius: 10px; border: none;
+        background: transparent; color: var(--text-muted); font-size: 16px;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s; position: relative;
       }
-
       .icon-btn:hover { background: rgba(79, 124, 255, 0.1); color: var(--blue); }
       .icon-btn.active {
-        background: rgba(79, 124, 255, 0.15);
-        color: var(--blue);
+        background: rgba(79, 124, 255, 0.15); color: var(--blue);
         box-shadow: 0 0 12px var(--blue-glow);
       }
       .icon-btn.active::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 3px;
-        height: 20px;
-        background: var(--blue);
-        border-radius: 0 3px 3px 0;
+        content: ''; position: absolute; left: 0; top: 50%;
+        transform: translateY(-50%); width: 3px; height: 20px;
+        background: var(--blue); border-radius: 0 3px 3px 0;
       }
-
+      .icon-btn.nav-impact.active { color: var(--teal); box-shadow: 0 0 12px var(--teal-glow); }
+      .icon-btn.nav-impact.active::before { background: var(--teal); }
+      .icon-btn.nav-flows.active { color: var(--violet); box-shadow: 0 0 12px rgba(167,139,250,0.3); }
+      .icon-btn.nav-flows.active::before { background: var(--violet); }
       .sidebar-spacer { flex: 1; }
 
       /* ---- Top Bar ---- */
@@ -129,691 +94,333 @@
         grid-column: 2 / -1;
         background: rgba(10, 14, 26, 0.95);
         border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        padding: 0 16px;
-        gap: 16px;
-        backdrop-filter: blur(12px);
-        z-index: 9;
+        display: flex; align-items: center;
+        padding: 0 16px; gap: 16px;
+        backdrop-filter: blur(12px); z-index: 9;
       }
-
-      .topbar-brand {
-        font-weight: 800;
-        font-size: 15px;
-        letter-spacing: -0.02em;
-        white-space: nowrap;
-      }
-
+      .topbar-brand { font-weight: 800; font-size: 15px; letter-spacing: -0.02em; white-space: nowrap; }
       .topbar-brand .highlight { color: var(--blue); }
-
-      .topbar-search {
-        flex: 1;
-        max-width: 340px;
-        position: relative;
-      }
-
+      .topbar-search { flex: 1; max-width: 340px; position: relative; }
       .topbar-search input {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        padding: 6px 10px 6px 30px;
-        font: inherit;
-        font-size: 12px;
-        color: var(--text-primary);
-        outline: none;
+        width: 100%; background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border); border-radius: 8px;
+        padding: 6px 10px 6px 30px; font: inherit; font-size: 12px;
+        color: var(--text-primary); outline: none;
         transition: border-color 0.2s, box-shadow 0.2s;
       }
-
-      .topbar-search input:focus {
-        border-color: var(--blue);
-        box-shadow: 0 0 0 3px var(--blue-glow);
-      }
-
+      .topbar-search input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-glow); }
       .topbar-search input::placeholder { color: var(--text-muted); }
-
       .topbar-search .search-icon {
-        position: absolute;
-        left: 9px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--text-muted);
-        font-size: 12px;
-        pointer-events: none;
+        position: absolute; left: 9px; top: 50%; transform: translateY(-50%);
+        color: var(--text-muted); font-size: 12px; pointer-events: none;
       }
+      .topbar-stats { display: flex; gap: 16px; margin-left: auto; align-items: center; }
+      .topbar-stat { display: flex; flex-direction: column; align-items: center; }
+      .topbar-stat .value { font-size: 16px; font-weight: 700; color: var(--teal); line-height: 1; }
+      .topbar-stat .label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-top: 2px; }
 
-      .topbar-stats {
-        display: flex;
-        gap: 16px;
-        margin-left: auto;
-        align-items: center;
-      }
-
-      .topbar-stat {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .topbar-stat .value {
-        font-size: 16px;
-        font-weight: 700;
-        color: var(--teal);
-        line-height: 1;
-      }
-
-      .topbar-stat .label {
-        font-size: 9px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text-muted);
-        margin-top: 2px;
-      }
-
-      .topbar-actions {
-        display: flex;
-        gap: 8px;
-      }
-
-      .btn-sm {
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--text-secondary);
-        font: inherit;
-        font-size: 11px;
-        font-weight: 600;
-        padding: 5px 10px;
-        cursor: pointer;
-        transition: all 0.2s;
-        white-space: nowrap;
-      }
-
-      .btn-sm:hover { border-color: var(--border-hover); color: var(--text-primary); }
-
-      .btn-primary {
-        background: linear-gradient(135deg, var(--blue), #6366f1);
-        border-color: transparent;
-        color: #fff;
-      }
-
-      .btn-primary:hover { box-shadow: 0 0 16px var(--blue-glow); }
-
-      .btn-danger {
-        background: linear-gradient(135deg, var(--pink), #e11d48);
-        border-color: transparent;
-        color: #fff;
-      }
-
-      /* ---- Left Sidebar Panel ---- */
+      /* ---- Left Panel ---- */
       .left-panel {
-        grid-row: 2;
-        background: rgba(12, 17, 30, 0.95);
+        grid-row: 2; background: rgba(12, 17, 30, 0.95);
         border-right: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        display: flex; flex-direction: column; overflow: hidden;
       }
-
-      .panel-section {
-        padding: 12px;
-        border-bottom: 1px solid var(--border);
-      }
-
+      .panel-section { padding: 12px; border-bottom: 1px solid var(--border); }
       .panel-section-title {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--text-muted);
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.1em; color: var(--text-muted);
+        margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
       }
-
       .panel-section-title .dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: var(--teal);
-        box-shadow: 0 0 6px var(--teal-glow);
+        width: 6px; height: 6px; border-radius: 50%;
+        background: var(--teal); box-shadow: 0 0 6px var(--teal-glow);
       }
-
       .scope-select {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid var(--border);
-        border-radius: 6px;
-        padding: 6px 8px;
-        font: inherit;
-        font-size: 11px;
-        color: var(--text-primary);
-        outline: none;
-        margin-bottom: 6px;
-        cursor: pointer;
-        appearance: none;
+        width: 100%; background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border); border-radius: 6px;
+        padding: 6px 8px; font: inherit; font-size: 11px;
+        color: var(--text-primary); outline: none; margin-bottom: 6px;
+        cursor: pointer; appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a6478'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 8px center;
+        background-repeat: no-repeat; background-position: right 8px center;
       }
-
-      .scope-select:focus {
-        border-color: var(--blue);
-        box-shadow: 0 0 0 2px var(--blue-glow);
-      }
-
+      .scope-select:focus { border-color: var(--blue); box-shadow: 0 0 0 2px var(--blue-glow); }
       .scope-select option { background: var(--bg-card-solid); color: var(--text-primary); }
-
       .scanning-indicator {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 10px;
-        color: var(--teal);
-        padding: 4px 0;
+        display: flex; align-items: center; gap: 6px;
+        font-size: 10px; color: var(--teal); padding: 4px 0;
       }
-
       .scanning-indicator .spinner {
-        width: 12px;
-        height: 12px;
-        border: 2px solid rgba(0, 212, 177, 0.2);
-        border-top-color: var(--teal);
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
+        width: 12px; height: 12px;
+        border: 2px solid rgba(0,212,177,0.2); border-top-color: var(--teal);
+        border-radius: 50%; animation: spin 0.8s linear infinite;
       }
-
       @keyframes spin { to { transform: rotate(360deg); } }
-
-      .endpoint-list-container {
-        flex: 1;
-        overflow-y: auto;
-        padding: 8px 12px;
-      }
-
-      .ep-group-label {
-        font-size: 9px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: var(--text-muted);
-        padding: 8px 0 4px;
-      }
-
+      .endpoint-list-container { flex: 1; overflow-y: auto; padding: 8px 12px; }
+      .ep-group-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); padding: 8px 0 4px; }
       .ep-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 8px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.15s;
-        border: 1px solid transparent;
-        margin-bottom: 2px;
+        display: flex; align-items: flex-start; gap: 8px; padding: 7px 8px;
+        border-radius: 6px; cursor: pointer; transition: all 0.15s;
+        border: 1px solid transparent; margin-bottom: 2px;
       }
-
-      .ep-item:hover {
-        background: rgba(79, 124, 255, 0.08);
-        border-color: var(--border);
-      }
-
-      .ep-item.active {
-        background: rgba(79, 124, 255, 0.12);
-        border-color: var(--border-hover);
-      }
-
+      .ep-item:hover { background: rgba(79,124,255,0.08); border-color: var(--border); }
+      .ep-item.active { background: rgba(79,124,255,0.12); border-color: var(--border-hover); }
       .method-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 38px;
-        height: 18px;
-        border-radius: 4px;
-        font-size: 9px;
-        font-weight: 800;
-        letter-spacing: 0.04em;
-        flex-shrink: 0;
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 38px; height: 18px; border-radius: 4px;
+        font-size: 9px; font-weight: 800; letter-spacing: 0.04em; flex-shrink: 0;
       }
+      .mb-get { background: rgba(0,212,177,0.18); color: var(--teal); }
+      .mb-post { background: rgba(79,124,255,0.18); color: var(--blue); }
+      .mb-put { background: rgba(255,179,64,0.18); color: var(--amber); }
+      .mb-patch { background: rgba(167,139,250,0.18); color: var(--violet); }
+      .mb-delete { background: rgba(255,77,158,0.18); color: var(--pink); }
+      .ep-path { font-size: 11px; font-weight: 600; color: var(--text-primary); word-break: break-word; }
+      .ep-summary { font-size: 10px; color: var(--text-muted); line-height: 1.35; margin-top: 2px; }
+      .ep-info { min-width: 0; flex: 1; }
 
-      .mb-get { background: rgba(0, 212, 177, 0.18); color: var(--teal); }
-      .mb-post { background: rgba(79, 124, 255, 0.18); color: var(--blue); }
-      .mb-put { background: rgba(255, 179, 64, 0.18); color: var(--amber); }
-      .mb-patch { background: rgba(167, 139, 250, 0.18); color: var(--violet); }
-      .mb-delete { background: rgba(255, 77, 158, 0.18); color: var(--pink); }
-
-      .ep-path {
-        font-size: 11px;
-        font-weight: 600;
-        color: var(--text-primary);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+      /* ---- Impact View (Left Panel) ---- */
+      .impact-left-view { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+      .impact-scope-section { padding: 12px; border-bottom: 1px solid var(--border); }
+      .impact-scope-label {
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.1em; color: var(--teal); margin-bottom: 8px;
+        display: flex; align-items: center; gap: 6px;
       }
-
-      .ep-summary {
-        font-size: 10px;
-        color: var(--text-muted);
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-top: 1px;
+      .impact-count-hero {
+        text-align: center; padding: 16px 14px; border-bottom: 1px solid var(--border);
       }
+      .impact-hero-num {
+        font-size: 48px; font-weight: 800; line-height: 1;
+        background: linear-gradient(135deg, var(--blue), var(--teal));
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text; display: inline-block;
+      }
+      .impact-hero-label { font-size: 11px; color: var(--text-secondary); margin-top: 4px; font-weight: 600; }
+      .impact-hero-scope { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+      .impact-results-list { flex: 1; overflow-y: auto; padding: 8px 12px; }
+      .impact-card {
+        border: 1px solid var(--border); border-radius: 8px;
+        background: rgba(255,255,255,0.03); padding: 10px;
+        margin-bottom: 6px; transition: all 0.2s; cursor: pointer;
+      }
+      .impact-card:hover { border-color: var(--border-hover); background: rgba(79,124,255,0.06); }
+      .impact-card-top { display: flex; align-items: center; gap: 6px; }
+      .impact-card-path { font-size: 11px; font-weight: 700; color: var(--text-primary); word-break: break-word; flex: 1; }
+      .impact-card-how { font-size: 10px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }
+      .impact-card-meta { font-size: 9px; color: var(--text-muted); margin-top: 3px; }
+      .no-scope-message { text-align: center; padding: 24px 14px; color: var(--text-muted); font-size: 12px; }
 
-      .ep-info { min-width: 0; }
+      /* ---- Flows View (Left Panel) ---- */
+      .flows-left-view { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+      .flow-list-container { flex: 1; overflow-y: auto; padding: 8px 12px; }
+      .flow-list-item {
+        border: 1px solid var(--border); border-radius: 8px;
+        background: rgba(255,255,255,0.03); padding: 10px; margin-bottom: 6px;
+        cursor: pointer; transition: all 0.2s;
+      }
+      .flow-list-item:hover { border-color: var(--border-hover); background: rgba(79,124,255,0.06); }
+      .flow-list-item-top { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+      .flow-list-path { font-size: 11px; font-weight: 600; color: var(--text-primary); flex: 1; word-break: break-word; }
+      .flow-step-count { font-size: 9px; color: var(--violet); font-weight: 700; }
+      .flow-list-summary { font-size: 10px; color: var(--text-muted); line-height: 1.35; }
 
       /* ---- Main Canvas ---- */
       .main-canvas {
-        grid-row: 2;
-        position: relative;
-        overflow: hidden;
-        background:
-          radial-gradient(circle at 30% 40%, rgba(79, 124, 255, 0.06), transparent 50%),
-          radial-gradient(circle at 70% 60%, rgba(0, 212, 177, 0.04), transparent 50%),
+        grid-row: 2; position: relative; overflow: hidden;
+        background: radial-gradient(circle at 30% 40%, rgba(79,124,255,0.06), transparent 50%),
+          radial-gradient(circle at 70% 60%, rgba(0,212,177,0.04), transparent 50%),
           var(--bg-deep);
       }
-
-      .canvas-svg {
-        width: 100%;
-        height: 100%;
-        display: block;
-      }
-
+      .canvas-svg { width: 100%; height: 100%; display: block; }
       .bubble-tooltip {
-        position: absolute;
-        pointer-events: none;
-        background: rgba(16, 22, 40, 0.95);
-        border: 1px solid var(--border-hover);
-        border-radius: 8px;
-        padding: 8px 12px;
-        backdrop-filter: blur(8px);
-        z-index: 20;
-        max-width: 260px;
-        opacity: 0;
-        transition: opacity 0.15s;
+        position: absolute; pointer-events: none;
+        background: rgba(16,22,40,0.95); border: 1px solid var(--border-hover);
+        border-radius: 8px; padding: 8px 12px; backdrop-filter: blur(8px);
+        z-index: 20; max-width: 260px; opacity: 0; transition: opacity 0.15s;
       }
-
       .bubble-tooltip.visible { opacity: 1; }
-
-      .bubble-tooltip .tt-method {
-        font-size: 10px;
-        font-weight: 800;
-        letter-spacing: 0.06em;
-      }
-
-      .bubble-tooltip .tt-path {
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--text-primary);
-        margin-top: 2px;
-      }
-
-      .bubble-tooltip .tt-summary {
-        font-size: 11px;
-        color: var(--text-secondary);
-        margin-top: 4px;
-        line-height: 1.4;
-      }
-
+      .bubble-tooltip .tt-method { font-size: 10px; font-weight: 800; letter-spacing: 0.06em; }
+      .bubble-tooltip .tt-path { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-top: 2px; }
+      .bubble-tooltip .tt-summary { font-size: 11px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }
       .canvas-footer {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        position: absolute; bottom: 0; left: 0; right: 0;
+        display: flex; align-items: center; justify-content: space-between;
         padding: 8px 16px;
-        background: linear-gradient(to top, rgba(7, 11, 20, 0.9), transparent);
+        background: linear-gradient(to top, rgba(7,11,20,0.9), transparent);
         pointer-events: none;
       }
-
       .canvas-footer > * { pointer-events: auto; }
-
-      .canvas-legend {
-        display: flex;
-        gap: 12px;
-      }
-
-      .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        font-size: 10px;
-        color: var(--text-muted);
-      }
-
-      .legend-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-      }
+      .canvas-legend { display: flex; gap: 12px; }
+      .legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text-muted); }
+      .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
       /* ---- Right Panel ---- */
       .right-panel {
-        grid-row: 2;
-        background: rgba(12, 17, 30, 0.95);
+        grid-row: 2; background: rgba(12,17,30,0.95);
         border-left: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        display: flex; flex-direction: column; overflow: hidden;
       }
-
       .right-panel-header {
-        padding: 12px 14px;
-        border-bottom: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        padding: 12px 14px; border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between;
+        flex-shrink: 0;
       }
-
-      .right-panel-header h3 {
-        font-size: 13px;
-        font-weight: 700;
-      }
-
-      .impact-count-display {
-        text-align: center;
-        padding: 20px 14px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .impact-big-number {
-        font-size: 56px;
-        font-weight: 800;
-        line-height: 1;
-        background: linear-gradient(135deg, var(--blue), var(--teal));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        position: relative;
-        display: inline-block;
-      }
-
-      .impact-big-number .ring {
-        position: absolute;
-        inset: -12px;
-        border-radius: 50%;
-        border: 2px solid rgba(79, 124, 255, 0.2);
-        animation: pulse-ring 2s ease-in-out infinite;
-      }
-
-      @keyframes pulse-ring {
-        0%, 100% { transform: scale(1); opacity: 0.5; }
-        50% { transform: scale(1.08); opacity: 1; }
-      }
-
-      .impact-label {
-        font-size: 12px;
-        color: var(--text-secondary);
-        margin-top: 6px;
-        font-weight: 600;
-      }
-
-      .impact-scope {
-        font-size: 10px;
-        color: var(--text-muted);
-        margin-top: 4px;
-      }
-
-      .impact-list-container {
-        flex: 1;
-        overflow-y: auto;
-        padding: 8px 12px;
-      }
-
-      .impact-card {
-        border: 1px solid var(--border);
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.03);
-        padding: 10px;
-        margin-bottom: 6px;
-        transition: all 0.2s;
-        cursor: pointer;
-      }
-
-      .impact-card:hover {
-        border-color: var(--border-hover);
-        background: rgba(79, 124, 255, 0.06);
-      }
-
-      .impact-card-top {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .impact-card-path {
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--text-primary);
-        word-break: break-word;
-      }
-
-      .impact-card-how {
-        font-size: 10px;
-        color: var(--text-secondary);
-        margin-top: 4px;
-        line-height: 1.4;
-      }
-
-      .impact-card-meta {
-        font-size: 9px;
-        color: var(--text-muted);
-        margin-top: 3px;
-      }
-
-      .no-impact-message {
-        text-align: center;
-        padding: 24px 14px;
-        color: var(--text-muted);
-        font-size: 12px;
-      }
+      .right-panel-header h3 { font-size: 13px; font-weight: 700; }
+      .right-panel-body { flex: 1; overflow-y: auto; }
 
       .right-details-section {
-        padding: 10px 14px;
-        border-bottom: 1px solid var(--border);
+        padding: 10px 14px; border-bottom: 1px solid var(--border);
       }
-
       .right-details-section h4 {
-        font-size: 10px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text-muted);
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--text-muted);
+        margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+      }
+      .section-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+      /* Tables section */
+      .db-table-card {
+        border: 1px solid rgba(0,212,177,0.2); border-radius: 6px;
+        background: rgba(0,212,177,0.04); padding: 8px 10px;
         margin-bottom: 6px;
       }
-
-      .detail-chip {
-        display: inline-block;
-        border: 1px solid var(--border);
-        border-radius: 4px;
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--text-secondary);
-        font-size: 10px;
-        padding: 3px 7px;
-        margin: 2px;
+      .db-table-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+      .db-badge {
+        display: inline-flex; align-items: center; padding: 1px 5px;
+        border-radius: 3px; font-size: 8px; font-weight: 700; letter-spacing: 0.05em;
+        background: rgba(0,212,177,0.15); color: var(--teal); flex-shrink: 0;
+      }
+      .db-table-name { font-size: 11px; font-weight: 700; color: var(--teal); }
+      .db-table-ops { font-size: 9px; color: var(--text-muted); margin-top: 2px; }
+      .db-columns-wrap { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+      .db-col-chip {
+        display: inline-block; background: rgba(0,212,177,0.08);
+        border: 1px solid rgba(0,212,177,0.2); border-radius: 3px;
+        color: rgba(0,212,177,0.7); font-size: 9px; padding: 1px 5px;
       }
 
-      .flow-step-item {
-        display: flex;
-        gap: 8px;
-        padding: 5px 0;
-        font-size: 11px;
-        color: var(--text-secondary);
-        line-height: 1.4;
+      /* Services section */
+      .svc-chip {
+        display: inline-flex; align-items: center; gap: 4px;
+        border: 1px solid rgba(79,124,255,0.3); border-radius: 4px;
+        background: rgba(79,124,255,0.06); color: var(--blue);
+        font-size: 10px; padding: 3px 8px; margin: 2px;
+      }
+      .svc-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+
+      /* Caches / Queues chips */
+      .cache-chip {
+        display: inline-block; border: 1px solid rgba(167,139,250,0.3);
+        border-radius: 4px; background: rgba(167,139,250,0.06); color: var(--violet);
+        font-size: 10px; padding: 3px 8px; margin: 2px;
+      }
+      .queue-chip {
+        display: inline-block; border: 1px solid rgba(255,179,64,0.3);
+        border-radius: 4px; background: rgba(255,179,64,0.06); color: var(--amber);
+        font-size: 10px; padding: 3px 8px; margin: 2px;
       }
 
+      .flow-step-item { display: flex; gap: 8px; padding: 5px 0; font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
       .flow-step-num {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: rgba(79, 124, 255, 0.15);
-        color: var(--blue);
-        font-size: 9px;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        margin-top: 1px;
+        width: 18px; height: 18px; border-radius: 50%;
+        background: rgba(79,124,255,0.15); color: var(--blue);
+        font-size: 9px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0; margin-top: 1px;
       }
-
-      .empty-text {
-        font-size: 11px;
-        color: var(--text-muted);
-        padding: 4px 0;
-      }
-
+      .empty-text { font-size: 11px; color: var(--text-muted); padding: 4px 0; }
       .error-banner {
-        margin: 6px 12px;
-        border: 1px solid rgba(255, 77, 158, 0.3);
-        border-radius: 6px;
-        background: rgba(255, 77, 158, 0.08);
-        color: var(--pink);
-        font-size: 11px;
-        padding: 6px 10px;
+        margin: 6px 12px; border: 1px solid rgba(255,77,158,0.3);
+        border-radius: 6px; background: rgba(255,77,158,0.08);
+        color: var(--pink); font-size: 11px; padding: 6px 10px;
       }
-
-      /* ---- Flow Overlay ---- */
-      .flow-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: 100;
-        background: rgba(7, 11, 20, 0.92);
-        backdrop-filter: blur(8px);
-        display: flex;
-        flex-direction: column;
-        animation: fade-in 0.25s ease;
+      .btn-sm {
+        border: 1px solid var(--border); border-radius: 6px;
+        background: rgba(255,255,255,0.04); color: var(--text-secondary);
+        font: inherit; font-size: 11px; font-weight: 600;
+        padding: 5px 10px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
       }
-
-      @keyframes fade-in {
-        from { opacity: 0; }
-        to { opacity: 1; }
-      }
-
-      .flow-overlay-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 12px 20px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .flow-overlay-title {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .flow-overlay-title h2 {
-        font-size: 16px;
-        font-weight: 700;
-      }
-
-      .flow-close-btn {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-        background: rgba(255, 255, 255, 0.05);
-        color: var(--text-secondary);
-        font-size: 16px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-      }
-
-      .flow-close-btn:hover {
-        border-color: var(--pink);
-        color: var(--pink);
-        background: rgba(255, 77, 158, 0.1);
-      }
-
-      .flow-canvas {
-        flex: 1;
-        overflow: auto;
-        padding: 20px;
-      }
-
-      .flow-svg {
-        display: block;
-        min-width: 100%;
-      }
-
-      /* ---- Animations ---- */
-      @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-4px); }
-      }
-
-      @keyframes glow-pulse {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 0.7; }
-      }
-
-      @keyframes count-in {
-        from { opacity: 0; transform: scale(0.5); }
-        to { opacity: 1; transform: scale(1); }
-      }
-
-      .count-animate {
-        animation: count-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-      }
-
-      @keyframes dash-flow {
-        to { stroke-dashoffset: -20; }
-      }
-
-      .flow-edge-animated {
-        stroke-dasharray: 8, 6;
-        animation: dash-flow 1s linear infinite;
-      }
-
-      @keyframes node-appear {
-        from { opacity: 0; transform: scale(0.7); }
-        to { opacity: 1; transform: scale(1); }
-      }
-
-      @keyframes edge-draw {
-        from { stroke-dashoffset: 200; }
-        to { stroke-dashoffset: 0; }
-      }
+      .btn-sm:hover { border-color: var(--border-hover); color: var(--text-primary); }
+      .btn-primary { background: linear-gradient(135deg, var(--blue), #6366f1); border-color: transparent; color: #fff; }
+      .btn-primary:hover { box-shadow: 0 0 16px var(--blue-glow); }
 
       /* ---- Streaming Logs ---- */
-      .streaming-logs {
-        padding: 8px 12px;
-        max-height: 120px;
-        overflow-y: auto;
-      }
-
-      .log-entry {
-        font-size: 9px;
-        font-family: 'SF Mono', 'Fira Code', monospace;
-        color: var(--text-muted);
-        padding: 1px 0;
-        display: flex;
-        gap: 6px;
-      }
-
+      .streaming-logs { padding: 8px 12px; max-height: 100px; overflow-y: auto; }
+      .log-entry { font-size: 9px; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--text-muted); padding: 1px 0; display: flex; gap: 6px; }
       .log-time { color: var(--text-muted); white-space: nowrap; }
       .log-msg { color: var(--text-secondary); }
       .log-ok { color: var(--teal); }
       .log-warn { color: var(--amber); }
 
-      /* Responsive */
-      @media (max-width: 1200px) {
-        .app-shell {
-          grid-template-columns: 56px 220px 1fr 280px;
-        }
+      /* ---- Flow Overlay ---- */
+      .flow-overlay {
+        position: fixed; inset: 0; z-index: 100;
+        background: rgba(7,11,20,0.92); backdrop-filter: blur(8px);
+        display: flex; flex-direction: column; animation: fade-in 0.25s ease;
+      }
+      @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+      .flow-overlay-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 12px 20px; border-bottom: 1px solid var(--border); flex-shrink: 0;
+      }
+      .flow-overlay-title { display: flex; align-items: center; gap: 10px; }
+      .flow-overlay-title h2 { font-size: 16px; font-weight: 700; }
+      .flow-close-btn {
+        width: 32px; height: 32px; border-radius: 8px;
+        border: 1px solid var(--border); background: rgba(255,255,255,0.05);
+        color: var(--text-secondary); font-size: 16px; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+      }
+      .flow-close-btn:hover { border-color: var(--pink); color: var(--pink); background: rgba(255,77,158,0.1); }
+      .flow-overlay-body { flex: 1; display: flex; overflow: hidden; }
+      .flow-canvas { flex: 1; overflow: auto; padding: 20px; }
+      .flow-svg { display: block; min-width: 100%; }
+
+      /* Flow node detail panel */
+      .flow-detail-panel {
+        width: 320px; flex-shrink: 0;
+        background: rgba(12,17,30,0.98); border-left: 1px solid var(--border);
+        display: flex; flex-direction: column; overflow: hidden;
+        animation: slide-in-right 0.2s ease;
+      }
+      @keyframes slide-in-right { from { transform: translateX(100%); } to { transform: translateX(0); } }
+      .flow-detail-header {
+        padding: 12px 14px; border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+      }
+      .flow-detail-header h4 { font-size: 12px; font-weight: 700; }
+      .flow-detail-close {
+        width: 24px; height: 24px; border-radius: 6px; border: 1px solid var(--border);
+        background: transparent; color: var(--text-muted); cursor: pointer;
+        display: flex; align-items: center; justify-content: center; font-size: 12px;
+      }
+      .flow-detail-close:hover { border-color: var(--pink); color: var(--pink); }
+      .flow-detail-body { flex: 1; overflow-y: auto; padding: 12px 14px; }
+      .flow-detail-type-badge {
+        display: inline-flex; align-items: center; padding: 3px 8px;
+        border-radius: 4px; font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+        margin-bottom: 8px;
+      }
+      .flow-detail-label { font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; line-height: 1.4; }
+      .flow-detail-row { margin-bottom: 10px; }
+      .flow-detail-row-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 4px; }
+      .flow-detail-row-value { font-size: 11px; color: var(--text-secondary); line-height: 1.5; }
+      .flow-detail-chip {
+        display: inline-block; border: 1px solid var(--border); border-radius: 3px;
+        background: rgba(255,255,255,0.04); color: var(--text-secondary);
+        font-size: 10px; padding: 2px 6px; margin: 2px;
       }
 
+      /* ---- Animations ---- */
+      @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+      @keyframes count-in { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+      .count-animate { animation: count-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+      @keyframes dash-flow { to { stroke-dashoffset: -20; } }
+      .flow-edge-animated { stroke-dasharray: 8, 6; animation: dash-flow 1s linear infinite; }
+
+      @media (max-width: 1200px) { .app-shell { grid-template-columns: 56px 220px 1fr 280px; } }
       @media (max-width: 960px) {
-        .app-shell {
-          grid-template-columns: 48px 1fr;
-          grid-template-rows: 48px 1fr;
-        }
+        .app-shell { grid-template-columns: 48px 1fr; grid-template-rows: 48px 1fr; }
         .left-panel, .right-panel { display: none; }
       }
     </style>
@@ -825,40 +432,35 @@
 
       const fallbackApis = [
         {
-          method: 'GET',
-          path: '/api/graph',
+          method: 'GET', path: '/api/graph',
           summary: 'Returns generated API dependency graph data for visualization.',
           flow: ['Receive request from UI explorer', 'Read .apimap/graph.json from cache files', 'Respond with graph payload'],
           tables: [], services: [], caches: ['.apimap/graph.json'], queues: [], tableAccess: []
         },
         {
-          method: 'GET',
-          path: '/api/apis',
+          method: 'GET', path: '/api/apis',
           summary: 'Returns API knowledge summaries from cache for endpoint navigation.',
-          flow: ['Receive request from UI explorer', 'Read .apimap/api_knowledge.json from cache files', 'Flatten API entries and return the list'],
+          flow: ['Receive request from UI explorer', 'Read .apimap/api_knowledge.json from cache', 'Flatten API entries and return list'],
           tables: [], services: [], caches: ['.apimap/api_knowledge.json'], queues: [], tableAccess: []
         },
         {
-          method: 'GET',
-          path: '/api/accounts/:accountId',
-          summary: 'Demo endpoint: reads profile columns and updates the account audit trail.',
+          method: 'GET', path: '/api/accounts/:accountId',
+          summary: 'Reads profile columns and updates the account audit trail.',
           flow: [
-            'Read accounts.id, accounts.status, and accounts.tier to build the response payload',
+            'Read accounts.id, accounts.status, accounts.tier to build response payload',
             'Update account_audit.last_viewed_at for recent activity tracking',
             'Return enriched account information to the caller'
           ],
           tables: ['accounts', 'account_audit'], services: [], caches: [], queues: [],
           tableAccess: [
             { table: 'accounts', columns: ['id', 'status', 'tier'], operations: ['SELECT'], evidence: ['select id, status, tier from accounts where id = ?'] },
-            { table: 'account_audit', columns: ['last_viewed_at', 'account_id'], operations: ['UPDATE'], evidence: ['update account_audit set last_viewed_at = now() where account_id = ?'] }
+            { table: 'account_audit', columns: ['last_viewed_at', 'account_id'], operations: ['UPDATE'], evidence: ['update account_audit set last_viewed_at = now()'] }
           ]
         }
       ];
 
       /* ---- Utility functions ---- */
-      function methodBadgeClass(method) {
-        return 'mb-' + String(method || '').toLowerCase();
-      }
+      function methodBadgeClass(method) { return 'mb-' + String(method || '').toLowerCase(); }
 
       function methodColor(method) {
         const m = String(method || '').toUpperCase();
@@ -872,12 +474,12 @@
 
       function methodGlow(method) {
         const m = String(method || '').toUpperCase();
-        if (m === 'GET') return 'rgba(0, 212, 177, 0.25)';
-        if (m === 'POST') return 'rgba(79, 124, 255, 0.25)';
-        if (m === 'PUT') return 'rgba(255, 179, 64, 0.25)';
-        if (m === 'PATCH') return 'rgba(167, 139, 250, 0.25)';
-        if (m === 'DELETE') return 'rgba(255, 77, 158, 0.25)';
-        return 'rgba(79, 124, 255, 0.25)';
+        if (m === 'GET') return 'rgba(0,212,177,0.25)';
+        if (m === 'POST') return 'rgba(79,124,255,0.25)';
+        if (m === 'PUT') return 'rgba(255,179,64,0.25)';
+        if (m === 'PATCH') return 'rgba(167,139,250,0.25)';
+        if (m === 'DELETE') return 'rgba(255,77,158,0.25)';
+        return 'rgba(79,124,255,0.25)';
       }
 
       function dedupeStrings(values) {
@@ -893,19 +495,59 @@
         return out;
       }
 
+      /* Group APIs by their primary domain (first meaningful path segment) */
+      function getApiGroup(api) {
+        const skipPrefixes = new Set(['api', 'v1', 'v2', 'v3', 'v4']);
+        const parts = (api.path || '').replace(/^\//, '').split('/').filter(p => p && !p.startsWith(':'));
+        for (const p of parts) {
+          if (!skipPrefixes.has(p.toLowerCase())) return p.toLowerCase();
+        }
+        return parts[0] ? parts[0].toLowerCase() : '_misc';
+      }
+
+      /* Issue #1: Infer database type from evidence/services */
+      function inferDbType(api) {
+        const evidence = (api.tableAccess || []).flatMap(ta => ta.evidence || []).join(' ').toLowerCase();
+        const services = (api.services || []).join(' ').toLowerCase();
+        const combined = evidence + ' ' + services;
+        if (/mongoose|\.findone|\.findbyid|\.find\(|\.save\(|model\.|mongodb/.test(combined)) return 'MongoDB';
+        if (/prisma\.|@prisma/.test(combined)) return 'Prisma';
+        if (/sequelize|datatypes/.test(combined)) return 'Sequelize';
+        if (/knex|pg\b|postgresql|pool\.query/.test(combined)) return 'PostgreSQL';
+        if (/redis/.test(combined)) return 'Redis';
+        if (api.tables && api.tables.length > 0) return 'DB';
+        return null;
+      }
+
+      /* Get table-level details for right panel */
+      function getTableDetails(api) {
+        const dbType = inferDbType(api);
+        const taMap = new Map();
+        (api.tableAccess || []).forEach(ta => {
+          if (!ta.table) return;
+          const key = ta.table.toLowerCase();
+          if (!taMap.has(key)) taMap.set(key, { table: ta.table, columns: new Set(), operations: new Set(), evidence: [] });
+          const e = taMap.get(key);
+          (ta.columns || []).forEach(c => e.columns.add(c));
+          (ta.operations || []).forEach(o => e.operations.add(o));
+          (ta.evidence || []).forEach(ev => { if (e.evidence.length < 2) e.evidence.push(ev); });
+        });
+        // Fallback: tables without tableAccess entries
+        (api.tables || []).forEach(t => {
+          const key = t.toLowerCase();
+          if (!taMap.has(key)) taMap.set(key, { table: t, columns: new Set(['*']), operations: new Set(['UNKNOWN']), evidence: [] });
+        });
+        return { dbType, entries: [...taMap.values()].map(e => ({ ...e, columns: [...e.columns], operations: [...e.operations] })) };
+      }
+
       function normalizeTableAccessEntries(raw) {
         if (!Array.isArray(raw)) return [];
-        const entries = [];
-        for (const item of raw) {
-          if (!item || !item.table) continue;
-          entries.push({
-            table: String(item.table),
-            columns: dedupeStrings(Array.isArray(item.columns) ? item.columns : []),
-            operations: dedupeStrings(Array.isArray(item.operations) ? item.operations : []),
-            evidence: dedupeStrings(Array.isArray(item.evidence) ? item.evidence : [])
-          });
-        }
-        return entries;
+        return raw.filter(item => item && item.table).map(item => ({
+          table: String(item.table),
+          columns: dedupeStrings(Array.isArray(item.columns) ? item.columns : []),
+          operations: dedupeStrings(Array.isArray(item.operations) ? item.operations : []),
+          evidence: dedupeStrings(Array.isArray(item.evidence) ? item.evidence : [])
+        }));
       }
 
       function localTableAccess(api) {
@@ -970,7 +612,7 @@
             const path = String(api.path || '');
             const verb = impactVerb([...ops]);
             results.push({
-              method, path, summary: api.summary || method + ' ' + path + ' endpoint',
+              method, path, summary: api.summary || method + ' ' + path,
               table: tf, operations: [...ops], columns: [...cols],
               columnMatch: cfk ? match : 'table', impact: verb,
               how: impactHow(verb, tf, cf, match),
@@ -1011,10 +653,11 @@
           seen.add(key);
           deduped.push({
             method, path: item.path,
-            summary: item.summary || 'No summary available.',
+            summary: item.summary || (method + ' ' + item.path + ' endpoint'),
             flow: Array.isArray(item.flow) ? item.flow : [],
             tables: dedupeStrings(Array.isArray(item.tables) ? item.tables : []),
             services: dedupeStrings(Array.isArray(item.services) ? item.services : []),
+            dependencies: dedupeStrings(Array.isArray(item.dependencies) ? item.dependencies : []),
             caches: dedupeStrings(Array.isArray(item.caches) ? item.caches : []),
             queues: dedupeStrings(Array.isArray(item.queues) ? item.queues : []),
             tableAccess: normalizeTableAccessEntries(item.tableAccess)
@@ -1031,10 +674,7 @@
       function stableHash(text) {
         let h = 2166136261;
         const v = String(text || '');
-        for (let i = 0; i < v.length; i++) {
-          h ^= v.charCodeAt(i);
-          h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
-        }
+        for (let i = 0; i < v.length; i++) { h ^= v.charCodeAt(i); h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24); }
         return h >>> 0;
       }
 
@@ -1047,7 +687,6 @@
         };
       }
 
-      /* ---- SVG Icon helpers ---- */
       function SvgIcon({ d, size = 16, color = 'currentColor' }) {
         return React.createElement('svg', {
           width: size, height: size, viewBox: '0 0 24 24',
@@ -1062,127 +701,96 @@
 
         useEffect(() => {
           if (!svgRef.current || !apis.length) return;
-
           const svg = d3.select(svgRef.current);
           const container = svgRef.current.parentElement;
-          const width = container.clientWidth;
-          const height = container.clientHeight;
-
+          const width = container.clientWidth, height = container.clientHeight;
           svg.attr('viewBox', '0 0 ' + width + ' ' + height);
           svg.selectAll('*').remove();
 
           const defs = svg.append('defs');
-
-          /* Glow filter */
           const filter = defs.append('filter').attr('id', 'glow').attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
           filter.append('feGaussianBlur').attr('stdDeviation', '4').attr('result', 'coloredBlur');
           const feMerge = filter.append('feMerge');
           feMerge.append('feMergeNode').attr('in', 'coloredBlur');
           feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
-
           const filterHover = defs.append('filter').attr('id', 'glow-hover').attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
           filterHover.append('feGaussianBlur').attr('stdDeviation', '8').attr('result', 'coloredBlur');
           const feMerge2 = filterHover.append('feMerge');
           feMerge2.append('feMergeNode').attr('in', 'coloredBlur');
           feMerge2.append('feMergeNode').attr('in', 'SourceGraphic');
 
-          /* Group tables by API for clustering */
           const tableGroups = {};
           apis.forEach(api => {
-            const tables = api.tables && api.tables.length ? api.tables : ['_none'];
-            const key = tables.sort().join(',');
+            const key = getApiGroup(api);
             if (!tableGroups[key]) tableGroups[key] = [];
             tableGroups[key].push(api);
           });
-
           const groupKeys = Object.keys(tableGroups);
           const groupCenters = {};
+          /* Spread groups evenly, using more of the canvas so clusters don't overlap */
+          const spreadRadius = Math.min(width, height) * 0.33;
           groupKeys.forEach((key, i) => {
-            const angle = (2 * Math.PI * i) / Math.max(groupKeys.length, 1);
-            const radius = Math.min(width, height) * 0.25;
+            /* Offset angle by -π/2 so first group starts at top */
+            const angle = (2 * Math.PI * i) / Math.max(groupKeys.length, 1) - Math.PI / 2;
             groupCenters[key] = {
-              x: width / 2 + Math.cos(angle) * radius,
-              y: height / 2 + Math.sin(angle) * radius
+              x: width / 2 + Math.cos(angle) * spreadRadius,
+              y: height / 2 + Math.sin(angle) * spreadRadius
             };
           });
 
-          /* Compute resources connected to each api */
-          const resourceCount = api =>
-            (api.tables ? api.tables.length : 0) +
-            (api.services ? api.services.length : 0) +
-            (api.caches ? api.caches.length : 0) +
-            (api.queues ? api.queues.length : 0);
-
+          const resourceCount = api => (api.tables ? api.tables.length : 0) + (api.services ? api.services.length : 0) + (api.caches ? api.caches.length : 0) + (api.queues ? api.queues.length : 0);
           const maxRes = Math.max(1, ...apis.map(resourceCount));
 
           const nodes = apis.map(api => {
-            const tables = api.tables && api.tables.length ? api.tables : ['_none'];
-            const key = tables.sort().join(',');
+            const key = getApiGroup(api);
             const r = 18 + (resourceCount(api) / maxRes) * 22;
             const rng = mulberry32(stableHash(api.method + api.path));
             return {
-              id: api.method + ' ' + api.path,
-              api,
-              r,
-              color: methodColor(api.method),
-              glow: methodGlow(api.method),
-              groupKey: key,
-              fx: null, fy: null,
+              id: api.method + ' ' + api.path, api, r,
+              color: methodColor(api.method), glow: methodGlow(api.method),
+              groupKey: key, fx: null, fy: null,
               x: groupCenters[key].x + (rng() - 0.5) * 60,
               y: groupCenters[key].y + (rng() - 0.5) * 60,
-              floatPhase: rng() * Math.PI * 2,
-              floatAmp: 1.5 + rng() * 2.5
+              floatPhase: rng() * Math.PI * 2, floatAmp: 1.5 + rng() * 2.5
             };
           });
 
-          /* Build links between apis that share tables */
+          /* Only link APIs within the same domain group — cross-group links (e.g. all sharing
+             the 'users' auth table) would collapse every group into one blob */
           const links = [];
-          const nodeMap = new Map(nodes.map(n => [n.id, n]));
           for (let i = 0; i < apis.length; i++) {
             for (let j = i + 1; j < apis.length; j++) {
+              if (nodes[i].groupKey !== nodes[j].groupKey) continue;
               const tablesI = new Set(apis[i].tables || []);
               const shared = (apis[j].tables || []).filter(t => tablesI.has(t));
-              if (shared.length) {
-                links.push({
-                  source: nodes[i],
-                  target: nodes[j],
-                  strength: shared.length
-                });
-              }
+              if (shared.length) links.push({ source: nodes[i], target: nodes[j], strength: shared.length });
             }
           }
 
-          /* D3 force simulation */
           const sim = d3.forceSimulation(nodes)
-            .force('charge', d3.forceManyBody().strength(-120))
-            .force('center', d3.forceCenter(width / 2, height / 2))
-            .force('collision', d3.forceCollide().radius(d => d.r + 6))
-            .force('link', d3.forceLink(links).id(d => d.id).distance(100).strength(d => d.strength * 0.15))
-            .force('x', d3.forceX().x(d => groupCenters[d.groupKey].x).strength(0.05))
-            .force('y', d3.forceY().y(d => groupCenters[d.groupKey].y).strength(0.05))
-            .alphaDecay(0.02);
-
+            /* Weak local repulsion — group forces do the real positioning */
+            .force('charge', d3.forceManyBody().strength(-40))
+            /* No forceCenter — it fights the group x/y forces */
+            .force('collision', d3.forceCollide().radius(d => d.r + 10))
+            .force('link', d3.forceLink(links).id(d => d.id).distance(60).strength(0.3))
+            /* Strong group anchoring — pulls each bubble firmly to its domain cluster */
+            .force('x', d3.forceX().x(d => groupCenters[d.groupKey].x).strength(0.28))
+            .force('y', d3.forceY().y(d => groupCenters[d.groupKey].y).strength(0.28))
+            .alphaDecay(0.018);
           simRef.current = sim;
 
-          /* Render */
           const g = svg.append('g');
-
-          /* Grid background dots */
           const gridG = g.append('g');
           for (let x = 0; x < width; x += 40) {
             for (let y = 0; y < height; y += 40) {
-              gridG.append('circle').attr('cx', x).attr('cy', y).attr('r', 0.5)
-                .attr('fill', 'rgba(79, 124, 255, 0.08)');
+              gridG.append('circle').attr('cx', x).attr('cy', y).attr('r', 0.5).attr('fill', 'rgba(79,124,255,0.08)');
             }
           }
 
-          /* Links */
           const linkG = g.append('g');
           const linkEls = linkG.selectAll('line').data(links).enter().append('line')
-            .attr('stroke', 'rgba(79, 124, 255, 0.12)')
-            .attr('stroke-width', d => 0.5 + d.strength * 0.5);
+            .attr('stroke', 'rgba(79,124,255,0.12)').attr('stroke-width', d => 0.5 + d.strength * 0.5);
 
-          /* Bubbles */
           const bubbleG = g.append('g');
           const bubbles = bubbleG.selectAll('g').data(nodes).enter().append('g')
             .attr('cursor', 'pointer')
@@ -1196,124 +804,148 @@
               onHoverApi(null);
             });
 
-          /* Outer glow circle */
-          bubbles.append('circle')
-            .attr('class', 'bubble-outer')
-            .attr('r', d => d.r)
-            .attr('fill', d => d.glow)
-            .attr('filter', 'url(#glow)');
+          bubbles.append('circle').attr('class', 'bubble-outer').attr('r', d => d.r).attr('fill', d => d.glow).attr('filter', 'url(#glow)');
+          bubbles.append('circle').attr('r', d => d.r - 3).attr('fill', 'rgba(10,14,26,0.8)').attr('stroke', d => d.color).attr('stroke-width', 1.5);
 
-          /* Inner circle */
-          bubbles.append('circle')
-            .attr('r', d => d.r - 3)
-            .attr('fill', 'rgba(10, 14, 26, 0.8)')
-            .attr('stroke', d => d.color)
-            .attr('stroke-width', 1.5);
-
-          /* Method text */
+          /* Method label */
           bubbles.append('text')
             .attr('text-anchor', 'middle')
-            .attr('dy', d => d.r > 28 ? -3 : 0)
+            .attr('dy', d => d.r > 28 ? -4 : 0)
             .attr('fill', d => d.color)
             .attr('font-size', d => d.r > 28 ? 9 : 8)
-            .attr('font-weight', 800)
-            .attr('letter-spacing', '0.04em')
+            .attr('font-weight', 800).attr('letter-spacing', '0.04em')
             .text(d => d.api.method);
 
-          /* Path text - only for larger bubbles */
-          bubbles.filter(d => d.r > 25).append('text')
-            .attr('text-anchor', 'middle')
-            .attr('dy', 9)
-            .attr('fill', 'rgba(232, 237, 245, 0.7)')
-            .attr('font-size', 7)
-            .text(d => {
-              const p = d.api.path;
-              return p.length > 18 ? p.slice(0, 17) + '..' : p;
-            });
+          /* Path label for larger bubbles */
+          bubbles.filter(d => d.r > 22).append('text')
+            .attr('text-anchor', 'middle').attr('dy', d => d.r > 28 ? 7 : 8)
+            .attr('fill', 'rgba(232,237,245,0.7)').attr('font-size', 7)
+            .text(d => { const p = d.api.path; return p.length > 18 ? p.slice(0, 17) + '..' : p; });
 
-          /* Floating animation */
+          /* Issue #4: Show description snippet for all bubbles large enough */
+          bubbles.filter(d => d.r > 30 && d.api.summary && d.api.summary.length > 0).append('text')
+            .attr('text-anchor', 'middle').attr('dy', 18)
+            .attr('fill', 'rgba(232,237,245,0.4)').attr('font-size', 6)
+            .text(d => { const s = d.api.summary || ''; return s.length > 24 ? s.slice(0, 23) + '..' : s; });
+
+          /* Group title labels — appended to SVG directly (top layer, above all bubbles) */
+          const LABEL_W = 100, LABEL_H = 24;
+          const groupLabelItems = {};
+          groupKeys.forEach(key => {
+            if (key === '_misc') return;
+            const count = tableGroups[key].length;
+            const labelG = svg.append('g').attr('pointer-events', 'none');
+            labelG.append('rect')
+              .attr('width', LABEL_W).attr('height', LABEL_H).attr('rx', 12)
+              .attr('fill', 'rgba(10,14,26,0.9)')
+              .attr('stroke', 'rgba(79,124,255,0.4)').attr('stroke-width', 1);
+            labelG.append('text')
+              .attr('x', LABEL_W / 2).attr('y', 16)
+              .attr('text-anchor', 'middle')
+              .attr('font-size', 10).attr('font-weight', 700)
+              .attr('letter-spacing', '0.1em')
+              .attr('fill', '#e8edf5')
+              .text(key.toUpperCase() + ' · ' + count);
+            groupLabelItems[key] = labelG;
+          });
+
           let animFrame;
           const startTime = Date.now();
-
           function animate() {
             const t = (Date.now() - startTime) / 1000;
             bubbles.attr('transform', d => {
               const floatY = Math.sin(t * 0.6 + d.floatPhase) * d.floatAmp;
               return 'translate(' + d.x + ',' + (d.y + floatY) + ')';
             });
+            linkEls.attr('x1', d => d.source.x).attr('y1', d => d.source.y).attr('x2', d => d.target.x).attr('y2', d => d.target.y);
 
-            linkEls
-              .attr('x1', d => d.source.x)
-              .attr('y1', d => d.source.y)
-              .attr('x2', d => d.target.x)
-              .attr('y2', d => d.target.y);
+            /* Update each group label to sit just above its cluster's topmost bubble */
+            groupKeys.forEach(key => {
+              if (key === '_misc' || !groupLabelItems[key]) return;
+              const groupNodes = nodes.filter(n => n.groupKey === key);
+              if (!groupNodes.length) return;
+              let minY = Infinity, sumX = 0;
+              groupNodes.forEach(n => {
+                const top = n.y - n.r;
+                if (top < minY) minY = top;
+                sumX += n.x;
+              });
+              const cx = sumX / groupNodes.length;
+              const labelX = Math.max(4, Math.min(width - LABEL_W - 4, cx - LABEL_W / 2));
+              const labelY = Math.max(4, minY - LABEL_H - 8);
+              groupLabelItems[key].attr('transform', 'translate(' + labelX + ',' + labelY + ')');
+            });
 
             animFrame = requestAnimationFrame(animate);
           }
-
           sim.on('tick', () => {
-            /* Constrain to bounds */
             nodes.forEach(d => {
               d.x = Math.max(d.r + 10, Math.min(width - d.r - 10, d.x));
               d.y = Math.max(d.r + 10, Math.min(height - d.r - 10, d.y));
             });
           });
-
           animate();
-
-          return () => {
-            cancelAnimationFrame(animFrame);
-            sim.stop();
-          };
+          return () => { cancelAnimationFrame(animFrame); sim.stop(); };
         }, [apis]);
 
-        /* Highlight selected bubble */
         useEffect(() => {
           if (!svgRef.current) return;
-          const svg = d3.select(svgRef.current);
-          svg.selectAll('.bubble-outer')
-            .attr('stroke', function(d) {
-              return d && d.id === selectedId ? d.color : 'none';
-            })
-            .attr('stroke-width', function(d) {
-              return d && d.id === selectedId ? 2 : 0;
-            });
+          d3.select(svgRef.current).selectAll('.bubble-outer')
+            .attr('stroke', function(d) { return d && d.id === selectedId ? d.color : 'none'; })
+            .attr('stroke-width', function(d) { return d && d.id === selectedId ? 2 : 0; });
         }, [selectedId]);
 
         return React.createElement('svg', { ref: svgRef, className: 'canvas-svg' });
       }
 
-      /* ---- Flow Overlay Component ---- */
+      /* ---- Find which flow step a resource is linked to (Issue #7) ---- */
+      function findStepForResource(resourceLabel, flowSteps) {
+        const label = resourceLabel.toLowerCase();
+        const parts = label.split(/[\s_\-\.\/]+/).filter(p => p.length > 2);
+        for (let i = 0; i < flowSteps.length; i++) {
+          const step = (flowSteps[i] || '').toLowerCase();
+          if (parts.some(p => step.includes(p)) || step.includes(label)) return i;
+        }
+        return -1;
+      }
+
+      /* ---- Flow Overlay Component (Issues #7 & #8) ---- */
       function FlowOverlay({ api, onClose }) {
         const svgRef = useRef(null);
+        const [selectedNode, setSelectedNode] = useState(null);
 
         useEffect(() => {
           if (!svgRef.current || !api) return;
-
           const svg = d3.select(svgRef.current);
           svg.selectAll('*').remove();
 
           const flowSteps = api.flow || [];
           const resources = [];
-          (api.tables || []).forEach(t => resources.push({ type: 'database', label: t, color: '#00d4b1' }));
-          (api.services || []).forEach(s => resources.push({ type: 'service', label: s, color: '#4f7cff' }));
-          (api.caches || []).forEach(c => resources.push({ type: 'cache', label: c, color: '#a78bfa' }));
-          (api.queues || []).forEach(q => resources.push({ type: 'queue', label: q, color: '#ffb340' }));
+          (api.tables || []).forEach(t => {
+            const ta = (api.tableAccess || []).find(x => x.table === t);
+            resources.push({ type: 'database', label: t, color: '#00d4b1', ta: ta || null });
+          });
+          (api.services || []).forEach(s => resources.push({ type: 'service', label: s, color: '#4f7cff', ta: null }));
+          (api.caches || []).forEach(c => resources.push({ type: 'cache', label: c, color: '#a78bfa', ta: null }));
+          (api.queues || []).forEach(q => resources.push({ type: 'queue', label: q, color: '#ffb340', ta: null }));
 
-          const stepWidth = 160, stepHeight = 56, stepGap = 60;
-          const apiNodeX = 100, apiNodeY = 200;
-          const startX = 300;
-          const totalFlowWidth = startX + flowSteps.length * (stepWidth + stepGap) + 100;
-          const resStartX = Math.max(totalFlowWidth - 100, startX + 200);
-          const totalWidth = Math.max(1000, resStartX + resources.length * 180 + 100);
-          const totalHeight = 450;
+          /* Issue #7: Tag each resource to its linked flow step */
+          resources.forEach(r => { r.linkedStep = findStepForResource(r.label, flowSteps); });
+
+          const stepWidth = 150, stepHeight = 52, stepGap = 50;
+          const apiNodeX = 80, apiNodeY = 220;
+          const startX = 220;
+          const totalFlowWidth = startX + flowSteps.length * (stepWidth + stepGap) + 60;
+          const totalWidth = Math.max(900, totalFlowWidth + 100);
+          const totalHeight = 460;
+          const centerY = 220;
 
           svg.attr('viewBox', '0 0 ' + totalWidth + ' ' + totalHeight)
              .attr('width', totalWidth).attr('height', totalHeight);
 
           const defs = svg.append('defs');
           const glowF = defs.append('filter').attr('id', 'fglow').attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
-          glowF.append('feGaussianBlur').attr('stdDeviation', '6').attr('result', 'blur');
+          glowF.append('feGaussianBlur').attr('stdDeviation', '5').attr('result', 'blur');
           const fm = glowF.append('feMerge');
           fm.append('feMergeNode').attr('in', 'blur');
           fm.append('feMergeNode').attr('in', 'SourceGraphic');
@@ -1321,170 +953,396 @@
           /* Grid */
           for (let x = 0; x < totalWidth; x += 30) {
             for (let y = 0; y < totalHeight; y += 30) {
-              svg.append('circle').attr('cx', x).attr('cy', y).attr('r', 0.4)
-                .attr('fill', 'rgba(79, 124, 255, 0.05)');
+              svg.append('circle').attr('cx', x).attr('cy', y).attr('r', 0.4).attr('fill', 'rgba(79,124,255,0.04)');
             }
           }
 
+          /* Step positions */
+          const stepPositions = flowSteps.map((step, i) => ({
+            x: startX + i * (stepWidth + stepGap),
+            y: centerY + (i % 2 === 0 ? -60 : 60),
+            step, i
+          }));
+
           /* API center node */
           const apiColor = methodColor(api.method);
-          const apiG = svg.append('g').attr('transform', 'translate(' + apiNodeX + ',' + apiNodeY + ')')
-            .style('opacity', 0);
-
-          apiG.append('rect').attr('x', -60).attr('y', -30).attr('width', 120).attr('height', 60)
-            .attr('rx', 10).attr('fill', 'rgba(10, 14, 26, 0.9)')
-            .attr('stroke', apiColor).attr('stroke-width', 2).attr('filter', 'url(#fglow)');
-
-          apiG.append('text').attr('text-anchor', 'middle').attr('y', -6)
-            .attr('fill', apiColor).attr('font-size', 12).attr('font-weight', 800).text(api.method);
-
-          apiG.append('text').attr('text-anchor', 'middle').attr('y', 14)
-            .attr('fill', 'rgba(232, 237, 245, 0.8)').attr('font-size', 9)
-            .text(api.path.length > 20 ? api.path.slice(0, 19) + '..' : api.path);
-
+          const apiG = svg.append('g').attr('transform', 'translate(' + apiNodeX + ',' + centerY + ')').style('opacity', 0);
+          apiG.append('rect').attr('x', -55).attr('y', -28).attr('width', 110).attr('height', 56)
+            .attr('rx', 10).attr('fill', 'rgba(10,14,26,0.9)').attr('stroke', apiColor).attr('stroke-width', 2).attr('filter', 'url(#fglow)');
+          apiG.append('text').attr('text-anchor', 'middle').attr('y', -6).attr('fill', apiColor).attr('font-size', 11).attr('font-weight', 800).text(api.method);
+          apiG.append('text').attr('text-anchor', 'middle').attr('y', 12).attr('fill', 'rgba(232,237,245,0.8)').attr('font-size', 8)
+            .text(api.path.length > 18 ? api.path.slice(0, 17) + '..' : api.path);
           apiG.transition().delay(100).duration(400).style('opacity', 1);
 
-          /* Flow steps */
-          flowSteps.forEach((step, i) => {
-            const sx = startX + i * (stepWidth + stepGap);
-            const sy = apiNodeY + (i % 2 === 0 ? -70 : 70);
-
-            /* Edge from previous node */
-            const prevX = i === 0 ? apiNodeX + 60 : startX + (i - 1) * (stepWidth + stepGap) + stepWidth;
-            const prevY = i === 0 ? apiNodeY : apiNodeY + ((i - 1) % 2 === 0 ? -70 : 70);
-
+          /* Flow step nodes */
+          const stepGs = [];
+          stepPositions.forEach((pos, i) => {
+            const prevX = i === 0 ? apiNodeX + 55 : stepPositions[i-1].x + stepWidth;
+            const prevY = i === 0 ? centerY : stepPositions[i-1].y;
             const edge = svg.append('path')
-              .attr('d', 'M' + prevX + ',' + prevY + ' C' + (prevX + 40) + ',' + prevY + ' ' + (sx - 40) + ',' + sy + ' ' + sx + ',' + sy)
-              .attr('fill', 'none').attr('stroke', 'rgba(79, 124, 255, 0.4)')
-              .attr('stroke-width', 1.5)
-              .attr('stroke-dasharray', '200')
-              .attr('stroke-dashoffset', '200');
+              .attr('d', 'M' + prevX + ',' + prevY + ' C' + (prevX + 40) + ',' + prevY + ' ' + (pos.x - 20) + ',' + pos.y + ' ' + pos.x + ',' + pos.y)
+              .attr('fill', 'none').attr('stroke', 'rgba(79,124,255,0.35)').attr('stroke-width', 1.5)
+              .attr('stroke-dasharray', '200').attr('stroke-dashoffset', '200');
+            edge.transition().delay(300 + i * 180).duration(500).attr('stroke-dashoffset', '0')
+              .on('end', function() { d3.select(this).attr('stroke-dasharray', '8, 6').attr('stroke-dashoffset', '0').classed('flow-edge-animated', true); });
 
-            edge.transition().delay(300 + i * 200).duration(500)
-              .attr('stroke-dashoffset', '0')
-              .on('end', function() {
-                d3.select(this).attr('stroke-dasharray', '8, 6')
-                  .attr('stroke-dashoffset', '0')
-                  .classed('flow-edge-animated', true);
-              });
+            const stepG = svg.append('g').attr('transform', 'translate(' + pos.x + ',' + pos.y + ')').style('opacity', 0).attr('cursor', 'pointer');
+            stepGs.push({ g: stepG, pos, step: pos.step, i });
 
-            const stepG = svg.append('g').attr('transform', 'translate(' + sx + ',' + sy + ')')
-              .style('opacity', 0);
-
-            stepG.append('rect').attr('x', 0).attr('y', -stepHeight / 2)
-              .attr('width', stepWidth).attr('height', stepHeight).attr('rx', 8)
-              .attr('fill', 'rgba(16, 22, 40, 0.9)')
-              .attr('stroke', 'rgba(79, 124, 255, 0.3)').attr('stroke-width', 1);
-
-            stepG.append('text').attr('x', stepWidth / 2).attr('y', -8)
-              .attr('text-anchor', 'middle').attr('fill', '#4f7cff').attr('font-size', 9).attr('font-weight', 700)
-              .text('Step ' + (i + 1));
+            stepG.append('rect').attr('x', 0).attr('y', -stepHeight/2).attr('width', stepWidth).attr('height', stepHeight)
+              .attr('rx', 8).attr('fill', 'rgba(16,22,40,0.9)').attr('stroke', 'rgba(79,124,255,0.3)').attr('stroke-width', 1);
+            stepG.append('text').attr('x', stepWidth/2).attr('y', -stepHeight/2 + 13).attr('text-anchor', 'middle')
+              .attr('fill', '#4f7cff').attr('font-size', 8).attr('font-weight', 700).text('Step ' + (i+1));
 
             /* Wrap step text */
-            const words = step.split(' ');
-            let line = '', lineY = 6;
+            const words = pos.step.split(' ');
+            let line = '', lineY = -stepHeight/2 + 26;
             words.forEach(w => {
               const test = line + (line ? ' ' : '') + w;
-              if (test.length > 22 && line) {
-                stepG.append('text').attr('x', stepWidth / 2).attr('y', lineY)
-                  .attr('text-anchor', 'middle').attr('fill', 'rgba(232, 237, 245, 0.6)')
-                  .attr('font-size', 8).text(line);
-                lineY += 11;
-                line = w;
-              } else {
-                line = test;
-              }
+              if (test.length > 24 && line) {
+                stepG.append('text').attr('x', stepWidth/2).attr('y', lineY).attr('text-anchor', 'middle')
+                  .attr('fill', 'rgba(232,237,245,0.6)').attr('font-size', 7.5).text(line);
+                lineY += 10; line = w;
+              } else { line = test; }
             });
-            if (line) {
-              stepG.append('text').attr('x', stepWidth / 2).attr('y', lineY)
-                .attr('text-anchor', 'middle').attr('fill', 'rgba(232, 237, 245, 0.6)')
-                .attr('font-size', 8).text(line);
-            }
+            if (line) stepG.append('text').attr('x', stepWidth/2).attr('y', lineY).attr('text-anchor', 'middle')
+              .attr('fill', 'rgba(232,237,245,0.6)').attr('font-size', 7.5).text(line);
 
-            stepG.transition().delay(400 + i * 200).duration(350).style('opacity', 1);
+            /* Issue #8: clickable step node */
+            stepG.on('click', () => {
+              setSelectedNode({ type: 'step', label: 'Step ' + (i+1), step: pos.step, index: i, api });
+            });
+            stepG.on('mouseenter', function() { d3.select(this).select('rect').attr('stroke', 'rgba(79,124,255,0.7)').attr('fill', 'rgba(79,124,255,0.08)'); });
+            stepG.on('mouseleave', function() { d3.select(this).select('rect').attr('stroke', 'rgba(79,124,255,0.3)').attr('fill', 'rgba(16,22,40,0.9)'); });
+
+            stepG.transition().delay(400 + i * 180).duration(350).style('opacity', 1);
           });
 
-          /* Resource nodes */
-          const resBaseY = 60;
-          resources.forEach((res, i) => {
-            const rx = resStartX + i * 160;
-            const ry = resBaseY + (i % 2 === 0 ? 0 : 50);
+          /* Issue #7: Resource nodes positioned near their linked step */
+          const unlinkedResIdx = [];
+          const linkedResCountPerStep = {};
 
-            /* Edge from last flow step or api node */
-            const lastFlowX = flowSteps.length
-              ? startX + (flowSteps.length - 1) * (stepWidth + stepGap) + stepWidth
-              : apiNodeX + 60;
-            const lastFlowY = flowSteps.length
-              ? apiNodeY + ((flowSteps.length - 1) % 2 === 0 ? -70 : 70)
-              : apiNodeY;
-
-            const resEdge = svg.append('path')
-              .attr('d', 'M' + lastFlowX + ',' + lastFlowY + ' C' + (lastFlowX + 60) + ',' + lastFlowY + ' ' + (rx - 40) + ',' + ry + ' ' + rx + ',' + ry)
-              .attr('fill', 'none').attr('stroke', res.color + '44')
-              .attr('stroke-width', 1).attr('stroke-dasharray', '4, 4')
-              .style('opacity', 0);
-
-            resEdge.transition()
-              .delay(600 + (flowSteps.length + i) * 150).duration(400)
-              .style('opacity', 1);
-
-            /* Node */
-            const resG = svg.append('g').attr('transform', 'translate(' + rx + ',' + ry + ')')
-              .style('opacity', 0);
-
-            if (res.type === 'database') {
-              /* Cylinder shape */
-              resG.append('ellipse').attr('rx', 28).attr('ry', 8)
-                .attr('cy', -16).attr('fill', 'rgba(10, 14, 26, 0.9)')
-                .attr('stroke', res.color).attr('stroke-width', 1.5);
-              resG.append('rect').attr('x', -28).attr('y', -16).attr('width', 56).attr('height', 28)
-                .attr('fill', 'rgba(10, 14, 26, 0.9)');
-              resG.append('ellipse').attr('rx', 28).attr('ry', 8)
-                .attr('cy', 12).attr('fill', 'rgba(10, 14, 26, 0.9)')
-                .attr('stroke', res.color).attr('stroke-width', 1.5);
-              resG.append('line').attr('x1', -28).attr('y1', -16).attr('x2', -28).attr('y2', 12)
-                .attr('stroke', res.color).attr('stroke-width', 1.5);
-              resG.append('line').attr('x1', 28).attr('y1', -16).attr('x2', 28).attr('y2', 12)
-                .attr('stroke', res.color).attr('stroke-width', 1.5);
+          resources.forEach((res, ri) => {
+            if (res.linkedStep >= 0 && res.linkedStep < stepPositions.length) {
+              if (!linkedResCountPerStep[res.linkedStep]) linkedResCountPerStep[res.linkedStep] = 0;
+              linkedResCountPerStep[res.linkedStep]++;
             } else {
-              /* Hexagon for middleware/service */
-              const hex = 'M0,-22 L19,-11 L19,11 L0,22 L-19,11 L-19,-11 Z';
-              resG.append('path').attr('d', hex)
-                .attr('fill', 'rgba(10, 14, 26, 0.9)')
-                .attr('stroke', res.color).attr('stroke-width', 1.5);
+              unlinkedResIdx.push(ri);
+            }
+          });
+
+          /* Track how many resources have been placed per step (for offset) */
+          const placedPerStep = {};
+
+          resources.forEach((res, ri) => {
+            let rx, ry, fromX, fromY;
+
+            if (res.linkedStep >= 0 && res.linkedStep < stepPositions.length) {
+              const pos = stepPositions[res.linkedStep];
+              if (!placedPerStep[res.linkedStep]) placedPerStep[res.linkedStep] = 0;
+              const offset = placedPerStep[res.linkedStep];
+              placedPerStep[res.linkedStep]++;
+              /* Place resource above or below the step */
+              const goBelow = pos.y < centerY; // step is above center → place resource below
+              ry = goBelow ? pos.y + stepHeight/2 + 80 + offset * 70 : pos.y - stepHeight/2 - 80 - offset * 70;
+              rx = pos.x + stepWidth/2;
+              fromX = pos.x + stepWidth/2;
+              fromY = goBelow ? pos.y + stepHeight/2 : pos.y - stepHeight/2;
+            } else {
+              /* Unlinked: append to the right of the last step */
+              const unlinkedIdx = unlinkedResIdx.indexOf(ri);
+              const lastX = stepPositions.length > 0 ? stepPositions[stepPositions.length-1].x + stepWidth + 60 : startX + 60;
+              rx = lastX + unlinkedIdx * 150;
+              ry = centerY + (unlinkedIdx % 2 === 0 ? -70 : 70);
+              fromX = stepPositions.length > 0 ? stepPositions[stepPositions.length-1].x + stepWidth : apiNodeX + 55;
+              fromY = stepPositions.length > 0 ? stepPositions[stepPositions.length-1].y : centerY;
             }
 
-            resG.append('text').attr('text-anchor', 'middle').attr('y', 34)
-              .attr('fill', res.color).attr('font-size', 9).attr('font-weight', 700)
-              .text(res.type.toUpperCase());
+            /* Edge from step to resource */
+            const resEdge = svg.append('line')
+              .attr('x1', fromX).attr('y1', fromY).attr('x2', rx).attr('y2', ry)
+              .attr('stroke', res.color + '55').attr('stroke-width', 1).attr('stroke-dasharray', '4,4').style('opacity', 0);
+            resEdge.transition().delay(600 + ri * 120).duration(350).style('opacity', 1);
 
-            resG.append('text').attr('text-anchor', 'middle').attr('y', 46)
-              .attr('fill', 'rgba(232, 237, 245, 0.6)').attr('font-size', 8)
-              .text(res.label.length > 20 ? res.label.slice(0, 19) + '..' : res.label);
+            const resG = svg.append('g').attr('transform', 'translate(' + rx + ',' + ry + ')').style('opacity', 0).attr('cursor', 'pointer');
+
+            if (res.type === 'database') {
+              /* Cylinder */
+              resG.append('ellipse').attr('rx', 26).attr('ry', 7).attr('cy', -14).attr('fill', 'rgba(10,14,26,0.9)').attr('stroke', res.color).attr('stroke-width', 1.5);
+              resG.append('rect').attr('x', -26).attr('y', -14).attr('width', 52).attr('height', 26).attr('fill', 'rgba(10,14,26,0.9)');
+              resG.append('ellipse').attr('rx', 26).attr('ry', 7).attr('cy', 12).attr('fill', 'rgba(10,14,26,0.9)').attr('stroke', res.color).attr('stroke-width', 1.5);
+              resG.append('line').attr('x1', -26).attr('y1', -14).attr('x2', -26).attr('y2', 12).attr('stroke', res.color).attr('stroke-width', 1.5);
+              resG.append('line').attr('x1', 26).attr('y1', -14).attr('x2', 26).attr('y2', 12).attr('stroke', res.color).attr('stroke-width', 1.5);
+            } else if (res.type === 'cache') {
+              resG.append('rect').attr('x', -22).attr('y', -18).attr('width', 44).attr('height', 36)
+                .attr('rx', 4).attr('fill', 'rgba(10,14,26,0.9)').attr('stroke', res.color).attr('stroke-width', 1.5);
+              resG.append('line').attr('x1', -22).attr('y1', -6).attr('x2', 22).attr('y2', -6).attr('stroke', res.color + '88').attr('stroke-width', 1);
+            } else {
+              const hex = 'M0,-20 L17,-10 L17,10 L0,20 L-17,10 L-17,-10 Z';
+              resG.append('path').attr('d', hex).attr('fill', 'rgba(10,14,26,0.9)').attr('stroke', res.color).attr('stroke-width', 1.5);
+            }
+
+            resG.append('text').attr('text-anchor', 'middle').attr('y', 30)
+              .attr('fill', res.color).attr('font-size', 8).attr('font-weight', 700).text(res.type.toUpperCase());
+            resG.append('text').attr('text-anchor', 'middle').attr('y', 42)
+              .attr('fill', 'rgba(232,237,245,0.65)').attr('font-size', 7.5)
+              .text(res.label.length > 18 ? res.label.slice(0, 17) + '..' : res.label);
 
             resG.attr('filter', 'url(#fglow)');
-            resG.transition().delay(700 + (flowSteps.length + i) * 150).duration(350).style('opacity', 1);
+
+            /* Issue #8: clickable resource node */
+            resG.on('click', () => {
+              setSelectedNode({ type: res.type, label: res.label, color: res.color, ta: res.ta, api });
+            });
+            resG.on('mouseenter', function() { d3.select(this).selectAll('ellipse,rect,path').attr('stroke-width', 2.5); });
+            resG.on('mouseleave', function() { d3.select(this).selectAll('ellipse,rect,path').attr('stroke-width', 1.5); });
+
+            resG.transition().delay(650 + ri * 120).duration(350).style('opacity', 1);
           });
 
         }, [api]);
 
         if (!api) return null;
 
-        return React.createElement('div', { className: 'flow-overlay' }, [
-          React.createElement('div', { className: 'flow-overlay-header', key: 'header' }, [
-            React.createElement('div', { className: 'flow-overlay-title', key: 'title' }, [
-              React.createElement('span', {
-                className: 'method-badge ' + methodBadgeClass(api.method), key: 'm'
-              }, api.method),
-              React.createElement('h2', { key: 'h' }, api.path),
-            ]),
-            React.createElement('button', {
-              className: 'flow-close-btn', key: 'close',
-              onClick: onClose
-            }, '\u2715')
+        const h = React.createElement;
+
+        /* Issue #8: Right detail panel for clicked node */
+        const detailPanel = selectedNode ? h('div', { className: 'flow-detail-panel', key: 'detail' }, [
+          h('div', { className: 'flow-detail-header', key: 'header' }, [
+            h('h4', { key: 't' }, selectedNode.type === 'step' ? selectedNode.label : selectedNode.label),
+            h('button', { className: 'flow-detail-close', key: 'close', onClick: () => setSelectedNode(null) }, '×')
           ]),
-          React.createElement('div', { className: 'flow-canvas', key: 'canvas' }, [
-            React.createElement('svg', { ref: svgRef, className: 'flow-svg', key: 'svg' })
+          h('div', { className: 'flow-detail-body', key: 'body' }, [
+            /* Type badge */
+            h('div', {
+              key: 'badge',
+              className: 'flow-detail-type-badge',
+              style: {
+                background: selectedNode.type === 'step' ? 'rgba(79,124,255,0.15)' : (selectedNode.color || '#4f7cff') + '22',
+                color: selectedNode.type === 'step' ? '#4f7cff' : (selectedNode.color || '#4f7cff')
+              }
+            }, selectedNode.type.toUpperCase()),
+
+            /* Label */
+            h('div', { className: 'flow-detail-label', key: 'label' },
+              selectedNode.type === 'step' ? selectedNode.step : selectedNode.label
+            ),
+
+            /* Step-specific details */
+            selectedNode.type === 'step' ? h(React.Fragment, { key: 'step-details' }, [
+              h('div', { className: 'flow-detail-row', key: 'step-num' }, [
+                h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Step Number'),
+                h('div', { className: 'flow-detail-row-value', key: 'v' }, 'Step ' + (selectedNode.index + 1) + ' of ' + (api.flow || []).length)
+              ]),
+              h('div', { className: 'flow-detail-row', key: 'description' }, [
+                h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Description'),
+                h('div', { className: 'flow-detail-row-value', key: 'v' }, selectedNode.step)
+              ]),
+              /* Show tables referenced in this step */
+              (() => {
+                const stepLower = (selectedNode.step || '').toLowerCase();
+                const refTables = (api.tables || []).filter(t => stepLower.includes(t.toLowerCase()));
+                if (!refTables.length) return null;
+                return h('div', { className: 'flow-detail-row', key: 'ref-tables' }, [
+                  h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Referenced Tables'),
+                  h('div', { key: 'v' }, refTables.map(t => h('span', { className: 'flow-detail-chip', key: t, style: { borderColor: 'rgba(0,212,177,0.3)', color: '#00d4b1' } }, t)))
+                ]);
+              })()
+            ]) : null,
+
+            /* Database node details */
+            selectedNode.type === 'database' ? h(React.Fragment, { key: 'db-details' }, [
+              h('div', { className: 'flow-detail-row', key: 'table-name' }, [
+                h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Collection / Table'),
+                h('div', { className: 'flow-detail-row-value', key: 'v', style: { color: '#00d4b1', fontWeight: 700 } }, selectedNode.label)
+              ]),
+              selectedNode.ta ? h(React.Fragment, { key: 'ta-details' }, [
+                selectedNode.ta.operations && selectedNode.ta.operations.length > 0 ?
+                  h('div', { className: 'flow-detail-row', key: 'ops' }, [
+                    h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Operations'),
+                    h('div', { key: 'v' }, (selectedNode.ta.operations || []).map(op =>
+                      h('span', { className: 'flow-detail-chip', key: op, style: { borderColor: 'rgba(0,212,177,0.3)', color: '#00d4b1' } }, op)
+                    ))
+                  ]) : null,
+                selectedNode.ta.columns && selectedNode.ta.columns.length > 0 ?
+                  h('div', { className: 'flow-detail-row', key: 'cols' }, [
+                    h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Columns Accessed'),
+                    h('div', { key: 'v' }, (selectedNode.ta.columns || []).map(c =>
+                      h('span', { className: 'flow-detail-chip', key: c }, c)
+                    ))
+                  ]) : null,
+                selectedNode.ta.evidence && selectedNode.ta.evidence.length > 0 ?
+                  h('div', { className: 'flow-detail-row', key: 'ev' }, [
+                    h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Evidence'),
+                    h('div', { className: 'flow-detail-row-value', key: 'v', style: { fontFamily: 'monospace', fontSize: 9, color: 'var(--text-muted)', lineHeight: 1.6 } },
+                      (selectedNode.ta.evidence || []).join('\n'))
+                  ]) : null
+              ]) : null
+            ]) : null,
+
+            /* Service node details */
+            selectedNode.type === 'service' ? h(React.Fragment, { key: 'svc-details' }, [
+              h('div', { className: 'flow-detail-row', key: 'svc-name' }, [
+                h('div', { className: 'flow-detail-row-label', key: 'l' }, 'External Service'),
+                h('div', { className: 'flow-detail-row-value', key: 'v', style: { color: '#4f7cff', fontWeight: 700 } }, selectedNode.label)
+              ]),
+              h('div', { className: 'flow-detail-row', key: 'svc-usage' }, [
+                h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Usage Context'),
+                h('div', { className: 'flow-detail-row-value', key: 'v' }, 'This API integrates with ' + selectedNode.label + ' as part of its processing flow.')
+              ])
+            ]) : null,
+
+            /* Cache node details */
+            selectedNode.type === 'cache' ? h('div', { className: 'flow-detail-row', key: 'cache-name' }, [
+              h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Cache Layer'),
+              h('div', { className: 'flow-detail-row-value', key: 'v', style: { color: '#a78bfa', fontWeight: 700 } }, selectedNode.label)
+            ]) : null,
+
+            /* Queue node details */
+            selectedNode.type === 'queue' ? h('div', { className: 'flow-detail-row', key: 'queue-name' }, [
+              h('div', { className: 'flow-detail-row-label', key: 'l' }, 'Message Queue'),
+              h('div', { className: 'flow-detail-row-value', key: 'v', style: { color: '#ffb340', fontWeight: 700 } }, selectedNode.label)
+            ]) : null,
+          ])
+        ]) : null;
+
+        return h('div', { className: 'flow-overlay' }, [
+          h('div', { className: 'flow-overlay-header', key: 'header' }, [
+            h('div', { className: 'flow-overlay-title', key: 'title' }, [
+              h('span', { className: 'method-badge ' + methodBadgeClass(api.method), key: 'm' }, api.method),
+              h('h2', { key: 'h' }, api.path),
+            ]),
+            h('div', { key: 'actions', style: { display: 'flex', alignItems: 'center', gap: 8 } }, [
+              selectedNode ? h('span', { key: 'hint', style: { fontSize: 10, color: 'var(--text-muted)' } }, '← Click elsewhere to close panel') : null,
+              h('button', { className: 'flow-close-btn', key: 'close', onClick: onClose }, '×')
+            ])
+          ]),
+          h('div', { className: 'flow-overlay-body', key: 'body' }, [
+            h('div', { className: 'flow-canvas', key: 'canvas' }, [
+              h('svg', { ref: svgRef, className: 'flow-svg', key: 'svg' })
+            ]),
+            detailPanel
+          ])
+        ]);
+      }
+
+      /* ---- Right Panel: API Details with Separate Sections (Issue #3) ---- */
+      function ApiDetailsPanel({ api, onViewFlow }) {
+        if (!api) return null;
+        const h = React.createElement;
+        const { dbType, entries: tableEntries } = getTableDetails(api);
+
+        const hasResources = api.tables.length + api.services.length + (api.dependencies || []).length + api.caches.length + api.queues.length > 0;
+
+        return h(React.Fragment, {}, [
+          /* Selected API header */
+          h('div', { className: 'right-details-section', key: 'api-hdr', style: { borderTop: '1px solid var(--border)' } }, [
+            h('h4', { key: 'h' }, [
+              h('span', { className: 'section-dot', key: 'd', style: { background: methodColor(api.method) } }),
+              'Selected API'
+            ]),
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }, key: 'top' }, [
+              h('span', { className: 'method-badge ' + methodBadgeClass(api.method), key: 'm' }, api.method),
+              h('span', { style: { fontSize: 12, fontWeight: 700, wordBreak: 'break-word' }, key: 'p' }, api.path)
+            ]),
+            h('div', { style: { fontSize: 11, color: 'var(--text-secondary)', lineHeight: '1.4' }, key: 'sum' }, api.summary)
+          ]),
+
+          /* Flow Steps */
+          h('div', { className: 'right-details-section', key: 'flow-s' }, [
+            h('h4', { key: 'h' }, [
+              h('span', { className: 'section-dot', key: 'd', style: { background: '#4f7cff' } }),
+              'Flow Steps'
+            ]),
+            ...(api.flow.length
+              ? api.flow.map((step, i) =>
+                  h('div', { className: 'flow-step-item', key: 'step-' + i }, [
+                    h('span', { className: 'flow-step-num', key: 'n' }, String(i + 1)),
+                    h('span', { key: 't' }, step)
+                  ])
+                )
+              : [h('div', { className: 'empty-text', key: 'e' }, 'No flow steps.')])
+          ]),
+
+          /* Issue #3: Database Tables section (separate) */
+          h('div', { className: 'right-details-section', key: 'tables-s' }, [
+            h('h4', { key: 'h' }, [
+              h('span', { className: 'section-dot', key: 'd', style: { background: '#00d4b1' } }),
+              'Database Tables',
+              dbType ? h('span', { key: 'db', style: { marginLeft: 6, fontSize: 9, color: 'var(--teal)', opacity: 0.8 } }, '· ' + dbType) : null
+            ]),
+            tableEntries.length > 0
+              ? tableEntries.map(entry =>
+                  h('div', { className: 'db-table-card', key: entry.table }, [
+                    h('div', { className: 'db-table-header', key: 'hdr' }, [
+                      dbType ? h('span', { className: 'db-badge', key: 'db' }, dbType) : null,
+                      h('span', { className: 'db-table-name', key: 'name' }, entry.table)
+                    ]),
+                    entry.operations.length > 0 ?
+                      h('div', { className: 'db-table-ops', key: 'ops' }, 'Ops: ' + entry.operations.join(', ')) : null,
+                    entry.columns.length > 0 ?
+                      h('div', { className: 'db-columns-wrap', key: 'cols' },
+                        entry.columns.slice(0, 8).map(c => h('span', { className: 'db-col-chip', key: c }, c))
+                      ) : null
+                  ])
+                )
+              : [h('div', { className: 'empty-text', key: 'e' }, 'No database tables.')]
+          ]),
+
+          /* External Services section */
+          h('div', { className: 'right-details-section', key: 'svc-s' }, [
+            h('h4', { key: 'h' }, [
+              h('span', { className: 'section-dot', key: 'd', style: { background: '#4f7cff' } }),
+              'External Services'
+            ]),
+            api.services.length > 0
+              ? h('div', { key: 'svcs' }, api.services.map(s =>
+                  h('span', { className: 'svc-chip', key: s }, [
+                    h('span', { className: 'svc-dot', key: 'd' }),
+                    s
+                  ])
+                ))
+              : h('div', { className: 'empty-text', key: 'e' }, 'No external services.')
+          ]),
+
+          /* Dependencies section (npm packages, middleware, libraries) */
+          api.dependencies && api.dependencies.length > 0
+            ? h('div', { className: 'right-details-section', key: 'dep-s' }, [
+                h('h4', { key: 'h' }, [
+                  h('span', { className: 'section-dot', key: 'd', style: { background: '#8892a8' } }),
+                  'Dependencies'
+                ]),
+                h('div', { key: 'deps', style: { display: 'flex', flexWrap: 'wrap', gap: 4 } },
+                  api.dependencies.map(d =>
+                    h('span', { key: d, style: {
+                      display: 'inline-block', fontSize: 10, padding: '2px 7px',
+                      border: '1px solid rgba(136,146,168,0.25)', borderRadius: 4,
+                      background: 'rgba(136,146,168,0.06)', color: '#8892a8'
+                    }}, d)
+                  )
+                )
+              ])
+            : null,
+
+          /* Caches & Queues */
+          (api.caches.length > 0 || api.queues.length > 0)
+            ? h('div', { className: 'right-details-section', key: 'infra-s' }, [
+                h('h4', { key: 'h' }, [
+                  h('span', { className: 'section-dot', key: 'd', style: { background: '#a78bfa' } }),
+                  'Caches & Queues'
+                ]),
+                ...api.caches.map(c => h('span', { className: 'cache-chip', key: 'c-' + c }, '⚡ ' + c)),
+                ...api.queues.map(q => h('span', { className: 'queue-chip', key: 'q-' + q }, '📨 ' + q))
+              ])
+            : null,
+
+          /* View Flow button */
+          h('div', { className: 'right-details-section', key: 'flow-btn' }, [
+            h('button', {
+              className: 'btn-sm btn-primary', key: 'btn',
+              style: { width: '100%' },
+              onClick: onViewFlow
+            }, 'View Full Flow →')
           ])
         ]);
       }
@@ -1527,9 +1385,7 @@
         }, [apis, selectedId]);
 
         const tableCount = useMemo(() => {
-          const s = new Set();
-          apis.forEach(a => (a.tables || []).forEach(t => s.add(t)));
-          return s.size;
+          const s = new Set(); apis.forEach(a => (a.tables || []).forEach(t => s.add(t))); return s.size;
         }, [apis]);
 
         /* Animated count-up */
@@ -1546,17 +1402,15 @@
           return () => clearInterval(interval);
         }, [impactResults.length]);
 
-        /* Add log helper */
         function addLog(msg, type) {
           const now = new Date();
-          const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+          const time = [now.getHours(), now.getMinutes(), now.getSeconds()].map(n => String(n).padStart(2,'0')).join(':');
           setLogs(prev => [...prev.slice(-20), { time, msg, type }]);
         }
 
         async function runImpactQuery(nextTable, nextColumn) {
           setImpactLoading(true);
-          const tv = String(nextTable || '').trim();
-          const cv = String(nextColumn || '').trim();
+          const tv = String(nextTable || '').trim(), cv = String(nextColumn || '').trim();
           const params = new URLSearchParams();
           if (tv) params.set('table', tv);
           if (cv) params.set('column', cv);
@@ -1586,7 +1440,7 @@
             addLog('Loading API knowledge...', 'ok');
             try {
               const res = await fetch('/api/apis');
-              if (!res.ok) throw new Error('Using demo data. Run `apimap scan .` to load live API cache.');
+              if (!res.ok) throw new Error('Using demo data. Run `apimap scan .` to load live cache.');
               const payload = await res.json();
               const loaded = Array.isArray(payload.apis) ? payload.apis : fallbackApis;
               setRawApis(loaded);
@@ -1602,9 +1456,7 @@
         }, []);
 
         useEffect(() => {
-          setImpactTable('');
-          setImpactColumn('');
-          runImpactQuery('', '');
+          setImpactTable(''); setImpactColumn(''); runImpactQuery('', '');
         }, [apis]);
 
         useEffect(() => {
@@ -1625,32 +1477,31 @@
 
         const h = React.createElement;
 
-        /* ---- Icon Sidebar ---- */
+        /* ---- Issue #6: Icon Sidebar (fixed nav with Impact Analysis) ---- */
         const iconSidebar = h('nav', { className: 'icon-sidebar', key: 'icon-sidebar' }, [
           h('div', { className: 'logo', key: 'logo' }, 'AF'),
+          /* Explorer */
           h('button', {
-            className: 'icon-btn' + (activeNav === 'explorer' ? ' active' : ''), key: 'nav-explorer',
-            title: 'Explorer',
+            className: 'icon-btn' + (activeNav === 'explorer' ? ' active' : ''),
+            key: 'nav-explorer', title: 'API Explorer',
             onClick: () => setActiveNav('explorer')
-          }, h(SvgIcon, { d: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0z M9 12l2 2 4-4' })),
+          }, h(SvgIcon, { d: 'M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z M9 22V12h6v10' })),
+          /* Impact Analysis */
           h('button', {
-            className: 'icon-btn' + (activeNav === 'flows' ? ' active' : ''), key: 'nav-flows',
-            title: 'Flows',
+            className: 'icon-btn nav-impact' + (activeNav === 'impact' ? ' active' : ''),
+            key: 'nav-impact', title: 'Impact Analysis',
+            onClick: () => setActiveNav('impact')
+          }, h(SvgIcon, { d: 'M22 12h-4l-3 9L9 3l-3 9H2' })),
+          /* Flows */
+          h('button', {
+            className: 'icon-btn nav-flows' + (activeNav === 'flows' ? ' active' : ''),
+            key: 'nav-flows', title: 'API Flows',
             onClick: () => setActiveNav('flows')
           }, h(SvgIcon, { d: 'M13 10V3L4 14h7v7l9-11h-7z' })),
-          h('button', {
-            className: 'icon-btn' + (activeNav === 'metrics' ? ' active' : ''), key: 'nav-metrics',
-            title: 'Metrics',
-            onClick: () => setActiveNav('metrics')
-          }, h(SvgIcon, { d: 'M3 3v18h18 M7 16l4-4 4 4 4-8' })),
-          h('div', { className: 'sidebar-spacer', key: 'spacer' }),
-          h('button', {
-            className: 'icon-btn', key: 'nav-settings',
-            title: 'Settings'
-          }, h(SvgIcon, { d: 'M12 8a4 4 0 100 8 4 4 0 000-8z M12 2v2 M12 20v2 M4.93 4.93l1.41 1.41 M17.66 17.66l1.41 1.41 M2 12h2 M20 12h2 M4.93 19.07l1.41-1.41 M17.66 6.34l1.41-1.41' }))
+          h('div', { className: 'sidebar-spacer', key: 'spacer' })
         ]);
 
-        /* ---- Top Bar ---- */
+        /* ---- Top Bar (Issue #5: removed Scan/Export buttons) ---- */
         const topbar = h('header', { className: 'topbar', key: 'topbar' }, [
           h('div', { className: 'topbar-brand', key: 'brand' }, [
             h('span', { className: 'highlight', key: 'h' }, 'API'),
@@ -1658,13 +1509,11 @@
             h('span', { style: { color: '#5a6478', fontSize: 10, fontWeight: 500 }, key: 'v' }, 'v2.0')
           ]),
           h('div', { className: 'topbar-search', key: 'search' }, [
-            h('span', { className: 'search-icon', key: 'icon' }, '\u26B2'),
+            h('span', { className: 'search-icon', key: 'icon' }, '⊗'),
             h('input', {
-              key: 'input',
-              name: 'search',
-              value: search,
+              key: 'input', name: 'search', value: search,
               onChange: e => setSearch(e.target.value),
-              placeholder: 'Search endpoints...'
+              placeholder: 'Search endpoints, tables, services...'
             })
           ]),
           h('div', { className: 'topbar-stats', key: 'stats' }, [
@@ -1676,101 +1525,165 @@
               h('span', { className: 'value', style: { color: '#ffb340' }, key: 'v' }, String(tableCount)),
               h('span', { className: 'label', key: 'l' }, 'Tables')
             ])
-          ]),
-          h('div', { className: 'topbar-actions', key: 'actions' }, [
-            h('button', { className: 'btn-sm btn-primary', key: 'scan',
-              onClick: () => addLog('Scan triggered from UI', 'ok')
-            }, 'Scan'),
-            h('button', { className: 'btn-sm', key: 'export',
-              onClick: () => addLog('Export initiated', 'ok')
-            }, 'Export')
           ])
         ]);
 
-        /* ---- Left Panel ---- */
-        const leftPanel = h('aside', { className: 'left-panel', key: 'left-panel' }, [
-          h('div', { className: 'panel-section', key: 'scope' }, [
-            h('div', { className: 'panel-section-title', key: 'title' }, [
-              h('span', { className: 'dot', key: 'd' }),
-              'Scope'
-            ]),
-            h('select', {
-              className: 'scope-select', key: 'table-select',
-              value: impactTable,
-              onChange: e => { setImpactTable(e.target.value); setImpactColumn(''); }
-            }, [
-              h('option', { value: '', key: '_' }, 'Select table...'),
-              ...impactTables.map(t => h('option', { value: t.table, key: t.table },
-                t.table + ' (' + t.apiCount + ')'))
-            ]),
-            h('select', {
-              className: 'scope-select', key: 'column-select',
-              value: impactColumn,
-              disabled: !impactTable,
-              onChange: e => setImpactColumn(e.target.value)
-            }, [
-              h('option', { value: '', key: '_' }, impactTable ? 'All columns' : 'Select table first'),
-              ...availableImpactColumns.map(c => h('option', { value: c, key: c }, c))
-            ]),
-            impactLoading ? h('div', { className: 'scanning-indicator', key: 'loading' }, [
-              h('div', { className: 'spinner', key: 's' }),
-              'Scanning...'
-            ]) : null
-          ]),
-          h('div', { className: 'panel-section', key: 'active-title' }, [
-            h('div', { className: 'panel-section-title', key: 'title' }, [
-              h('span', { className: 'dot', style: { background: '#4f7cff', boxShadow: '0 0 6px rgba(79, 124, 255, 0.4)' }, key: 'd' }),
-              'Endpoints (' + filteredApis.length + ')'
-            ])
-          ]),
-          h('div', { className: 'endpoint-list-container', key: 'ep-list' },
-            filteredApis.length
-              ? filteredApis.map((api, i) => {
-                  const id = api.method + ' ' + api.path;
-                  return h('div', {
-                    className: 'ep-item' + (id === selectedId ? ' active' : ''),
-                    key: id + '-' + i,
-                    onClick: () => onSelectApi(api, false)
-                  }, [
-                    h('span', { className: 'method-badge ' + methodBadgeClass(api.method), key: 'm' }, api.method),
-                    h('div', { className: 'ep-info', key: 'info' }, [
-                      h('div', { className: 'ep-path', key: 'p' }, truncate(api.path, 24)),
-                      h('div', { className: 'ep-summary', key: 's' }, truncate(api.summary, 40))
-                    ])
-                  ]);
-                })
-              : [h('div', { className: 'empty-text', key: 'empty' }, 'No APIs match.')]
-          ),
-          /* Streaming Logs */
-          h('div', { className: 'panel-section', key: 'log-title', style: { marginTop: 'auto' } }, [
-            h('div', { className: 'panel-section-title', key: 'title' }, [
-              h('span', { className: 'dot', style: { background: '#ffb340', boxShadow: '0 0 6px rgba(255, 179, 64, 0.4)' }, key: 'd' }),
-              'Activity Log'
-            ])
-          ]),
-          h('div', { className: 'streaming-logs', key: 'logs' },
-            logs.map((log, i) =>
-              h('div', { className: 'log-entry', key: 'log-' + i }, [
-                h('span', { className: 'log-time', key: 't' }, log.time),
-                h('span', { className: 'log-' + (log.type || 'msg'), key: 'm' }, log.msg)
+        /* ---- Left Panel (Issue #6: content changes per activeNav) ---- */
+        let leftPanelContent;
+
+        if (activeNav === 'explorer') {
+          /* Explorer view: endpoint list + logs */
+          leftPanelContent = h('aside', { className: 'left-panel', key: 'left-panel' }, [
+            h('div', { className: 'panel-section', key: 'ep-header' }, [
+              h('div', { className: 'panel-section-title', key: 'title' }, [
+                h('span', { className: 'dot', key: 'd', style: { background: '#4f7cff', boxShadow: '0 0 6px rgba(79,124,255,0.4)' } }),
+                'Endpoints (' + filteredApis.length + ')'
               ])
+            ]),
+            h('div', { className: 'endpoint-list-container', key: 'ep-list' },
+              filteredApis.length
+                ? filteredApis.map((api, i) => {
+                    const id = api.method + ' ' + api.path;
+                    return h('div', {
+                      className: 'ep-item' + (id === selectedId ? ' active' : ''),
+                      key: id + '-' + i,
+                      onClick: () => onSelectApi(api, false)
+                    }, [
+                      h('span', { className: 'method-badge ' + methodBadgeClass(api.method), key: 'm', style: { marginTop: 1 } }, api.method),
+                      h('div', { className: 'ep-info', key: 'info' }, [
+                        h('div', { className: 'ep-path', key: 'p' }, api.path),
+                        h('div', { className: 'ep-summary', key: 's' }, truncate(api.summary, 60))
+                      ])
+                    ]);
+                  })
+                : [h('div', { className: 'empty-text', key: 'empty' }, 'No APIs match.')]
+            ),
+            h('div', { className: 'panel-section', key: 'log-title', style: { marginTop: 'auto' } }, [
+              h('div', { className: 'panel-section-title', key: 'title' }, [
+                h('span', { className: 'dot', style: { background: '#ffb340', boxShadow: '0 0 6px rgba(255,179,64,0.4)' }, key: 'd' }),
+                'Activity Log'
+              ])
+            ]),
+            h('div', { className: 'streaming-logs', key: 'logs' },
+              logs.map((log, i) =>
+                h('div', { className: 'log-entry', key: 'log-' + i }, [
+                  h('span', { className: 'log-time', key: 't' }, log.time),
+                  h('span', { className: 'log-' + (log.type || 'msg'), key: 'm' }, log.msg)
+                ])
+              )
             )
-          )
-        ]);
+          ]);
+
+        } else if (activeNav === 'impact') {
+          /* Issue #2 & #6: Impact Analysis view */
+          leftPanelContent = h('aside', { className: 'left-panel', key: 'left-panel' }, [
+            h('div', { className: 'impact-scope-section', key: 'scope' }, [
+              h('div', { className: 'impact-scope-label', key: 'label' }, [
+                h(SvgIcon, { d: 'M22 12h-4l-3 9L9 3l-3 9H2', size: 12, color: 'var(--teal)', key: 'icon' }),
+                'Impact Analysis'
+              ]),
+              h('div', { style: { fontSize: 10, color: 'var(--text-muted)', marginBottom: 8 }, key: 'desc' },
+                'Select a database table to find all APIs that touch it.'),
+              /* Issue #1: Table selector shows table name + api count */
+              h('select', {
+                className: 'scope-select', key: 'table-select',
+                value: impactTable,
+                onChange: e => { setImpactTable(e.target.value); setImpactColumn(''); }
+              }, [
+                h('option', { value: '', key: '_' }, '— Select a table —'),
+                ...impactTables.map(t => h('option', { value: t.table, key: t.table },
+                  t.table + '  (' + t.apiCount + ' API' + (t.apiCount !== 1 ? 's' : '') + ')'))
+              ]),
+              h('select', {
+                className: 'scope-select', key: 'column-select',
+                value: impactColumn, disabled: !impactTable,
+                onChange: e => setImpactColumn(e.target.value)
+              }, [
+                h('option', { value: '', key: '_' }, impactTable ? 'All columns' : 'Select table first'),
+                ...availableImpactColumns.map(c => h('option', { value: c, key: c }, c))
+              ]),
+              impactLoading ? h('div', { className: 'scanning-indicator', key: 'loading' }, [
+                h('div', { className: 'spinner', key: 's' }),
+                'Analyzing...'
+              ]) : null
+            ]),
+
+            /* Impact count hero */
+            impactTable ? h('div', { className: 'impact-count-hero count-animate', key: 'count' }, [
+              h('div', { className: 'impact-hero-num', key: 'num' }, String(animatedCount)),
+              h('div', { className: 'impact-hero-label', key: 'lbl' }, 'API' + (impactResults.length !== 1 ? 's' : '') + ' Impacted'),
+              h('div', { className: 'impact-hero-scope', key: 'scope' }, impactTable + (impactColumn ? ' → ' + impactColumn : ''))
+            ]) : h('div', { className: 'no-scope-message', key: 'no-scope' }, [
+              h('div', { style: { fontSize: 28, marginBottom: 8, opacity: 0.3 }, key: 'icon' }, '⚡'),
+              h('div', { key: 'msg' }, 'Select a table above to see which APIs are impacted by changes to it.')
+            ]),
+
+            /* Impact results */
+            h('div', { className: 'impact-results-list', key: 'results' },
+              impactTable && impactResults.length
+                ? impactResults.map((r, i) =>
+                    h('div', {
+                      className: 'impact-card', key: r.method + '-' + r.path + '-' + i,
+                      onClick: () => {
+                        const match = apis.find(a => a.method === r.method && a.path === r.path);
+                        if (match) { onSelectApi(match, false); }
+                      }
+                    }, [
+                      h('div', { className: 'impact-card-top', key: 'top' }, [
+                        h('span', { className: 'method-badge ' + methodBadgeClass(r.method), key: 'm' }, r.method),
+                        h('span', { className: 'impact-card-path', key: 'p' }, r.path)
+                      ]),
+                      h('div', { className: 'impact-card-how', key: 'how' }, r.how),
+                      h('div', { className: 'impact-card-meta', key: 'meta' },
+                        'Ops: ' + (r.operations || []).join(', ') + ' · ' + columnMatchLabel(r.columnMatch)
+                      )
+                    ])
+                  )
+                : impactTable && !impactLoading
+                  ? [h('div', { className: 'no-scope-message', key: 'no-r' }, 'No APIs impact this scope.')]
+                  : []
+            ),
+
+            impactError ? h('div', { className: 'error-banner', style: { margin: '6px 12px' }, key: 'err' }, impactError) : null
+          ]);
+
+        } else if (activeNav === 'flows') {
+          /* Issue #6: Flows view */
+          const apisWithFlows = apis.filter(a => a.flow && a.flow.length > 0);
+          leftPanelContent = h('aside', { className: 'left-panel', key: 'left-panel' }, [
+            h('div', { className: 'panel-section', key: 'header' }, [
+              h('div', { className: 'panel-section-title', key: 'title' }, [
+                h('span', { className: 'dot', key: 'd', style: { background: '#a78bfa', boxShadow: '0 0 6px rgba(167,139,250,0.3)' } }),
+                'API Flows (' + apisWithFlows.length + ')'
+              ]),
+              h('div', { style: { fontSize: 10, color: 'var(--text-muted)' }, key: 'desc' }, 'Click to open flow visualization')
+            ]),
+            h('div', { className: 'flow-list-container', key: 'flows' },
+              apisWithFlows.length
+                ? apisWithFlows.map(api => {
+                    const id = api.method + ' ' + api.path;
+                    return h('div', {
+                      className: 'flow-list-item', key: id,
+                      onClick: () => { onSelectApi(api, false); setFlowApi(api); }
+                    }, [
+                      h('div', { className: 'flow-list-item-top', key: 't' }, [
+                        h('span', { className: 'method-badge ' + methodBadgeClass(api.method), key: 'm' }, api.method),
+                        h('span', { className: 'flow-list-path', key: 'p' }, api.path),
+                        h('span', { className: 'flow-step-count', key: 'c' }, api.flow.length + ' steps')
+                      ]),
+                      h('div', { className: 'flow-list-summary', key: 's' }, truncate(api.summary, 70))
+                    ]);
+                  })
+                : [h('div', { className: 'empty-text', key: 'e' }, 'No API flows found.')]
+            )
+          ]);
+        }
 
         /* ---- Main Canvas ---- */
         const mainCanvas = h('main', { className: 'main-canvas', key: 'main-canvas' }, [
-          h(BubbleGraph, {
-            key: 'bubble-graph',
-            apis: filteredApis,
-            selectedId,
-            onSelectApi,
-            onHoverApi
-          }),
-          /* Tooltip */
+          h(BubbleGraph, { key: 'bg', apis: filteredApis, selectedId, onSelectApi, onHoverApi }),
           tooltip ? h('div', {
-            className: 'bubble-tooltip visible',
-            key: 'tooltip',
+            className: 'bubble-tooltip visible', key: 'tooltip',
             style: {
               left: Math.min(tooltip.x + 12, window.innerWidth - 280) + 'px',
               top: (tooltip.y - 60) + 'px'
@@ -1779,149 +1692,51 @@
             h('div', { className: 'tt-method', key: 'm', style: { color: methodColor(tooltip.api.method) } }, tooltip.api.method),
             h('div', { className: 'tt-path', key: 'p' }, tooltip.api.path),
             h('div', { className: 'tt-summary', key: 's' }, truncate(tooltip.api.summary, 120)),
-            h('div', {
-              style: { fontSize: 9, color: '#5a6478', marginTop: 6 }, key: 'hint'
-            }, 'Click to select \u2022 Double-click for flow view')
+            tooltip.api.tables && tooltip.api.tables.length > 0 ?
+              h('div', { key: 'tables', style: { fontSize: 9, color: 'var(--teal)', marginTop: 4 } },
+                '🗄 ' + tooltip.api.tables.join(', ')) : null,
+            h('div', { style: { fontSize: 9, color: '#5a6478', marginTop: 4 }, key: 'hint' }, 'Click to select • Double-click for flow')
           ]) : null,
-          /* Canvas footer with legend */
           h('div', { className: 'canvas-footer', key: 'footer' }, [
             h('div', { className: 'canvas-legend', key: 'legend' }, [
-              h('div', { className: 'legend-item', key: 'get' }, [
-                h('div', { className: 'legend-dot', style: { background: '#00d4b1' }, key: 'd' }),
-                'GET'
-              ]),
-              h('div', { className: 'legend-item', key: 'post' }, [
-                h('div', { className: 'legend-dot', style: { background: '#4f7cff' }, key: 'd' }),
-                'POST'
-              ]),
-              h('div', { className: 'legend-item', key: 'put' }, [
-                h('div', { className: 'legend-dot', style: { background: '#ffb340' }, key: 'd' }),
-                'PUT'
-              ]),
-              h('div', { className: 'legend-item', key: 'del' }, [
-                h('div', { className: 'legend-dot', style: { background: '#ff4d9e' }, key: 'd' }),
-                'DELETE'
-              ])
+              h('div', { className: 'legend-item', key: 'get' }, [h('div', { className: 'legend-dot', style: { background: '#00d4b1' }, key: 'd' }), 'GET']),
+              h('div', { className: 'legend-item', key: 'post' }, [h('div', { className: 'legend-dot', style: { background: '#4f7cff' }, key: 'd' }), 'POST']),
+              h('div', { className: 'legend-item', key: 'put' }, [h('div', { className: 'legend-dot', style: { background: '#ffb340' }, key: 'd' }), 'PUT']),
+              h('div', { className: 'legend-item', key: 'patch' }, [h('div', { className: 'legend-dot', style: { background: '#a78bfa' }, key: 'd' }), 'PATCH']),
+              h('div', { className: 'legend-item', key: 'del' }, [h('div', { className: 'legend-dot', style: { background: '#ff4d9e' }, key: 'd' }), 'DELETE']),
             ]),
-            selectedApi
-              ? h('button', {
-                  className: 'btn-sm btn-primary', key: 'view-flow',
-                  onClick: () => setFlowApi(selectedApi)
-                }, 'View Flow: ' + selectedApi.method + ' ' + truncate(selectedApi.path, 20))
-              : null
+            selectedApi ? h('button', {
+              className: 'btn-sm btn-primary', key: 'view-flow',
+              onClick: () => setFlowApi(selectedApi)
+            }, '⚡ Flow: ' + selectedApi.method + ' ' + truncate(selectedApi.path, 20)) : null
           ])
         ]);
 
-        /* ---- Right Panel ---- */
+        /* ---- Right Panel (Issue #3: separate sections) ---- */
         const rightPanel = h('aside', { className: 'right-panel', key: 'right-panel' }, [
-          /* Impact count header */
           h('div', { className: 'right-panel-header', key: 'header' }, [
-            h('h3', { key: 't' }, 'Impact Analysis'),
+            h('h3', { key: 't' }, selectedApi ? 'API Details' : 'API Explorer')
           ]),
-          impactTable ? h('div', { className: 'impact-count-display count-animate', key: 'count-display' }, [
-            h('div', { className: 'impact-big-number', key: 'num' }, [
-              String(animatedCount),
-              h('span', { className: 'ring', key: 'ring' })
-            ]),
-            h('div', { className: 'impact-label', key: 'label' },
-              'API' + (impactResults.length !== 1 ? 's' : '') + ' Impacted'),
-            h('div', { className: 'impact-scope', key: 'scope' },
-              impactTable + (impactColumn ? '.' + impactColumn : ''))
-          ]) : h('div', { className: 'no-impact-message', key: 'no-scope' },
-            'Select a table scope in the sidebar to analyze impact.'),
-
-          /* Impact results list */
-          impactTable && impactResults.length
-            ? h('div', { className: 'impact-list-container', key: 'impact-list' },
-                impactResults.map((r, i) =>
-                  h('div', {
-                    className: 'impact-card', key: r.method + '-' + r.path + '-' + i,
-                    onClick: () => {
-                      const match = apis.find(a => a.method === r.method && a.path === r.path);
-                      if (match) onSelectApi(match, true);
-                    }
-                  }, [
-                    h('div', { className: 'impact-card-top', key: 'top' }, [
-                      h('span', { className: 'method-badge ' + methodBadgeClass(r.method), key: 'm' }, r.method),
-                      h('span', { className: 'impact-card-path', key: 'p' }, r.path)
-                    ]),
-                    h('div', { className: 'impact-card-how', key: 'how' }, r.how),
-                    h('div', { className: 'impact-card-meta', key: 'meta' },
-                      'Ops: ' + (r.operations || []).join(', ') +
-                      ' \u2022 ' + columnMatchLabel(r.columnMatch)
-                    ),
-                    r.flowMatches && r.flowMatches.length
-                      ? h('div', { className: 'impact-card-meta', key: 'flow' },
-                          'Flow: ' + truncate(r.flowMatches[0], 60))
-                      : null
-                  ])
-                )
-              )
-            : impactTable
-              ? h('div', { className: 'no-impact-message', key: 'no-results' },
-                  impactLoading ? 'Scanning...' : 'No APIs impact this scope.')
-              : null,
-          impactError ? h('div', { className: 'error-banner', key: 'impact-err' }, impactError) : null,
-
-          /* Selected API details */
-          selectedApi ? h(React.Fragment, { key: 'selected-api-details' },
-            h('div', { className: 'right-details-section', key: 'api-detail',
-              style: { borderTop: '1px solid var(--border)' } }, [
-              h('h4', { key: 'h' }, 'Selected API'),
-              h('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }, key: 'top' }, [
-                h('span', { className: 'method-badge ' + methodBadgeClass(selectedApi.method), key: 'm' }, selectedApi.method),
-                h('span', { style: { fontSize: 12, fontWeight: 700 }, key: 'p' }, selectedApi.path)
-              ]),
-              h('div', { style: { fontSize: 11, color: '#8892a8', lineHeight: '1.4' }, key: 'sum' }, selectedApi.summary)
-            ]),
-            h('div', { className: 'right-details-section', key: 'flow-detail' }, [
-              h('h4', { key: 'h' }, 'Flow Steps'),
-              ...(selectedApi.flow.length
-                ? selectedApi.flow.map((step, i) =>
-                    h('div', { className: 'flow-step-item', key: 'step-' + i }, [
-                      h('span', { className: 'flow-step-num', key: 'n' }, String(i + 1)),
-                      h('span', { key: 't' }, step)
-                    ])
-                  )
-                : [h('div', { className: 'empty-text', key: 'e' }, 'No flow steps.')]
-              )
-            ]),
-            h('div', { className: 'right-details-section', key: 'resources' }, [
-              h('h4', { key: 'h' }, 'Resources'),
-              h('div', { key: 'chips' }, [
-                ...selectedApi.tables.map(t => h('span', { className: 'detail-chip', key: 'table-' + t, style: { borderColor: 'rgba(0, 212, 177, 0.3)' } }, t)),
-                ...selectedApi.services.map(s => h('span', { className: 'detail-chip', key: 'svc-' + s, style: { borderColor: 'rgba(79, 124, 255, 0.3)' } }, s)),
-                ...selectedApi.caches.map(c => h('span', { className: 'detail-chip', key: 'cache-' + c, style: { borderColor: 'rgba(167, 139, 250, 0.3)' } }, c)),
-                ...selectedApi.queues.map(q => h('span', { className: 'detail-chip', key: 'queue-' + q, style: { borderColor: 'rgba(255, 179, 64, 0.3)' } }, q)),
-                ...(selectedApi.tables.length + selectedApi.services.length + selectedApi.caches.length + selectedApi.queues.length === 0
-                  ? [h('div', { className: 'empty-text', key: 'e' }, 'No linked resources.')]
-                  : [])
-              ]),
-              h('button', {
-                className: 'btn-sm btn-primary',
-                key: 'view-flow-btn',
-                style: { marginTop: 8, width: '100%' },
-                onClick: () => setFlowApi(selectedApi)
-              }, 'View Full Flow')
-            ])
-          ) : h('div', { className: 'no-impact-message', key: 'no-api',
-              style: { borderTop: '1px solid var(--border)', paddingTop: 16 }
-            }, 'Click a bubble to view API details.'),
-
-          error ? h('div', { className: 'error-banner', key: 'err' }, error) : null
+          h('div', { className: 'right-panel-body', key: 'body' }, [
+            selectedApi
+              ? h(ApiDetailsPanel, { key: 'details', api: selectedApi, onViewFlow: () => setFlowApi(selectedApi) })
+              : h('div', { key: 'no-sel', style: { padding: '24px 14px', textAlign: 'center' } }, [
+                  h('div', { style: { fontSize: 28, opacity: 0.15, marginBottom: 8 }, key: 'i' }, '◎'),
+                  h('div', { style: { fontSize: 12, color: 'var(--text-muted)' }, key: 't' }, 'Click a bubble to view API details.'),
+                  h('div', { style: { fontSize: 10, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }, key: 's' },
+                    'Use the ⚡ Impact tab to analyze which APIs are affected by database changes.')
+                ]),
+            error ? h('div', { className: 'error-banner', key: 'err' }, error) : null
+          ])
         ]);
 
         /* ---- Flow Overlay ---- */
-        const overlay = flowApi ? h(FlowOverlay, {
-          key: 'flow-overlay',
-          api: flowApi,
-          onClose: () => setFlowApi(null)
-        }) : null;
+        const overlay = flowApi ? h(FlowOverlay, { key: 'flow-overlay', api: flowApi, onClose: () => setFlowApi(null) }) : null;
 
         return h('div', { className: 'app-shell' }, [
           iconSidebar,
           topbar,
-          leftPanel,
+          leftPanelContent,
           mainCanvas,
           rightPanel,
           overlay
