@@ -3,799 +3,840 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>APIFlow Constellation</title>
+    <title>APIFlow</title>
+    <link rel="icon" href="data:," />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Syne:wght@500;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
       :root {
-        --ink: #0f1f44;
-        --ink-soft: #3f5183;
-        --line: rgba(25, 49, 104, 0.16);
-        --shell: rgba(255, 255, 255, 0.84);
-        --shell-strong: rgba(255, 255, 255, 0.96);
-        --primary: #245fe4;
-        --teal: #0cae96;
-        --amber: #f29a2b;
-        --rose: #e75173;
-        --violet: #6f53ff;
+        --bg-deep: #070b14;
+        --bg-primary: #0a0e1a;
+        --bg-card: rgba(16, 22, 40, 0.85);
+        --bg-card-solid: #111827;
+        --border: rgba(79, 124, 255, 0.15);
+        --border-hover: rgba(79, 124, 255, 0.4);
+        --text-primary: #e8edf5;
+        --text-secondary: #8892a8;
+        --text-muted: #5a6478;
+        --blue: #4f7cff;
+        --blue-glow: rgba(79, 124, 255, 0.35);
+        --teal: #00d4b1;
+        --teal-glow: rgba(0, 212, 177, 0.3);
+        --pink: #ff4d9e;
+        --pink-glow: rgba(255, 77, 158, 0.3);
+        --amber: #ffb340;
+        --amber-glow: rgba(255, 179, 64, 0.3);
+        --violet: #a78bfa;
+        --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
 
       body {
-        margin: 0;
+        font-family: var(--font);
+        background: var(--bg-deep);
+        color: var(--text-primary);
         min-height: 100vh;
-        font-family: "Manrope", sans-serif;
-        color: var(--ink);
-        background:
-          radial-gradient(circle at 8% 8%, rgba(42, 120, 255, 0.34), transparent 36%),
-          radial-gradient(circle at 92% 8%, rgba(255, 137, 67, 0.34), transparent 35%),
-          radial-gradient(circle at 85% 88%, rgba(115, 90, 255, 0.27), transparent 36%),
-          radial-gradient(circle at 12% 86%, rgba(22, 180, 157, 0.23), transparent 34%),
-          linear-gradient(145deg, #fff7e7, #edf3ff 48%, #f4efff 100%);
-      }
-
-      .shell {
-        min-height: 100vh;
-        padding: 20px;
-        display: grid;
-        grid-template-rows: auto 1fr;
-        gap: 14px;
-      }
-
-      .topbar {
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        padding: 16px 18px;
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 16px;
-        background: var(--shell);
-        backdrop-filter: blur(16px);
-        box-shadow: 0 18px 48px rgba(25, 49, 104, 0.14);
-        animation: rise 420ms ease;
-      }
-
-      .brand h1 {
-        margin: 0;
-        font-family: "Syne", sans-serif;
-        font-size: 34px;
-        letter-spacing: -0.05em;
-      }
-
-      .brand p {
-        margin: 7px 0 0;
-        color: var(--ink-soft);
-        max-width: 760px;
-        font-size: 14px;
-      }
-
-      .badge-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-      }
-
-      .badge {
-        border: 1px solid rgba(25, 49, 104, 0.2);
-        border-radius: 999px;
-        background: var(--shell-strong);
-        color: #1f3f76;
-        font-size: 11px;
-        letter-spacing: 0.07em;
-        text-transform: uppercase;
-        padding: 7px 11px;
-      }
-
-      .stats {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(120px, 172px));
-        gap: 10px;
-      }
-
-      .topbar-right {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        gap: 10px;
-      }
-
-      .back-main-btn {
-        border: 1px solid rgba(25, 49, 104, 0.22);
-        border-radius: 12px;
-        background: linear-gradient(120deg, #e75173, #6f53ff);
-        color: #ffffff;
-        font: inherit;
-        font-size: 13px;
-        font-weight: 800;
-        padding: 10px 13px;
-        cursor: pointer;
-        white-space: nowrap;
-      }
-
-      .stat {
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        background: var(--shell-strong);
-        padding: 10px 12px;
-      }
-
-      .stat strong {
-        display: block;
-        font-family: "Syne", sans-serif;
-        font-size: 23px;
-      }
-
-      .stat span {
-        color: var(--ink-soft);
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-      }
-
-      .view-grid {
-        min-height: 0;
-        display: grid;
-        gap: 12px;
-      }
-
-      .overview-grid {
-        grid-template-columns: 300px minmax(760px, 1fr) 360px;
-      }
-
-      .detail-grid {
-        grid-template-columns: minmax(780px, 1fr) 380px;
-      }
-
-      .panel {
-        border: 1px solid var(--line);
-        border-radius: 22px;
-        background: var(--shell);
-        box-shadow: 0 14px 36px rgba(28, 51, 101, 0.11);
         overflow: hidden;
-        min-height: 0;
-        animation: rise 380ms ease;
       }
 
-      .panel-head {
-        padding: 14px 16px;
-        border-bottom: 1px solid var(--line);
-        background: rgba(255, 255, 255, 0.66);
-      }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(79, 124, 255, 0.2); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(79, 124, 255, 0.4); }
 
-      .panel-head h2 {
-        margin: 0;
-        font-family: "Syne", sans-serif;
-        font-size: 17px;
-        letter-spacing: -0.02em;
-      }
-
-      .panel-head p {
-        margin: 4px 0 0;
-        color: var(--ink-soft);
-        font-size: 12px;
-      }
-
-      .navigator-body {
-        padding: 12px;
+      .app-shell {
         display: grid;
-        grid-template-rows: auto 1fr;
-        gap: 10px;
-        height: calc(100% - 72px);
+        grid-template-columns: 56px 260px 1fr 340px;
+        grid-template-rows: 48px 1fr;
+        height: 100vh;
+        gap: 0;
       }
 
-      .search input {
-        width: 100%;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        padding: 10px 12px;
-        font: inherit;
-        font-size: 13px;
-        background: #fff;
-        outline: none;
-      }
-
-      .search input:focus {
-        border-color: rgba(36, 95, 228, 0.62);
-        box-shadow: 0 0 0 3px rgba(36, 95, 228, 0.18);
-      }
-
-      .endpoint-list {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        overflow: auto;
-        display: grid;
-        gap: 8px;
-      }
-
-      .endpoint-btn {
-        width: 100%;
-        text-align: left;
-        border: 1px solid rgba(25, 49, 104, 0.16);
-        border-radius: 14px;
-        background: linear-gradient(140deg, #ffffff, #f6f9ff);
-        padding: 10px;
-        cursor: pointer;
-        transition: transform 130ms ease, box-shadow 130ms ease, border-color 130ms ease;
-      }
-
-      .endpoint-btn:hover {
-        transform: translateY(-1px);
-        border-color: rgba(36, 95, 228, 0.52);
-        box-shadow: 0 9px 24px rgba(36, 95, 228, 0.16);
-      }
-
-      .endpoint-btn.active {
-        border-color: rgba(231, 81, 115, 0.52);
-        box-shadow: 0 9px 24px rgba(231, 81, 115, 0.16);
-        background: linear-gradient(145deg, #ffffff, #fff3f6);
-      }
-
-      .endpoint-top {
+      /* ---- Icon Sidebar ---- */
+      .icon-sidebar {
+        grid-row: 1 / -1;
+        background: linear-gradient(180deg, #0c1124 0%, #080d1a 100%);
+        border-right: 1px solid var(--border);
         display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 8px;
+        padding: 12px 0;
+        gap: 4px;
+        z-index: 10;
       }
 
-      .method {
-        display: inline-flex;
+      .icon-sidebar .logo {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--blue), var(--teal));
+        display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 52px;
-        height: 22px;
-        border-radius: 999px;
-        padding: 0 8px;
-        font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.03em;
+        font-size: 14px;
+        color: #fff;
+        margin-bottom: 16px;
+        box-shadow: 0 0 20px var(--blue-glow);
       }
 
-      .m-get {
-        background: rgba(12, 174, 150, 0.2);
-        color: #0b7c6c;
-      }
-
-      .m-post {
-        background: rgba(36, 95, 228, 0.2);
-        color: #244eb5;
-      }
-
-      .m-put {
-        background: rgba(242, 154, 43, 0.24);
-        color: #9a5a0a;
-      }
-
-      .m-patch {
-        background: rgba(111, 83, 255, 0.22);
-        color: #5239c4;
-      }
-
-      .m-delete {
-        background: rgba(231, 81, 115, 0.24);
-        color: #a72c48;
-      }
-
-      .endpoint-path {
-        font-weight: 700;
-        color: #18366b;
-        font-size: 13px;
-      }
-
-      .endpoint-summary {
-        margin: 7px 0 0;
-        font-size: 12px;
-        color: var(--ink-soft);
-        line-height: 1.38;
-      }
-
-      .map-panel,
-      .journey-panel {
-        display: grid;
-        grid-template-rows: auto 1fr;
-      }
-
-      .map-wrap {
-        min-height: 0;
-        padding: 12px;
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
         position: relative;
       }
 
-      .map-note {
+      .icon-btn:hover { background: rgba(79, 124, 255, 0.1); color: var(--blue); }
+      .icon-btn.active {
+        background: rgba(79, 124, 255, 0.15);
+        color: var(--blue);
+        box-shadow: 0 0 12px var(--blue-glow);
+      }
+      .icon-btn.active::before {
+        content: '';
         position: absolute;
-        left: 20px;
-        right: 20px;
-        bottom: 20px;
-        border: 1px solid rgba(25, 49, 104, 0.2);
-        border-radius: 12px;
-        background: rgba(255, 255, 255, 0.9);
-        color: #224379;
-        font-size: 13px;
-        padding: 10px 12px;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3px;
+        height: 20px;
+        background: var(--blue);
+        border-radius: 0 3px 3px 0;
       }
 
-      .overview-svg {
-        width: 100%;
-        height: calc(100vh - 188px);
-        min-height: 540px;
-        display: block;
-        border-radius: 16px;
-        border: 1px solid rgba(25, 49, 104, 0.15);
-        background: linear-gradient(155deg, #f8f2ff, #ebf4ff 48%, #f9fff1);
+      .sidebar-spacer { flex: 1; }
+
+      /* ---- Top Bar ---- */
+      .topbar {
+        grid-column: 2 / -1;
+        background: rgba(10, 14, 26, 0.95);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 16px;
+        gap: 16px;
+        backdrop-filter: blur(12px);
+        z-index: 9;
       }
 
-      .bubble {
-        cursor: pointer;
-      }
-
-      .bubble .surface {
-        transition: transform 140ms ease, filter 140ms ease;
-        transform-origin: center;
-      }
-
-      .bubble:hover .surface {
-        transform: scale(1.03);
-      }
-
-      .bubble.selected .surface {
-        filter: drop-shadow(0 10px 20px rgba(231, 81, 115, 0.35));
-      }
-
-      .api-label {
-        fill: #112d5e;
-        text-anchor: middle;
-      }
-
-      .api-label.method {
-        font-size: 12px;
+      .topbar-brand {
         font-weight: 800;
-      }
-
-      .api-label.path {
-        font-size: 12px;
-        font-weight: 700;
-      }
-
-      .overview-side {
-        padding: 14px;
-        display: grid;
-        gap: 12px;
-        align-content: start;
-      }
-
-      .showcase {
-        border: 1px solid rgba(25, 49, 104, 0.18);
-        border-radius: 14px;
-        padding: 12px;
-        background: var(--shell-strong);
-      }
-
-      .showcase h3 {
-        margin: 0;
-        font-family: "Syne", sans-serif;
         font-size: 15px;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
       }
 
-      .showcase p {
-        margin: 7px 0 0;
-        color: var(--ink-soft);
-        font-size: 13px;
-        line-height: 1.42;
+      .topbar-brand .highlight { color: var(--blue); }
+
+      .topbar-search {
+        flex: 1;
+        max-width: 340px;
+        position: relative;
       }
 
-      .primary-btn,
-      .ghost-btn {
-        border: 1px solid transparent;
-        border-radius: 12px;
-        padding: 9px 12px;
+      .topbar-search input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 6px 10px 6px 30px;
         font: inherit;
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
+        font-size: 12px;
+        color: var(--text-primary);
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
       }
 
-      .primary-btn {
-        background: linear-gradient(120deg, #265fe4, #6f53ff);
+      .topbar-search input:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 3px var(--blue-glow);
+      }
+
+      .topbar-search input::placeholder { color: var(--text-muted); }
+
+      .topbar-search .search-icon {
+        position: absolute;
+        left: 9px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 12px;
+        pointer-events: none;
+      }
+
+      .topbar-stats {
+        display: flex;
+        gap: 16px;
+        margin-left: auto;
+        align-items: center;
+      }
+
+      .topbar-stat {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .topbar-stat .value {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--teal);
+        line-height: 1;
+      }
+
+      .topbar-stat .label {
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin-top: 2px;
+      }
+
+      .topbar-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn-sm {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text-secondary);
+        font: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+
+      .btn-sm:hover { border-color: var(--border-hover); color: var(--text-primary); }
+
+      .btn-primary {
+        background: linear-gradient(135deg, var(--blue), #6366f1);
+        border-color: transparent;
         color: #fff;
       }
 
-      .ghost-btn {
-        border-color: rgba(25, 49, 104, 0.2);
-        background: rgba(255, 255, 255, 0.92);
-        color: #1e4178;
+      .btn-primary:hover { box-shadow: 0 0 16px var(--blue-glow); }
+
+      .btn-danger {
+        background: linear-gradient(135deg, var(--pink), #e11d48);
+        border-color: transparent;
+        color: #fff;
       }
 
-      .journey-toolbar {
+      /* ---- Left Sidebar Panel ---- */
+      .left-panel {
+        grid-row: 2;
+        background: rgba(12, 17, 30, 0.95);
+        border-right: 1px solid var(--border);
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
+        flex-direction: column;
+        overflow: hidden;
       }
 
-      .journey-toolbar .route {
+      .panel-section {
+        padding: 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .panel-section-title {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .panel-section-title .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--teal);
+        box-shadow: 0 0 6px var(--teal-glow);
+      }
+
+      .scope-select {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 6px 8px;
+        font: inherit;
+        font-size: 11px;
+        color: var(--text-primary);
+        outline: none;
+        margin-bottom: 6px;
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%235a6478'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+      }
+
+      .scope-select:focus {
+        border-color: var(--blue);
+        box-shadow: 0 0 0 2px var(--blue-glow);
+      }
+
+      .scope-select option { background: var(--bg-card-solid); color: var(--text-primary); }
+
+      .scanning-indicator {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 10px;
+        color: var(--teal);
+        padding: 4px 0;
+      }
+
+      .scanning-indicator .spinner {
+        width: 12px;
+        height: 12px;
+        border: 2px solid rgba(0, 212, 177, 0.2);
+        border-top-color: var(--teal);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin { to { transform: rotate(360deg); } }
+
+      .endpoint-list-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 12px;
+      }
+
+      .ep-group-label {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-muted);
+        padding: 8px 0 4px;
+      }
+
+      .ep-item {
         display: flex;
         align-items: center;
         gap: 8px;
-        min-width: 0;
+        padding: 7px 8px;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.15s;
+        border: 1px solid transparent;
+        margin-bottom: 2px;
       }
 
-      .journey-toolbar .route span {
-        font-family: "Syne", sans-serif;
-        font-size: 19px;
-        letter-spacing: -0.02em;
+      .ep-item:hover {
+        background: rgba(79, 124, 255, 0.08);
+        border-color: var(--border);
+      }
+
+      .ep-item.active {
+        background: rgba(79, 124, 255, 0.12);
+        border-color: var(--border-hover);
+      }
+
+      .method-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 38px;
+        height: 18px;
+        border-radius: 4px;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+        flex-shrink: 0;
+      }
+
+      .mb-get { background: rgba(0, 212, 177, 0.18); color: var(--teal); }
+      .mb-post { background: rgba(79, 124, 255, 0.18); color: var(--blue); }
+      .mb-put { background: rgba(255, 179, 64, 0.18); color: var(--amber); }
+      .mb-patch { background: rgba(167, 139, 250, 0.18); color: var(--violet); }
+      .mb-delete { background: rgba(255, 77, 158, 0.18); color: var(--pink); }
+
+      .ep-path {
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--text-primary);
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
-      .journey-wrap {
-        min-height: 0;
-        padding: 12px;
+      .ep-summary {
+        font-size: 10px;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 1px;
       }
 
-      .journey-scroll {
+      .ep-info { min-width: 0; }
+
+      /* ---- Main Canvas ---- */
+      .main-canvas {
+        grid-row: 2;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 30% 40%, rgba(79, 124, 255, 0.06), transparent 50%),
+          radial-gradient(circle at 70% 60%, rgba(0, 212, 177, 0.04), transparent 50%),
+          var(--bg-deep);
+      }
+
+      .canvas-svg {
         width: 100%;
-        height: calc(100vh - 198px);
-        min-height: 520px;
-        overflow: auto;
-        border-radius: 16px;
-        border: 1px solid rgba(25, 49, 104, 0.16);
-        background: linear-gradient(160deg, #f2f8ff, #fff5ec 60%, #f5efff);
-      }
-
-      .journey-svg {
+        height: 100%;
         display: block;
       }
 
-      .flow-edge {
-        fill: none;
-        stroke: rgba(37, 88, 179, 0.62);
-        stroke-width: 2;
+      .bubble-tooltip {
+        position: absolute;
+        pointer-events: none;
+        background: rgba(16, 22, 40, 0.95);
+        border: 1px solid var(--border-hover);
+        border-radius: 8px;
+        padding: 8px 12px;
+        backdrop-filter: blur(8px);
+        z-index: 20;
+        max-width: 260px;
+        opacity: 0;
+        transition: opacity 0.15s;
       }
 
-      .resource-edge {
-        fill: none;
-        stroke: rgba(56, 94, 168, 0.34);
-        stroke-width: 1.4;
-      }
+      .bubble-tooltip.visible { opacity: 1; }
 
-      .flow-label,
-      .resource-label {
-        text-anchor: middle;
-      }
-
-      .flow-label.step {
-        fill: #fff;
-        font-size: 11px;
-        font-weight: 800;
-      }
-
-      .flow-label.body {
-        fill: #ebf3ff;
-        font-size: 10px;
-      }
-
-      .resource-label {
-        fill: #13305f;
+      .bubble-tooltip .tt-method {
         font-size: 10px;
         font-weight: 800;
+        letter-spacing: 0.06em;
       }
 
-      .details-panel {
-        display: grid;
-        grid-template-rows: auto 1fr;
-      }
-
-      .details {
-        min-height: 0;
-        overflow: auto;
-        padding: 12px;
-        display: grid;
-        gap: 10px;
-      }
-
-      .card,
-      .focus,
-      .section {
-        border: 1px solid rgba(25, 49, 104, 0.16);
-        border-radius: 14px;
-        padding: 12px;
-        background: var(--shell-strong);
-      }
-
-      .route-path {
-        display: inline-block;
-        margin-left: 8px;
-        font-family: "Syne", sans-serif;
-        font-size: 20px;
-      }
-
-      .summary {
-        margin: 9px 0 0;
-        color: var(--ink-soft);
-        font-size: 14px;
-        line-height: 1.42;
-      }
-
-      .focus b {
-        display: block;
-        margin-bottom: 4px;
-      }
-
-      .section h3 {
-        margin: 0 0 8px;
-        color: var(--ink-soft);
-        text-transform: uppercase;
-        font-size: 11px;
-        letter-spacing: 0.08em;
-      }
-
-      .steps {
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        display: grid;
-        gap: 7px;
-      }
-
-      .steps li {
-        border: 1px solid rgba(25, 49, 104, 0.14);
-        border-radius: 10px;
-        background: #f9fbff;
-        font-size: 13px;
-        line-height: 1.35;
-        padding: 8px 9px;
-      }
-
-      .chips {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .chip {
-        border: 1px solid rgba(25, 49, 104, 0.2);
-        border-radius: 999px;
-        background: #f6faff;
-        color: #1d3c72;
-        font-size: 12px;
-        padding: 5px 10px;
-      }
-
-      .empty {
-        margin: 0;
-        color: var(--ink-soft);
-        font-size: 13px;
-      }
-
-      .error {
-        border: 1px solid rgba(231, 81, 115, 0.45);
-        border-radius: 12px;
-        background: rgba(255, 236, 242, 0.95);
-        color: #a62948;
-        font-size: 13px;
-        padding: 10px;
-      }
-
-      .impact-controls {
-        margin-top: 10px;
-        display: grid;
-        gap: 8px;
-      }
-
-      .impact-select,
-      .impact-input {
-        width: 100%;
-        border: 1px solid rgba(25, 49, 104, 0.2);
-        border-radius: 10px;
-        padding: 8px 10px;
-        font: inherit;
-        font-size: 12px;
-        color: #18366b;
-        background: #ffffff;
-      }
-
-      .impact-select:focus,
-      .impact-input:focus {
-        outline: none;
-        border-color: rgba(36, 95, 228, 0.55);
-        box-shadow: 0 0 0 3px rgba(36, 95, 228, 0.14);
-      }
-
-      .impact-actions {
-        display: flex;
-        gap: 8px;
-      }
-
-      .impact-actions button {
-        flex: 1;
-      }
-
-      .impact-hint {
-        margin: 8px 0 0;
-        color: var(--ink-soft);
-        font-size: 12px;
-        line-height: 1.42;
-      }
-
-      .impact-results {
-        margin: 10px 0 0;
-        padding: 0;
-        list-style: none;
-        display: grid;
-        gap: 8px;
-        max-height: 290px;
-        overflow: auto;
-      }
-
-      .impact-item {
-        border: 1px solid rgba(25, 49, 104, 0.15);
-        border-radius: 11px;
-        background: #f8fbff;
-        padding: 8px;
-      }
-
-      .impact-item-top {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-
-      .impact-path {
+      .bubble-tooltip .tt-path {
         font-size: 12px;
         font-weight: 700;
-        color: #15386f;
-        word-break: break-word;
+        color: var(--text-primary);
+        margin-top: 2px;
       }
 
-      .impact-how {
-        margin: 6px 0 0;
-        color: var(--ink-soft);
-        font-size: 12px;
+      .bubble-tooltip .tt-summary {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 4px;
         line-height: 1.4;
       }
 
-      .impact-ops,
-      .impact-match,
-      .impact-flow {
-        margin: 5px 0 0;
-        color: #2b4b84;
+      .canvas-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        background: linear-gradient(to top, rgba(7, 11, 20, 0.9), transparent);
+        pointer-events: none;
+      }
+
+      .canvas-footer > * { pointer-events: auto; }
+
+      .canvas-legend {
+        display: flex;
+        gap: 12px;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
+      .legend-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+      }
+
+      /* ---- Right Panel ---- */
+      .right-panel {
+        grid-row: 2;
+        background: rgba(12, 17, 30, 0.95);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .right-panel-header {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .right-panel-header h3 {
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .impact-count-display {
+        text-align: center;
+        padding: 20px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .impact-big-number {
+        font-size: 56px;
+        font-weight: 800;
+        line-height: 1;
+        background: linear-gradient(135deg, var(--blue), var(--teal));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        position: relative;
+        display: inline-block;
+      }
+
+      .impact-big-number .ring {
+        position: absolute;
+        inset: -12px;
+        border-radius: 50%;
+        border: 2px solid rgba(79, 124, 255, 0.2);
+        animation: pulse-ring 2s ease-in-out infinite;
+      }
+
+      @keyframes pulse-ring {
+        0%, 100% { transform: scale(1); opacity: 0.5; }
+        50% { transform: scale(1.08); opacity: 1; }
+      }
+
+      .impact-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 6px;
+        font-weight: 600;
+      }
+
+      .impact-scope {
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+
+      .impact-list-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 12px;
+      }
+
+      .impact-card {
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 10px;
+        margin-bottom: 6px;
+        transition: all 0.2s;
+        cursor: pointer;
+      }
+
+      .impact-card:hover {
+        border-color: var(--border-hover);
+        background: rgba(79, 124, 255, 0.06);
+      }
+
+      .impact-card-top {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .impact-card-path {
         font-size: 11px;
-        line-height: 1.35;
+        font-weight: 700;
+        color: var(--text-primary);
+        word-break: break-word;
       }
 
-      @keyframes rise {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
+      .impact-card-how {
+        font-size: 10px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+        line-height: 1.4;
+      }
+
+      .impact-card-meta {
+        font-size: 9px;
+        color: var(--text-muted);
+        margin-top: 3px;
+      }
+
+      .no-impact-message {
+        text-align: center;
+        padding: 24px 14px;
+        color: var(--text-muted);
+        font-size: 12px;
+      }
+
+      .right-details-section {
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .right-details-section h4 {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+      }
+
+      .detail-chip {
+        display: inline-block;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--text-secondary);
+        font-size: 10px;
+        padding: 3px 7px;
+        margin: 2px;
+      }
+
+      .flow-step-item {
+        display: flex;
+        gap: 8px;
+        padding: 5px 0;
+        font-size: 11px;
+        color: var(--text-secondary);
+        line-height: 1.4;
+      }
+
+      .flow-step-num {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: rgba(79, 124, 255, 0.15);
+        color: var(--blue);
+        font-size: 9px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+
+      .empty-text {
+        font-size: 11px;
+        color: var(--text-muted);
+        padding: 4px 0;
+      }
+
+      .error-banner {
+        margin: 6px 12px;
+        border: 1px solid rgba(255, 77, 158, 0.3);
+        border-radius: 6px;
+        background: rgba(255, 77, 158, 0.08);
+        color: var(--pink);
+        font-size: 11px;
+        padding: 6px 10px;
+      }
+
+      /* ---- Flow Overlay ---- */
+      .flow-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: rgba(7, 11, 20, 0.92);
+        backdrop-filter: blur(8px);
+        display: flex;
+        flex-direction: column;
+        animation: fade-in 0.25s ease;
+      }
+
+      @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .flow-overlay-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .flow-overlay-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .flow-overlay-title h2 {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      .flow-close-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-secondary);
+        font-size: 16px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+
+      .flow-close-btn:hover {
+        border-color: var(--pink);
+        color: var(--pink);
+        background: rgba(255, 77, 158, 0.1);
+      }
+
+      .flow-canvas {
+        flex: 1;
+        overflow: auto;
+        padding: 20px;
+      }
+
+      .flow-svg {
+        display: block;
+        min-width: 100%;
+      }
+
+      /* ---- Animations ---- */
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-4px); }
+      }
+
+      @keyframes glow-pulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.7; }
+      }
+
+      @keyframes count-in {
+        from { opacity: 0; transform: scale(0.5); }
+        to { opacity: 1; transform: scale(1); }
+      }
+
+      .count-animate {
+        animation: count-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      @keyframes dash-flow {
+        to { stroke-dashoffset: -20; }
+      }
+
+      .flow-edge-animated {
+        stroke-dasharray: 8, 6;
+        animation: dash-flow 1s linear infinite;
+      }
+
+      @keyframes node-appear {
+        from { opacity: 0; transform: scale(0.7); }
+        to { opacity: 1; transform: scale(1); }
+      }
+
+      @keyframes edge-draw {
+        from { stroke-dashoffset: 200; }
+        to { stroke-dashoffset: 0; }
+      }
+
+      /* ---- Streaming Logs ---- */
+      .streaming-logs {
+        padding: 8px 12px;
+        max-height: 120px;
+        overflow-y: auto;
+      }
+
+      .log-entry {
+        font-size: 9px;
+        font-family: 'SF Mono', 'Fira Code', monospace;
+        color: var(--text-muted);
+        padding: 1px 0;
+        display: flex;
+        gap: 6px;
+      }
+
+      .log-time { color: var(--text-muted); white-space: nowrap; }
+      .log-msg { color: var(--text-secondary); }
+      .log-ok { color: var(--teal); }
+      .log-warn { color: var(--amber); }
+
+      /* Responsive */
+      @media (max-width: 1200px) {
+        .app-shell {
+          grid-template-columns: 56px 220px 1fr 280px;
         }
       }
 
-      @media (max-width: 1460px) {
-        .overview-grid {
-          grid-template-columns: 280px minmax(600px, 1fr) 330px;
+      @media (max-width: 960px) {
+        .app-shell {
+          grid-template-columns: 48px 1fr;
+          grid-template-rows: 48px 1fr;
         }
-
-        .detail-grid {
-          grid-template-columns: minmax(640px, 1fr) 340px;
-        }
-      }
-
-      @media (max-width: 1240px) {
-        .shell {
-          padding: 12px;
-        }
-
-        .topbar {
-          grid-template-columns: 1fr;
-        }
-
-        .stats {
-          grid-template-columns: repeat(3, minmax(100px, 1fr));
-        }
-
-        .topbar-right {
-          justify-content: flex-start;
-          flex-wrap: wrap;
-        }
-
-        .overview-grid,
-        .detail-grid {
-          grid-template-columns: 1fr;
-          grid-template-rows: auto;
-        }
-
-        .navigator-body,
-        .details {
-          height: auto;
-          max-height: none;
-        }
-
-        .overview-svg,
-        .journey-scroll {
-          height: 62vh;
-          min-height: 430px;
-        }
-      }
-
-      @media (max-width: 720px) {
-        .brand h1 {
-          font-size: 26px;
-        }
-
-        .stats {
-          grid-template-columns: 1fr;
-        }
-
-        .topbar-right {
-          width: 100%;
-        }
-
-        .back-main-btn {
-          width: 100%;
-        }
-
-        .route-path {
-          display: block;
-          margin: 8px 0 0;
-          font-size: 18px;
-        }
-
-        .journey-toolbar {
-          display: grid;
-          grid-template-columns: 1fr;
-        }
+        .left-panel, .right-panel { display: none; }
       }
     </style>
   </head>
   <body>
     <div id="root"></div>
     <script>
-      const { useEffect, useMemo, useState } = React;
+      const { useEffect, useMemo, useState, useRef, useCallback } = React;
 
       const fallbackApis = [
         {
           method: 'GET',
           path: '/api/graph',
           summary: 'Returns generated API dependency graph data for visualization.',
-          flow: [
-            'Receive request from UI explorer',
-            'Read .apimap/graph.json from cache files',
-            'Respond with graph payload'
-          ],
-          tables: [],
-          services: [],
-          caches: ['.apimap/graph.json'],
-          queues: [],
-          tableAccess: []
+          flow: ['Receive request from UI explorer', 'Read .apimap/graph.json from cache files', 'Respond with graph payload'],
+          tables: [], services: [], caches: ['.apimap/graph.json'], queues: [], tableAccess: []
         },
         {
           method: 'GET',
           path: '/api/apis',
           summary: 'Returns API knowledge summaries from cache for endpoint navigation.',
-          flow: [
-            'Receive request from UI explorer',
-            'Read .apimap/api_knowledge.json from cache files',
-            'Flatten API entries and return the list'
-          ],
-          tables: [],
-          services: [],
-          caches: ['.apimap/api_knowledge.json'],
-          queues: [],
-          tableAccess: []
+          flow: ['Receive request from UI explorer', 'Read .apimap/api_knowledge.json from cache files', 'Flatten API entries and return the list'],
+          tables: [], services: [], caches: ['.apimap/api_knowledge.json'], queues: [], tableAccess: []
         },
         {
           method: 'GET',
@@ -806,58 +847,48 @@
             'Update account_audit.last_viewed_at for recent activity tracking',
             'Return enriched account information to the caller'
           ],
-          tables: ['accounts', 'account_audit'],
-          services: [],
-          caches: [],
-          queues: [],
+          tables: ['accounts', 'account_audit'], services: [], caches: [], queues: [],
           tableAccess: [
-            {
-              table: 'accounts',
-              columns: ['id', 'status', 'tier'],
-              operations: ['SELECT'],
-              evidence: ['select id, status, tier from accounts where id = ?']
-            },
-            {
-              table: 'account_audit',
-              columns: ['last_viewed_at', 'account_id'],
-              operations: ['UPDATE'],
-              evidence: ['update account_audit set last_viewed_at = now() where account_id = ?']
-            }
+            { table: 'accounts', columns: ['id', 'status', 'tier'], operations: ['SELECT'], evidence: ['select id, status, tier from accounts where id = ?'] },
+            { table: 'account_audit', columns: ['last_viewed_at', 'account_id'], operations: ['UPDATE'], evidence: ['update account_audit set last_viewed_at = now() where account_id = ?'] }
           ]
         }
       ];
 
-      const resourceMeta = {
-        table: { color: '#a3dd60', title: 'TABLE' },
-        service: { color: '#74b8ff', title: 'SERVICE' },
-        cache: { color: '#5bd8c2', title: 'CACHE' },
-        queue: { color: '#f59ab0', title: 'QUEUE' }
-      };
-
-      function methodClass(method) {
-        return `m-${String(method || '').toLowerCase()}`;
+      /* ---- Utility functions ---- */
+      function methodBadgeClass(method) {
+        return 'mb-' + String(method || '').toLowerCase();
       }
 
-      function methodGradient(method) {
-        const value = String(method || '').toUpperCase();
-        if (value === 'GET') return 'url(#mGet)';
-        if (value === 'POST') return 'url(#mPost)';
-        if (value === 'PUT') return 'url(#mPut)';
-        if (value === 'PATCH') return 'url(#mPatch)';
-        if (value === 'DELETE') return 'url(#mDelete)';
-        return 'url(#mPost)';
+      function methodColor(method) {
+        const m = String(method || '').toUpperCase();
+        if (m === 'GET') return '#00d4b1';
+        if (m === 'POST') return '#4f7cff';
+        if (m === 'PUT') return '#ffb340';
+        if (m === 'PATCH') return '#a78bfa';
+        if (m === 'DELETE') return '#ff4d9e';
+        return '#4f7cff';
+      }
+
+      function methodGlow(method) {
+        const m = String(method || '').toUpperCase();
+        if (m === 'GET') return 'rgba(0, 212, 177, 0.25)';
+        if (m === 'POST') return 'rgba(79, 124, 255, 0.25)';
+        if (m === 'PUT') return 'rgba(255, 179, 64, 0.25)';
+        if (m === 'PATCH') return 'rgba(167, 139, 250, 0.25)';
+        if (m === 'DELETE') return 'rgba(255, 77, 158, 0.25)';
+        return 'rgba(79, 124, 255, 0.25)';
       }
 
       function dedupeStrings(values) {
-        const out = [];
-        const seen = new Set();
-        for (const value of values || []) {
-          const text = String(value || '').trim();
-          if (!text) continue;
-          const key = text.toLowerCase();
-          if (seen.has(key)) continue;
-          seen.add(key);
-          out.push(text);
+        const out = [], seen = new Set();
+        for (const v of values || []) {
+          const t = String(v || '').trim();
+          if (!t) continue;
+          const k = t.toLowerCase();
+          if (seen.has(k)) continue;
+          seen.add(k);
+          out.push(t);
         }
         return out;
       }
@@ -865,7 +896,6 @@
       function normalizeTableAccessEntries(raw) {
         if (!Array.isArray(raw)) return [];
         const entries = [];
-
         for (const item of raw) {
           if (!item || !item.table) continue;
           entries.push({
@@ -875,161 +905,112 @@
             evidence: dedupeStrings(Array.isArray(item.evidence) ? item.evidence : [])
           });
         }
-
         return entries;
       }
 
       function localTableAccess(api) {
-        const tableAccess = normalizeTableAccessEntries(api.tableAccess);
-        if (tableAccess.length) return tableAccess;
-
-        return dedupeStrings(api.tables).map((table) => ({
-          table,
-          columns: ['*'],
-          operations: ['UNKNOWN'],
-          evidence: []
-        }));
+        const ta = normalizeTableAccessEntries(api.tableAccess);
+        if (ta.length) return ta;
+        return dedupeStrings(api.tables).map(t => ({ table: t, columns: ['*'], operations: ['UNKNOWN'], evidence: [] }));
       }
 
-      function impactVerb(operations) {
-        const set = new Set((operations || []).map((value) => String(value || '').toUpperCase()));
-        const reads = set.has('SELECT');
-        const writes = set.has('INSERT') || set.has('UPDATE') || set.has('DELETE') || set.has('UPSERT');
-        if (reads && writes) return 'reads and writes';
-        if (reads) return 'reads';
-        if (writes) return 'writes';
+      function impactVerb(ops) {
+        const s = new Set((ops || []).map(v => String(v || '').toUpperCase()));
+        const r = s.has('SELECT'), w = s.has('INSERT') || s.has('UPDATE') || s.has('DELETE') || s.has('UPSERT');
+        if (r && w) return 'reads and writes';
+        if (r) return 'reads';
+        if (w) return 'writes';
         return 'touches';
       }
 
       function impactHow(verb, table, column, match) {
-        const prefix = `${verb.charAt(0).toUpperCase()}${verb.slice(1)}`;
-        if (!column) return `${prefix} table ${table}`;
-        if (match === 'explicit') return `${prefix} column ${column} in table ${table}`;
-        if (match === 'wildcard') return `${prefix} table ${table} via wildcard access; ${column} may be impacted`;
-        return `${prefix} table ${table}; column impact inferred from table-level metadata`;
+        const p = verb.charAt(0).toUpperCase() + verb.slice(1);
+        if (!column) return p + ' table ' + table;
+        if (match === 'explicit') return p + ' column ' + column + ' in table ' + table;
+        if (match === 'wildcard') return p + ' table ' + table + ' via wildcard access; ' + column + ' may be impacted';
+        return p + ' table ' + table + '; column impact inferred from table-level metadata';
       }
 
-      function buildLocalImpactPayload(apis, filters = {}) {
-        const tableFilter = String(filters.table || '').trim();
-        const columnFilter = String(filters.column || '').trim();
-        const tableFilterKey = tableFilter.toLowerCase();
-        const columnFilterKey = columnFilter.toLowerCase();
-        const tableMap = new Map();
-        const results = [];
-
+      function buildLocalImpactPayload(apis, filters) {
+        const tf = String(filters.table || '').trim();
+        const cf = String(filters.column || '').trim();
+        const tfk = tf.toLowerCase(), cfk = cf.toLowerCase();
+        const tMap = new Map(), results = [];
         for (const api of apis || []) {
           const access = localTableAccess(api);
-          for (const entry of access) {
-            const tableKey = entry.table.toLowerCase();
-            if (!tableMap.has(tableKey)) {
-              tableMap.set(tableKey, { table: entry.table, columns: new Set(), apiIds: new Set() });
-            }
-
-            const tableMeta = tableMap.get(tableKey);
-            tableMeta.apiIds.add(`${api.method} ${api.path}`);
-            for (const column of entry.columns) {
-              tableMeta.columns.add(column);
-            }
+          for (const e of access) {
+            const k = e.table.toLowerCase();
+            if (!tMap.has(k)) tMap.set(k, { table: e.table, columns: new Set(), apiIds: new Set() });
+            const m = tMap.get(k);
+            m.apiIds.add(api.method + ' ' + api.path);
+            for (const c of e.columns) m.columns.add(c);
           }
         }
-
-        if (tableFilter) {
+        if (tf) {
           for (const api of apis || []) {
-            const access = localTableAccess(api).filter((entry) => entry.table.toLowerCase() === tableFilterKey);
+            const access = localTableAccess(api).filter(e => e.table.toLowerCase() === tfk);
             if (!access.length) continue;
-
-            const operations = new Set();
-            const columns = new Set();
-            const evidence = [];
-            let match = 'table';
-            let matchedEntry = false;
-
-            for (const entry of access) {
-              const columnKeys = new Set((entry.columns || []).map((value) => value.toLowerCase()));
-              if (columnFilterKey) {
-                if (columnKeys.has(columnFilterKey)) {
-                  match = 'explicit';
-                } else if (columnKeys.has('*')) {
-                  if (match !== 'explicit') match = 'wildcard';
-                } else if (!entry.columns || !entry.columns.length) {
-                  if (match === 'table') match = 'inferred-table';
-                } else {
-                  continue;
-                }
+            const ops = new Set(), cols = new Set(), ev = [];
+            let match = 'table', matched = false;
+            for (const e of access) {
+              const ck = new Set((e.columns || []).map(v => v.toLowerCase()));
+              if (cfk) {
+                if (ck.has(cfk)) match = 'explicit';
+                else if (ck.has('*')) { if (match !== 'explicit') match = 'wildcard'; }
+                else if (!e.columns || !e.columns.length) { if (match === 'table') match = 'inferred-table'; }
+                else continue;
               }
-
-              matchedEntry = true;
-              for (const operation of entry.operations || []) operations.add(operation);
-              for (const column of entry.columns || []) columns.add(column);
-              for (const hint of entry.evidence || []) {
-                if (evidence.length < 2) evidence.push(hint);
-              }
+              matched = true;
+              for (const o of e.operations || []) ops.add(o);
+              for (const c of e.columns || []) cols.add(c);
+              for (const h of e.evidence || []) { if (ev.length < 2) ev.push(h); }
             }
-
-            if (!matchedEntry) continue;
-
+            if (!matched) continue;
             const method = String(api.method || '').toUpperCase();
             const path = String(api.path || '');
-            const verb = impactVerb([...operations]);
-
+            const verb = impactVerb([...ops]);
             results.push({
-              method,
-              path,
-              summary: api.summary || `${method} ${path} endpoint`,
-              table: tableFilter,
-              operations: [...operations],
-              columns: [...columns],
-              columnMatch: columnFilterKey ? match : 'table',
-              impact: verb,
-              how: impactHow(verb, tableFilter, columnFilter, match),
-              flowMatches: (api.flow || []).filter((step) => {
-                const text = String(step || '').toLowerCase();
-                if (text.includes(tableFilterKey)) return true;
-                return columnFilterKey ? text.includes(columnFilterKey) : false;
+              method, path, summary: api.summary || method + ' ' + path + ' endpoint',
+              table: tf, operations: [...ops], columns: [...cols],
+              columnMatch: cfk ? match : 'table', impact: verb,
+              how: impactHow(verb, tf, cf, match),
+              flowMatches: (api.flow || []).filter(s => {
+                const t = String(s || '').toLowerCase();
+                return t.includes(tfk) || (cfk ? t.includes(cfk) : false);
               }),
-              evidence
+              evidence: ev
             });
           }
         }
-
         return {
           totalApis: (apis || []).length,
-          tables: [...tableMap.values()].map((entry) => ({
-            table: entry.table,
-            columns: [...entry.columns].sort((a, b) => {
-              if (a === '*') return -1;
-              if (b === '*') return 1;
-              return a.localeCompare(b);
-            }),
-            apiCount: entry.apiIds.size
+          tables: [...tMap.values()].map(e => ({
+            table: e.table,
+            columns: [...e.columns].sort((a, b) => a === '*' ? -1 : b === '*' ? 1 : a.localeCompare(b)),
+            apiCount: e.apiIds.size
           })).sort((a, b) => a.table.localeCompare(b.table)),
-          filters: { table: tableFilter, column: columnFilter },
-          results: results.sort((a, b) => `${a.method} ${a.path}`.localeCompare(`${b.method} ${b.path}`))
+          filters: { table: tf, column: cf },
+          results: results.sort((a, b) => (a.method + ' ' + a.path).localeCompare(b.method + ' ' + b.path))
         };
       }
 
-      function columnMatchLabel(value) {
-        if (value === 'explicit') return 'Explicit column mapping';
-        if (value === 'wildcard') return 'Wildcard query mapping';
-        if (value === 'inferred-table') return 'Inferred from table-level metadata';
+      function columnMatchLabel(v) {
+        if (v === 'explicit') return 'Explicit column mapping';
+        if (v === 'wildcard') return 'Wildcard query mapping';
+        if (v === 'inferred-table') return 'Inferred from table-level metadata';
         return 'Table-level mapping';
       }
 
       function normalizeApis(raw) {
-        const list = Array.isArray(raw) ? raw : [];
-        const deduped = [];
-        const seen = new Set();
-
+        const list = Array.isArray(raw) ? raw : [], deduped = [], seen = new Set();
         for (const item of list) {
           if (!item || !item.method || !item.path) continue;
           const method = String(item.method).toUpperCase();
-          const key = `${method} ${item.path}`;
+          const key = method + ' ' + item.path;
           if (seen.has(key)) continue;
           seen.add(key);
-
           deduped.push({
-            method,
-            path: item.path,
+            method, path: item.path,
             summary: item.summary || 'No summary available.',
             flow: Array.isArray(item.flow) ? item.flow : [],
             tables: dedupeStrings(Array.isArray(item.tables) ? item.tables : []),
@@ -1039,153 +1020,562 @@
             tableAccess: normalizeTableAccessEntries(item.tableAccess)
           });
         }
-
         return deduped;
       }
 
       function truncate(text, size) {
-        const value = String(text || '');
-        return value.length <= size ? value : `${value.slice(0, size - 1)}...`;
+        const v = String(text || '');
+        return v.length <= size ? v : v.slice(0, size - 1) + '...';
       }
 
-      function buildApiPositions(apis) {
-        const cx = 590;
-        const cy = 360;
-        const radius = Math.max(210, 250 + apis.length * 6);
-        return apis.map((api, i) => {
-          const angle = (Math.PI * 2 * i) / Math.max(apis.length, 1) - Math.PI / 2;
-          return {
-            id: `${api.method} ${api.path}`,
-            x: cx + Math.cos(angle) * radius,
-            y: cy + Math.sin(angle) * radius,
-            r: 66
-          };
-        });
-      }
-
-      function buildJourney(api) {
-        if (!api) {
-          return {
-            apiNode: null,
-            flowNodes: [],
-            resourceNodes: [],
-            width: 1200,
-            height: 560,
-            anchor: null
-          };
+      function stableHash(text) {
+        let h = 2166136261;
+        const v = String(text || '');
+        for (let i = 0; i < v.length; i++) {
+          h ^= v.charCodeAt(i);
+          h += (h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24);
         }
-
-        const apiNode = { x: 140, y: 260, r: 64 };
-        const flowNodes = (api.flow || []).map((step, i) => ({
-          id: `flow-${i}`,
-          label: step,
-          index: i,
-          x: 360 + i * 230,
-          y: 260 + (i % 2 === 0 ? -76 : 76),
-          w: 172,
-          h: 70
-        }));
-
-        const resources = [];
-        for (const table of api.tables) resources.push({ type: 'table', label: table, ...resourceMeta.table });
-        for (const service of api.services) resources.push({ type: 'service', label: service, ...resourceMeta.service });
-        for (const cache of api.caches) resources.push({ type: 'cache', label: cache, ...resourceMeta.cache });
-        for (const queue of api.queues) resources.push({ type: 'queue', label: queue, ...resourceMeta.queue });
-
-        const anchor = flowNodes.length
-          ? { x: flowNodes[flowNodes.length - 1].x + flowNodes[flowNodes.length - 1].w / 2, y: flowNodes[flowNodes.length - 1].y }
-          : { x: apiNode.x + apiNode.r, y: apiNode.y };
-
-        const columns = resources.length > 8 ? 3 : 2;
-        const resourceStartX = Math.max(anchor.x + 240, 660);
-        const resourceNodes = resources.map((resource, i) => ({
-          ...resource,
-          id: `resource-${resource.type}-${i}`,
-          x: resourceStartX + (i % columns) * 194,
-          y: 120 + Math.floor(i / columns) * 108,
-          r: 36
-        }));
-
-        const width = Math.max(
-          1200,
-          flowNodes.length ? flowNodes[flowNodes.length - 1].x + 360 : 900,
-          resourceNodes.length ? resourceNodes[resourceNodes.length - 1].x + 120 : 900
-        );
-        const height = Math.max(560, 220 + Math.ceil(Math.max(resourceNodes.length, 1) / columns) * 108);
-
-        return { apiNode, flowNodes, resourceNodes, width, height, anchor };
+        return h >>> 0;
       }
 
-      function Chips({ items, empty }) {
-        if (!items.length) {
-          return React.createElement('p', { className: 'empty' }, empty);
-        }
-
-        return React.createElement(
-          'div',
-          { className: 'chips' },
-          items.map((item, i) => React.createElement('span', { className: 'chip', key: `${item}-${i}` }, item))
-        );
+      function mulberry32(seed) {
+        return function() {
+          let t = seed += 0x6D2B79F5;
+          t = Math.imul(t ^ (t >>> 15), t | 1);
+          t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
       }
 
+      /* ---- SVG Icon helpers ---- */
+      function SvgIcon({ d, size = 16, color = 'currentColor' }) {
+        return React.createElement('svg', {
+          width: size, height: size, viewBox: '0 0 24 24',
+          fill: 'none', stroke: color, strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round'
+        }, React.createElement('path', { d }));
+      }
+
+      /* ---- Bubble Graph Component (D3) ---- */
+      function BubbleGraph({ apis, selectedId, onSelectApi, onHoverApi }) {
+        const svgRef = useRef(null);
+        const simRef = useRef(null);
+
+        useEffect(() => {
+          if (!svgRef.current || !apis.length) return;
+
+          const svg = d3.select(svgRef.current);
+          const container = svgRef.current.parentElement;
+          const width = container.clientWidth;
+          const height = container.clientHeight;
+
+          svg.attr('viewBox', '0 0 ' + width + ' ' + height);
+          svg.selectAll('*').remove();
+
+          const defs = svg.append('defs');
+
+          /* Glow filter */
+          const filter = defs.append('filter').attr('id', 'glow').attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
+          filter.append('feGaussianBlur').attr('stdDeviation', '4').attr('result', 'coloredBlur');
+          const feMerge = filter.append('feMerge');
+          feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+          feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+          const filterHover = defs.append('filter').attr('id', 'glow-hover').attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
+          filterHover.append('feGaussianBlur').attr('stdDeviation', '8').attr('result', 'coloredBlur');
+          const feMerge2 = filterHover.append('feMerge');
+          feMerge2.append('feMergeNode').attr('in', 'coloredBlur');
+          feMerge2.append('feMergeNode').attr('in', 'SourceGraphic');
+
+          /* Group tables by API for clustering */
+          const tableGroups = {};
+          apis.forEach(api => {
+            const tables = api.tables && api.tables.length ? api.tables : ['_none'];
+            const key = tables.sort().join(',');
+            if (!tableGroups[key]) tableGroups[key] = [];
+            tableGroups[key].push(api);
+          });
+
+          const groupKeys = Object.keys(tableGroups);
+          const groupCenters = {};
+          groupKeys.forEach((key, i) => {
+            const angle = (2 * Math.PI * i) / Math.max(groupKeys.length, 1);
+            const radius = Math.min(width, height) * 0.25;
+            groupCenters[key] = {
+              x: width / 2 + Math.cos(angle) * radius,
+              y: height / 2 + Math.sin(angle) * radius
+            };
+          });
+
+          /* Compute resources connected to each api */
+          const resourceCount = api =>
+            (api.tables ? api.tables.length : 0) +
+            (api.services ? api.services.length : 0) +
+            (api.caches ? api.caches.length : 0) +
+            (api.queues ? api.queues.length : 0);
+
+          const maxRes = Math.max(1, ...apis.map(resourceCount));
+
+          const nodes = apis.map(api => {
+            const tables = api.tables && api.tables.length ? api.tables : ['_none'];
+            const key = tables.sort().join(',');
+            const r = 18 + (resourceCount(api) / maxRes) * 22;
+            const rng = mulberry32(stableHash(api.method + api.path));
+            return {
+              id: api.method + ' ' + api.path,
+              api,
+              r,
+              color: methodColor(api.method),
+              glow: methodGlow(api.method),
+              groupKey: key,
+              fx: null, fy: null,
+              x: groupCenters[key].x + (rng() - 0.5) * 60,
+              y: groupCenters[key].y + (rng() - 0.5) * 60,
+              floatPhase: rng() * Math.PI * 2,
+              floatAmp: 1.5 + rng() * 2.5
+            };
+          });
+
+          /* Build links between apis that share tables */
+          const links = [];
+          const nodeMap = new Map(nodes.map(n => [n.id, n]));
+          for (let i = 0; i < apis.length; i++) {
+            for (let j = i + 1; j < apis.length; j++) {
+              const tablesI = new Set(apis[i].tables || []);
+              const shared = (apis[j].tables || []).filter(t => tablesI.has(t));
+              if (shared.length) {
+                links.push({
+                  source: nodes[i],
+                  target: nodes[j],
+                  strength: shared.length
+                });
+              }
+            }
+          }
+
+          /* D3 force simulation */
+          const sim = d3.forceSimulation(nodes)
+            .force('charge', d3.forceManyBody().strength(-120))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('collision', d3.forceCollide().radius(d => d.r + 6))
+            .force('link', d3.forceLink(links).id(d => d.id).distance(100).strength(d => d.strength * 0.15))
+            .force('x', d3.forceX().x(d => groupCenters[d.groupKey].x).strength(0.05))
+            .force('y', d3.forceY().y(d => groupCenters[d.groupKey].y).strength(0.05))
+            .alphaDecay(0.02);
+
+          simRef.current = sim;
+
+          /* Render */
+          const g = svg.append('g');
+
+          /* Grid background dots */
+          const gridG = g.append('g');
+          for (let x = 0; x < width; x += 40) {
+            for (let y = 0; y < height; y += 40) {
+              gridG.append('circle').attr('cx', x).attr('cy', y).attr('r', 0.5)
+                .attr('fill', 'rgba(79, 124, 255, 0.08)');
+            }
+          }
+
+          /* Links */
+          const linkG = g.append('g');
+          const linkEls = linkG.selectAll('line').data(links).enter().append('line')
+            .attr('stroke', 'rgba(79, 124, 255, 0.12)')
+            .attr('stroke-width', d => 0.5 + d.strength * 0.5);
+
+          /* Bubbles */
+          const bubbleG = g.append('g');
+          const bubbles = bubbleG.selectAll('g').data(nodes).enter().append('g')
+            .attr('cursor', 'pointer')
+            .on('click', (event, d) => { onSelectApi(d.api, false); })
+            .on('mouseenter', (event, d) => {
+              d3.select(event.currentTarget).select('.bubble-outer').attr('filter', 'url(#glow-hover)');
+              onHoverApi(d.api, event.pageX, event.pageY);
+            })
+            .on('mouseleave', (event, d) => {
+              d3.select(event.currentTarget).select('.bubble-outer').attr('filter', 'url(#glow)');
+              onHoverApi(null);
+            });
+
+          /* Outer glow circle */
+          bubbles.append('circle')
+            .attr('class', 'bubble-outer')
+            .attr('r', d => d.r)
+            .attr('fill', d => d.glow)
+            .attr('filter', 'url(#glow)');
+
+          /* Inner circle */
+          bubbles.append('circle')
+            .attr('r', d => d.r - 3)
+            .attr('fill', 'rgba(10, 14, 26, 0.8)')
+            .attr('stroke', d => d.color)
+            .attr('stroke-width', 1.5);
+
+          /* Method text */
+          bubbles.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('dy', d => d.r > 28 ? -3 : 0)
+            .attr('fill', d => d.color)
+            .attr('font-size', d => d.r > 28 ? 9 : 8)
+            .attr('font-weight', 800)
+            .attr('letter-spacing', '0.04em')
+            .text(d => d.api.method);
+
+          /* Path text - only for larger bubbles */
+          bubbles.filter(d => d.r > 25).append('text')
+            .attr('text-anchor', 'middle')
+            .attr('dy', 9)
+            .attr('fill', 'rgba(232, 237, 245, 0.7)')
+            .attr('font-size', 7)
+            .text(d => {
+              const p = d.api.path;
+              return p.length > 18 ? p.slice(0, 17) + '..' : p;
+            });
+
+          /* Floating animation */
+          let animFrame;
+          const startTime = Date.now();
+
+          function animate() {
+            const t = (Date.now() - startTime) / 1000;
+            bubbles.attr('transform', d => {
+              const floatY = Math.sin(t * 0.6 + d.floatPhase) * d.floatAmp;
+              return 'translate(' + d.x + ',' + (d.y + floatY) + ')';
+            });
+
+            linkEls
+              .attr('x1', d => d.source.x)
+              .attr('y1', d => d.source.y)
+              .attr('x2', d => d.target.x)
+              .attr('y2', d => d.target.y);
+
+            animFrame = requestAnimationFrame(animate);
+          }
+
+          sim.on('tick', () => {
+            /* Constrain to bounds */
+            nodes.forEach(d => {
+              d.x = Math.max(d.r + 10, Math.min(width - d.r - 10, d.x));
+              d.y = Math.max(d.r + 10, Math.min(height - d.r - 10, d.y));
+            });
+          });
+
+          animate();
+
+          return () => {
+            cancelAnimationFrame(animFrame);
+            sim.stop();
+          };
+        }, [apis]);
+
+        /* Highlight selected bubble */
+        useEffect(() => {
+          if (!svgRef.current) return;
+          const svg = d3.select(svgRef.current);
+          svg.selectAll('.bubble-outer')
+            .attr('stroke', function(d) {
+              return d && d.id === selectedId ? d.color : 'none';
+            })
+            .attr('stroke-width', function(d) {
+              return d && d.id === selectedId ? 2 : 0;
+            });
+        }, [selectedId]);
+
+        return React.createElement('svg', { ref: svgRef, className: 'canvas-svg' });
+      }
+
+      /* ---- Flow Overlay Component ---- */
+      function FlowOverlay({ api, onClose }) {
+        const svgRef = useRef(null);
+
+        useEffect(() => {
+          if (!svgRef.current || !api) return;
+
+          const svg = d3.select(svgRef.current);
+          svg.selectAll('*').remove();
+
+          const flowSteps = api.flow || [];
+          const resources = [];
+          (api.tables || []).forEach(t => resources.push({ type: 'database', label: t, color: '#00d4b1' }));
+          (api.services || []).forEach(s => resources.push({ type: 'service', label: s, color: '#4f7cff' }));
+          (api.caches || []).forEach(c => resources.push({ type: 'cache', label: c, color: '#a78bfa' }));
+          (api.queues || []).forEach(q => resources.push({ type: 'queue', label: q, color: '#ffb340' }));
+
+          const stepWidth = 160, stepHeight = 56, stepGap = 60;
+          const apiNodeX = 100, apiNodeY = 200;
+          const startX = 300;
+          const totalFlowWidth = startX + flowSteps.length * (stepWidth + stepGap) + 100;
+          const resStartX = Math.max(totalFlowWidth - 100, startX + 200);
+          const totalWidth = Math.max(1000, resStartX + resources.length * 180 + 100);
+          const totalHeight = 450;
+
+          svg.attr('viewBox', '0 0 ' + totalWidth + ' ' + totalHeight)
+             .attr('width', totalWidth).attr('height', totalHeight);
+
+          const defs = svg.append('defs');
+          const glowF = defs.append('filter').attr('id', 'fglow').attr('x', '-50%').attr('y', '-50%').attr('width', '200%').attr('height', '200%');
+          glowF.append('feGaussianBlur').attr('stdDeviation', '6').attr('result', 'blur');
+          const fm = glowF.append('feMerge');
+          fm.append('feMergeNode').attr('in', 'blur');
+          fm.append('feMergeNode').attr('in', 'SourceGraphic');
+
+          /* Grid */
+          for (let x = 0; x < totalWidth; x += 30) {
+            for (let y = 0; y < totalHeight; y += 30) {
+              svg.append('circle').attr('cx', x).attr('cy', y).attr('r', 0.4)
+                .attr('fill', 'rgba(79, 124, 255, 0.05)');
+            }
+          }
+
+          /* API center node */
+          const apiColor = methodColor(api.method);
+          const apiG = svg.append('g').attr('transform', 'translate(' + apiNodeX + ',' + apiNodeY + ')')
+            .style('opacity', 0);
+
+          apiG.append('rect').attr('x', -60).attr('y', -30).attr('width', 120).attr('height', 60)
+            .attr('rx', 10).attr('fill', 'rgba(10, 14, 26, 0.9)')
+            .attr('stroke', apiColor).attr('stroke-width', 2).attr('filter', 'url(#fglow)');
+
+          apiG.append('text').attr('text-anchor', 'middle').attr('y', -6)
+            .attr('fill', apiColor).attr('font-size', 12).attr('font-weight', 800).text(api.method);
+
+          apiG.append('text').attr('text-anchor', 'middle').attr('y', 14)
+            .attr('fill', 'rgba(232, 237, 245, 0.8)').attr('font-size', 9)
+            .text(api.path.length > 20 ? api.path.slice(0, 19) + '..' : api.path);
+
+          apiG.transition().delay(100).duration(400).style('opacity', 1);
+
+          /* Flow steps */
+          flowSteps.forEach((step, i) => {
+            const sx = startX + i * (stepWidth + stepGap);
+            const sy = apiNodeY + (i % 2 === 0 ? -70 : 70);
+
+            /* Edge from previous node */
+            const prevX = i === 0 ? apiNodeX + 60 : startX + (i - 1) * (stepWidth + stepGap) + stepWidth;
+            const prevY = i === 0 ? apiNodeY : apiNodeY + ((i - 1) % 2 === 0 ? -70 : 70);
+
+            const edge = svg.append('path')
+              .attr('d', 'M' + prevX + ',' + prevY + ' C' + (prevX + 40) + ',' + prevY + ' ' + (sx - 40) + ',' + sy + ' ' + sx + ',' + sy)
+              .attr('fill', 'none').attr('stroke', 'rgba(79, 124, 255, 0.4)')
+              .attr('stroke-width', 1.5)
+              .attr('stroke-dasharray', '200')
+              .attr('stroke-dashoffset', '200');
+
+            edge.transition().delay(300 + i * 200).duration(500)
+              .attr('stroke-dashoffset', '0')
+              .on('end', function() {
+                d3.select(this).attr('stroke-dasharray', '8, 6')
+                  .attr('stroke-dashoffset', '0')
+                  .classed('flow-edge-animated', true);
+              });
+
+            const stepG = svg.append('g').attr('transform', 'translate(' + sx + ',' + sy + ')')
+              .style('opacity', 0);
+
+            stepG.append('rect').attr('x', 0).attr('y', -stepHeight / 2)
+              .attr('width', stepWidth).attr('height', stepHeight).attr('rx', 8)
+              .attr('fill', 'rgba(16, 22, 40, 0.9)')
+              .attr('stroke', 'rgba(79, 124, 255, 0.3)').attr('stroke-width', 1);
+
+            stepG.append('text').attr('x', stepWidth / 2).attr('y', -8)
+              .attr('text-anchor', 'middle').attr('fill', '#4f7cff').attr('font-size', 9).attr('font-weight', 700)
+              .text('Step ' + (i + 1));
+
+            /* Wrap step text */
+            const words = step.split(' ');
+            let line = '', lineY = 6;
+            words.forEach(w => {
+              const test = line + (line ? ' ' : '') + w;
+              if (test.length > 22 && line) {
+                stepG.append('text').attr('x', stepWidth / 2).attr('y', lineY)
+                  .attr('text-anchor', 'middle').attr('fill', 'rgba(232, 237, 245, 0.6)')
+                  .attr('font-size', 8).text(line);
+                lineY += 11;
+                line = w;
+              } else {
+                line = test;
+              }
+            });
+            if (line) {
+              stepG.append('text').attr('x', stepWidth / 2).attr('y', lineY)
+                .attr('text-anchor', 'middle').attr('fill', 'rgba(232, 237, 245, 0.6)')
+                .attr('font-size', 8).text(line);
+            }
+
+            stepG.transition().delay(400 + i * 200).duration(350).style('opacity', 1);
+          });
+
+          /* Resource nodes */
+          const resBaseY = 60;
+          resources.forEach((res, i) => {
+            const rx = resStartX + i * 160;
+            const ry = resBaseY + (i % 2 === 0 ? 0 : 50);
+
+            /* Edge from last flow step or api node */
+            const lastFlowX = flowSteps.length
+              ? startX + (flowSteps.length - 1) * (stepWidth + stepGap) + stepWidth
+              : apiNodeX + 60;
+            const lastFlowY = flowSteps.length
+              ? apiNodeY + ((flowSteps.length - 1) % 2 === 0 ? -70 : 70)
+              : apiNodeY;
+
+            const resEdge = svg.append('path')
+              .attr('d', 'M' + lastFlowX + ',' + lastFlowY + ' C' + (lastFlowX + 60) + ',' + lastFlowY + ' ' + (rx - 40) + ',' + ry + ' ' + rx + ',' + ry)
+              .attr('fill', 'none').attr('stroke', res.color + '44')
+              .attr('stroke-width', 1).attr('stroke-dasharray', '4, 4')
+              .style('opacity', 0);
+
+            resEdge.transition()
+              .delay(600 + (flowSteps.length + i) * 150).duration(400)
+              .style('opacity', 1);
+
+            /* Node */
+            const resG = svg.append('g').attr('transform', 'translate(' + rx + ',' + ry + ')')
+              .style('opacity', 0);
+
+            if (res.type === 'database') {
+              /* Cylinder shape */
+              resG.append('ellipse').attr('rx', 28).attr('ry', 8)
+                .attr('cy', -16).attr('fill', 'rgba(10, 14, 26, 0.9)')
+                .attr('stroke', res.color).attr('stroke-width', 1.5);
+              resG.append('rect').attr('x', -28).attr('y', -16).attr('width', 56).attr('height', 28)
+                .attr('fill', 'rgba(10, 14, 26, 0.9)');
+              resG.append('ellipse').attr('rx', 28).attr('ry', 8)
+                .attr('cy', 12).attr('fill', 'rgba(10, 14, 26, 0.9)')
+                .attr('stroke', res.color).attr('stroke-width', 1.5);
+              resG.append('line').attr('x1', -28).attr('y1', -16).attr('x2', -28).attr('y2', 12)
+                .attr('stroke', res.color).attr('stroke-width', 1.5);
+              resG.append('line').attr('x1', 28).attr('y1', -16).attr('x2', 28).attr('y2', 12)
+                .attr('stroke', res.color).attr('stroke-width', 1.5);
+            } else {
+              /* Hexagon for middleware/service */
+              const hex = 'M0,-22 L19,-11 L19,11 L0,22 L-19,11 L-19,-11 Z';
+              resG.append('path').attr('d', hex)
+                .attr('fill', 'rgba(10, 14, 26, 0.9)')
+                .attr('stroke', res.color).attr('stroke-width', 1.5);
+            }
+
+            resG.append('text').attr('text-anchor', 'middle').attr('y', 34)
+              .attr('fill', res.color).attr('font-size', 9).attr('font-weight', 700)
+              .text(res.type.toUpperCase());
+
+            resG.append('text').attr('text-anchor', 'middle').attr('y', 46)
+              .attr('fill', 'rgba(232, 237, 245, 0.6)').attr('font-size', 8)
+              .text(res.label.length > 20 ? res.label.slice(0, 19) + '..' : res.label);
+
+            resG.attr('filter', 'url(#fglow)');
+            resG.transition().delay(700 + (flowSteps.length + i) * 150).duration(350).style('opacity', 1);
+          });
+
+        }, [api]);
+
+        if (!api) return null;
+
+        return React.createElement('div', { className: 'flow-overlay' }, [
+          React.createElement('div', { className: 'flow-overlay-header', key: 'header' }, [
+            React.createElement('div', { className: 'flow-overlay-title', key: 'title' }, [
+              React.createElement('span', {
+                className: 'method-badge ' + methodBadgeClass(api.method), key: 'm'
+              }, api.method),
+              React.createElement('h2', { key: 'h' }, api.path),
+            ]),
+            React.createElement('button', {
+              className: 'flow-close-btn', key: 'close',
+              onClick: onClose
+            }, '\u2715')
+          ]),
+          React.createElement('div', { className: 'flow-canvas', key: 'canvas' }, [
+            React.createElement('svg', { ref: svgRef, className: 'flow-svg', key: 'svg' })
+          ])
+        ]);
+      }
+
+      /* ---- Main App ---- */
       function App() {
         const [rawApis, setRawApis] = useState(fallbackApis);
         const [selectedId, setSelectedId] = useState('');
-        const [focused, setFocused] = useState(null);
         const [error, setError] = useState('');
         const [search, setSearch] = useState('');
-        const [view, setView] = useState('overview');
         const [impactTable, setImpactTable] = useState('');
         const [impactColumn, setImpactColumn] = useState('');
         const [impactTables, setImpactTables] = useState([]);
         const [impactResults, setImpactResults] = useState([]);
         const [impactLoading, setImpactLoading] = useState(false);
         const [impactError, setImpactError] = useState('');
+        const [flowApi, setFlowApi] = useState(null);
+        const [tooltip, setTooltip] = useState(null);
+        const [activeNav, setActiveNav] = useState('explorer');
+        const [animatedCount, setAnimatedCount] = useState(0);
+        const [logs, setLogs] = useState([]);
 
         const apis = useMemo(() => normalizeApis(rawApis), [rawApis]);
         const filteredApis = useMemo(() => {
-          const value = search.trim().toLowerCase();
-          if (!value) return apis;
-          return apis.filter((api) => `${api.method} ${api.path} ${api.summary}`.toLowerCase().includes(value));
+          const v = search.trim().toLowerCase();
+          if (!v) return apis;
+          return apis.filter(a => (a.method + ' ' + a.path + ' ' + a.summary).toLowerCase().includes(v));
         }, [apis, search]);
 
         const availableImpactColumns = useMemo(() => {
           if (!impactTable) return [];
-          const selected = impactTables.find((tableMeta) => tableMeta.table === impactTable);
-          if (!selected || !Array.isArray(selected.columns)) return [];
-          return selected.columns.filter((column) => column !== '*');
+          const sel = impactTables.find(t => t.table === impactTable);
+          if (!sel || !Array.isArray(sel.columns)) return [];
+          return sel.columns.filter(c => c !== '*');
         }, [impactTable, impactTables]);
 
-        const apiPositions = useMemo(() => buildApiPositions(apis), [apis]);
+        const selectedApi = useMemo(() => {
+          if (!selectedId) return null;
+          return apis.find(a => a.method + ' ' + a.path === selectedId) || null;
+        }, [apis, selectedId]);
+
+        const tableCount = useMemo(() => {
+          const s = new Set();
+          apis.forEach(a => (a.tables || []).forEach(t => s.add(t)));
+          return s.size;
+        }, [apis]);
+
+        /* Animated count-up */
+        useEffect(() => {
+          const target = impactResults.length;
+          if (target === 0) { setAnimatedCount(0); return; }
+          let current = 0;
+          const step = Math.max(1, Math.ceil(target / 20));
+          const interval = setInterval(() => {
+            current = Math.min(current + step, target);
+            setAnimatedCount(current);
+            if (current >= target) clearInterval(interval);
+          }, 30);
+          return () => clearInterval(interval);
+        }, [impactResults.length]);
+
+        /* Add log helper */
+        function addLog(msg, type) {
+          const now = new Date();
+          const time = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+          setLogs(prev => [...prev.slice(-20), { time, msg, type }]);
+        }
 
         async function runImpactQuery(nextTable, nextColumn) {
           setImpactLoading(true);
-
-          const tableValue = String(nextTable || '').trim();
-          const columnValue = String(nextColumn || '').trim();
+          const tv = String(nextTable || '').trim();
+          const cv = String(nextColumn || '').trim();
           const params = new URLSearchParams();
-          if (tableValue) params.set('table', tableValue);
-          if (columnValue) params.set('column', columnValue);
-
+          if (tv) params.set('table', tv);
+          if (cv) params.set('column', cv);
+          if (tv) addLog('Analyzing impact for ' + tv + (cv ? '.' + cv : '') + '...', 'ok');
           try {
-            const suffix = params.toString() ? `?${params.toString()}` : '';
-            const response = await fetch(`/api/impact${suffix}`);
-            if (!response.ok) {
-              throw new Error('Impact cache unavailable. Showing locally inferred impact.');
-            }
-
-            const payload = await response.json();
-            const nextTables = Array.isArray(payload.tables) ? payload.tables : [];
-            const nextResults = Array.isArray(payload.results) ? payload.results : [];
-
-            setImpactTables(nextTables);
-            setImpactResults(nextResults);
+            const suffix = params.toString() ? '?' + params.toString() : '';
+            const res = await fetch('/api/impact' + suffix);
+            if (!res.ok) throw new Error('Impact cache unavailable.');
+            const payload = await res.json();
+            setImpactTables(Array.isArray(payload.tables) ? payload.tables : []);
+            setImpactResults(Array.isArray(payload.results) ? payload.results : []);
             setImpactError('');
+            if (tv) addLog('Found ' + (payload.results || []).length + ' impacted APIs', 'ok');
           } catch (err) {
-            const localPayload = buildLocalImpactPayload(apis, { table: tableValue, column: columnValue });
-            setImpactTables(localPayload.tables);
-            setImpactResults(localPayload.results);
-            setImpactError(tableValue ? (err.message || 'Showing locally inferred impact results.') : '');
+            const local = buildLocalImpactPayload(apis, { table: tv, column: cv });
+            setImpactTables(local.tables);
+            setImpactResults(local.results);
+            setImpactError(tv ? (err.message || 'Using local inference.') : '');
+            if (tv) addLog('Using locally inferred impact data', 'warn');
           } finally {
             setImpactLoading(false);
           }
@@ -1193,21 +1583,21 @@
 
         useEffect(() => {
           async function loadApis() {
+            addLog('Loading API knowledge...', 'ok');
             try {
-              const response = await fetch('/api/apis');
-              if (!response.ok) {
-                throw new Error('Using demo data. Run `apimap scan .` to load live API cache.');
-              }
-
-              const payload = await response.json();
-              setRawApis(Array.isArray(payload.apis) ? payload.apis : fallbackApis);
+              const res = await fetch('/api/apis');
+              if (!res.ok) throw new Error('Using demo data. Run `apimap scan .` to load live API cache.');
+              const payload = await res.json();
+              const loaded = Array.isArray(payload.apis) ? payload.apis : fallbackApis;
+              setRawApis(loaded);
               setError('');
+              addLog('Loaded ' + loaded.length + ' API endpoints', 'ok');
             } catch (err) {
               setRawApis(fallbackApis);
-              setError(err.message || 'Unable to load APIs from cache.');
+              setError(err.message || 'Unable to load APIs.');
+              addLog(err.message || 'Fallback to demo data', 'warn');
             }
           }
-
           loadApis();
         }, []);
 
@@ -1218,618 +1608,323 @@
         }, [apis]);
 
         useEffect(() => {
-          if (!apis.length) {
-            setSelectedId('');
-            setFocused(null);
-            setView('overview');
-            return;
-          }
+          if (impactTable) runImpactQuery(impactTable, impactColumn);
+        }, [impactTable, impactColumn]);
 
-          const exists = apis.some((api) => `${api.method} ${api.path}` === selectedId);
-          if (!exists && selectedId) {
-            setSelectedId('');
-            setFocused(null);
-            setView('overview');
-          }
-        }, [apis, selectedId]);
-
-        const selectedApi = useMemo(() => {
-          if (!selectedId) return null;
-          return apis.find((api) => `${api.method} ${api.path}` === selectedId) || null;
-        }, [apis, selectedId]);
-
-        const selectedResourceCount = selectedApi
-          ? selectedApi.tables.length + selectedApi.services.length + selectedApi.caches.length + selectedApi.queues.length
-          : 0;
-
-        const journey = useMemo(() => buildJourney(selectedApi), [selectedApi]);
-
-        function onSelectApi(api, goDetail) {
-          const id = `${api.method} ${api.path}`;
+        function onSelectApi(api, openFlow) {
+          const id = api.method + ' ' + api.path;
           setSelectedId(id);
-          setFocused({ title: `${api.method} ${api.path}`, body: api.summary });
-          if (goDetail) setView('detail');
+          if (openFlow) setFlowApi(api);
+          addLog('Selected ' + api.method + ' ' + api.path, 'ok');
         }
 
-        function renderImpactAnalysisCard() {
-          return React.createElement('div', { className: 'showcase', key: 'impact' }, [
-            React.createElement('h3', { key: 'title' }, '3. Impact Analysis'),
-            React.createElement('p', { key: 'body' }, 'Select a table and optional column to see which APIs are impacted and how they touch the data.'),
-            React.createElement('div', { className: 'impact-controls', key: 'controls' }, [
-              React.createElement('select', {
-                className: 'impact-select',
-                value: impactTable,
-                onChange: (event) => {
-                  setImpactTable(event.target.value);
-                  setImpactColumn('');
-                },
-                key: 'table'
-              }, [
-                React.createElement('option', { value: '', key: 'placeholder' }, 'Select table'),
-                ...impactTables.map((tableMeta) => React.createElement(
-                  'option',
-                  { value: tableMeta.table, key: tableMeta.table },
-                  `${tableMeta.table} (${tableMeta.apiCount})`
-                ))
-              ]),
-              React.createElement('input', {
-                className: 'impact-input',
-                list: 'impact-columns-list',
-                value: impactColumn,
-                onChange: (event) => setImpactColumn(event.target.value),
-                placeholder: impactTable ? 'Optional column (ex: status)' : 'Select a table first',
-                disabled: !impactTable,
-                key: 'column'
-              }),
-              React.createElement(
-                'datalist',
-                { id: 'impact-columns-list', key: 'column-list' },
-                availableImpactColumns.map((column) => React.createElement('option', { value: column, key: column }))
-              ),
-              React.createElement('div', { className: 'impact-actions', key: 'actions' }, [
-                React.createElement('button', {
-                  type: 'button',
-                  className: 'primary-btn',
-                  disabled: !impactTable || impactLoading,
-                  onClick: () => runImpactQuery(impactTable, impactColumn),
-                  key: 'run'
-                }, impactLoading ? 'Analyzing...' : 'Analyze Impact'),
-                React.createElement('button', {
-                  type: 'button',
-                  className: 'ghost-btn',
-                  disabled: impactLoading,
-                  onClick: () => {
-                    setImpactTable('');
-                    setImpactColumn('');
-                    runImpactQuery('', '');
-                  },
-                  key: 'clear'
-                }, 'Clear')
-              ]),
-              React.createElement(
-                'p',
-                { className: 'impact-hint', key: 'hint' },
-                impactTable
-                  ? `${impactResults.length} impacted API${impactResults.length === 1 ? '' : 's'} for this change scope.`
-                  : 'Pick a table to run impact analysis across all APIs.'
-              )
-            ]),
-            impactTable
-              ? impactResults.length
-                ? React.createElement(
-                    'ul',
-                    { className: 'impact-results', key: 'results' },
-                    impactResults.map((result, index) => React.createElement('li', {
-                      className: 'impact-item',
-                      key: `${result.method}-${result.path}-${index}`
-                    }, [
-                      React.createElement('div', { className: 'impact-item-top', key: 'top' }, [
-                        React.createElement('span', { className: `method ${methodClass(result.method)}`, key: 'method' }, result.method),
-                        React.createElement('span', { className: 'impact-path', key: 'path' }, result.path)
-                      ]),
-                      React.createElement('p', { className: 'impact-how', key: 'how' }, result.how),
-                      React.createElement('p', { className: 'impact-ops', key: 'ops' },
-                        `Operations: ${(result.operations || []).join(', ') || 'UNKNOWN'}`),
-                      React.createElement('p', { className: 'impact-match', key: 'match' },
-                        `Mapping: ${columnMatchLabel(result.columnMatch)}`),
-                      result.flowMatches && result.flowMatches.length
-                        ? React.createElement('p', { className: 'impact-flow', key: 'flow' },
-                            `Flow hint: ${truncate(result.flowMatches[0], 96)}`)
-                        : null
-                    ]))
-                  )
-                : React.createElement('p', { className: 'impact-hint', key: 'empty' },
-                    impactLoading ? 'Analyzing impact...' : 'No APIs match this table/column selection.')
-              : null,
-            impactError ? React.createElement('p', { className: 'impact-flow', key: 'error' }, impactError) : null
-          ]);
+        function onHoverApi(api, px, py) {
+          if (!api) { setTooltip(null); return; }
+          setTooltip({ api, x: px || 0, y: py || 0 });
         }
 
-        function detailsContent() {
-          return React.createElement('div', { className: 'details' }, [
-            selectedApi
-              ? React.createElement('div', { className: 'card', key: 'route' }, [
-                  React.createElement('span', { className: `method ${methodClass(selectedApi.method)}`, key: 'm' }, selectedApi.method),
-                  React.createElement('span', { className: 'route-path', key: 'p' }, selectedApi.path),
-                  React.createElement('p', { className: 'summary', key: 's' }, selectedApi.summary)
-                ])
-              : React.createElement('p', { className: 'empty', key: 'empty-route' }, 'No API selected yet.'),
+        const h = React.createElement;
 
-            focused
-              ? React.createElement('div', { className: 'focus', key: 'focus' }, [
-                  React.createElement('b', { key: 't' }, focused.title),
-                  React.createElement('span', { key: 'b' }, focused.body)
-                ])
-              : null,
+        /* ---- Icon Sidebar ---- */
+        const iconSidebar = h('nav', { className: 'icon-sidebar', key: 'icon-sidebar' }, [
+          h('div', { className: 'logo', key: 'logo' }, 'AF'),
+          h('button', {
+            className: 'icon-btn' + (activeNav === 'explorer' ? ' active' : ''), key: 'nav-explorer',
+            title: 'Explorer',
+            onClick: () => setActiveNav('explorer')
+          }, h(SvgIcon, { d: 'M21 12a9 9 0 11-18 0 9 9 0 0118 0z M9 12l2 2 4-4' })),
+          h('button', {
+            className: 'icon-btn' + (activeNav === 'flows' ? ' active' : ''), key: 'nav-flows',
+            title: 'Flows',
+            onClick: () => setActiveNav('flows')
+          }, h(SvgIcon, { d: 'M13 10V3L4 14h7v7l9-11h-7z' })),
+          h('button', {
+            className: 'icon-btn' + (activeNav === 'metrics' ? ' active' : ''), key: 'nav-metrics',
+            title: 'Metrics',
+            onClick: () => setActiveNav('metrics')
+          }, h(SvgIcon, { d: 'M3 3v18h18 M7 16l4-4 4 4 4-8' })),
+          h('div', { className: 'sidebar-spacer', key: 'spacer' }),
+          h('button', {
+            className: 'icon-btn', key: 'nav-settings',
+            title: 'Settings'
+          }, h(SvgIcon, { d: 'M12 8a4 4 0 100 8 4 4 0 000-8z M12 2v2 M12 20v2 M4.93 4.93l1.41 1.41 M17.66 17.66l1.41 1.41 M2 12h2 M20 12h2 M4.93 19.07l1.41-1.41 M17.66 6.34l1.41-1.41' }))
+        ]);
 
-            React.createElement('div', { className: 'section', key: 'flow' }, [
-              React.createElement('h3', { key: 'h' }, 'Flow'),
-              selectedApi && selectedApi.flow.length
-                ? React.createElement(
-                    'ol',
-                    { className: 'steps', key: 'list' },
-                    selectedApi.flow.map((step, i) => React.createElement('li', { key: `step-${i}` }, `Step ${i + 1}: ${step}`))
-                  )
-                : React.createElement('p', { className: 'empty', key: 'e' }, 'Select an API to view flow steps.')
+        /* ---- Top Bar ---- */
+        const topbar = h('header', { className: 'topbar', key: 'topbar' }, [
+          h('div', { className: 'topbar-brand', key: 'brand' }, [
+            h('span', { className: 'highlight', key: 'h' }, 'API'),
+            'Flow ',
+            h('span', { style: { color: '#5a6478', fontSize: 10, fontWeight: 500 }, key: 'v' }, 'v2.0')
+          ]),
+          h('div', { className: 'topbar-search', key: 'search' }, [
+            h('span', { className: 'search-icon', key: 'icon' }, '\u26B2'),
+            h('input', {
+              key: 'input',
+              name: 'search',
+              value: search,
+              onChange: e => setSearch(e.target.value),
+              placeholder: 'Search endpoints...'
+            })
+          ]),
+          h('div', { className: 'topbar-stats', key: 'stats' }, [
+            h('div', { className: 'topbar-stat', key: 's1' }, [
+              h('span', { className: 'value', key: 'v' }, String(apis.length)),
+              h('span', { className: 'label', key: 'l' }, 'APIs')
             ]),
-
-            React.createElement('div', { className: 'section', key: 'tables' }, [
-              React.createElement('h3', { key: 'h' }, 'Tables'),
-              React.createElement(Chips, { key: 'c', items: selectedApi ? selectedApi.tables : [], empty: 'No linked tables.' })
-            ]),
-
-            React.createElement('div', { className: 'section', key: 'services' }, [
-              React.createElement('h3', { key: 'h' }, 'Services'),
-              React.createElement(Chips, { key: 'c', items: selectedApi ? selectedApi.services : [], empty: 'No linked services.' })
-            ]),
-
-            React.createElement('div', { className: 'section', key: 'caches' }, [
-              React.createElement('h3', { key: 'h' }, 'Caches'),
-              React.createElement(Chips, { key: 'c', items: selectedApi ? selectedApi.caches : [], empty: 'No linked caches.' })
-            ]),
-
-            React.createElement('div', { className: 'section', key: 'queues' }, [
-              React.createElement('h3', { key: 'h' }, 'Queues'),
-              React.createElement(Chips, { key: 'c', items: selectedApi ? selectedApi.queues : [], empty: 'No linked queues.' })
-            ]),
-
-            error ? React.createElement('div', { className: 'error', key: 'err' }, error) : null
-          ]);
-        }
-
-        function renderOverview() {
-          return React.createElement('main', { className: 'view-grid overview-grid' }, [
-            React.createElement('section', { className: 'panel', key: 'nav' }, [
-              React.createElement('div', { className: 'panel-head', key: 'h' }, [
-                React.createElement('h2', { key: 't' }, 'Endpoint Navigator'),
-                React.createElement('p', { key: 's' }, 'Search endpoints, then click to open a dedicated journey screen.')
-              ]),
-              React.createElement('div', { className: 'navigator-body', key: 'b' }, [
-                React.createElement('div', { className: 'search', key: 'search' }, [
-                  React.createElement('input', {
-                    key: 'i',
-                    value: search,
-                    onChange: (e) => setSearch(e.target.value),
-                    placeholder: 'Search by method, path, or summary'
-                  })
-                ]),
-                React.createElement(
-                  'ul',
-                  { className: 'endpoint-list', key: 'list' },
-                  filteredApis.length
-                    ? filteredApis.map((api, i) => {
-                        const id = `${api.method} ${api.path}`;
-                        const isActive = id === selectedId;
-                        return React.createElement('li', { key: `${id}-${i}` },
-                          React.createElement('button', {
-                            type: 'button',
-                            className: `endpoint-btn ${isActive ? 'active' : ''}`,
-                            onClick: () => onSelectApi(api, true)
-                          }, [
-                            React.createElement('div', { className: 'endpoint-top', key: 'top' }, [
-                              React.createElement('span', { className: `method ${methodClass(api.method)}`, key: 'm' }, api.method),
-                              React.createElement('span', { className: 'endpoint-path', key: 'p' }, truncate(api.path, 22))
-                            ]),
-                            React.createElement('p', { className: 'endpoint-summary', key: 's' }, truncate(api.summary, 96))
-                          ])
-                        );
-                      })
-                    : [React.createElement('p', { className: 'empty', key: 'none' }, 'No APIs match this search.')]
-                )
-              ])
-            ]),
-
-            React.createElement('section', { className: 'panel map-panel', key: 'map' }, [
-              React.createElement('div', { className: 'panel-head', key: 'h' }, [
-                React.createElement('h2', { key: 't' }, 'Color-Rich Constellation Map'),
-                React.createElement('p', { key: 's' }, 'Click any API bubble to move to a focused detail screen with no overlap.')
-              ]),
-              React.createElement('div', { className: 'map-wrap', key: 'm' }, [
-                React.createElement(
-                  'svg',
-                  { className: 'overview-svg', viewBox: '0 0 1240 820', key: 'svg' },
-                  [
-                    React.createElement('defs', { key: 'defs' }, [
-                      React.createElement('pattern', {
-                        key: 'grid',
-                        id: 'grid',
-                        width: '42',
-                        height: '42',
-                        patternUnits: 'userSpaceOnUse'
-                      }, [
-                        React.createElement('path', {
-                          key: 'path',
-                          d: 'M 42 0 L 0 0 0 42',
-                          fill: 'none',
-                          stroke: 'rgba(44, 82, 155, 0.08)',
-                          'stroke-width': '1'
-                        })
-                      ]),
-                      React.createElement('linearGradient', { id: 'mGet', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g1' }, [
-                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#89f0d8' }),
-                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#4ed3bf' })
-                      ]),
-                      React.createElement('linearGradient', { id: 'mPost', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g2' }, [
-                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#7db8ff' }),
-                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#4f88ff' })
-                      ]),
-                      React.createElement('linearGradient', { id: 'mPut', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g3' }, [
-                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#ffd48f' }),
-                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#f5ac54' })
-                      ]),
-                      React.createElement('linearGradient', { id: 'mPatch', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g4' }, [
-                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#b9a0ff' }),
-                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#8e70ff' })
-                      ]),
-                      React.createElement('linearGradient', { id: 'mDelete', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'g5' }, [
-                        React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#ffb0c3' }),
-                        React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#ff7f9e' })
-                      ])
-                    ]),
-
-                    React.createElement('rect', {
-                      key: 'back-grid',
-                      x: 0,
-                      y: 0,
-                      width: 1240,
-                      height: 820,
-                      fill: 'url(#grid)'
-                    }),
-
-                    React.createElement('circle', {
-                      key: 'ring-1',
-                      cx: 590,
-                      cy: 360,
-                      r: Math.max(210, 250 + apis.length * 6),
-                      fill: 'none',
-                      stroke: 'rgba(58, 89, 164, 0.25)',
-                      'stroke-width': '1.2',
-                      'stroke-dasharray': '6 9'
-                    }),
-
-                    React.createElement('circle', {
-                      key: 'ring-2',
-                      cx: 590,
-                      cy: 360,
-                      r: Math.max(168, 214 + apis.length * 5),
-                      fill: 'none',
-                      stroke: 'rgba(58, 89, 164, 0.16)',
-                      'stroke-width': '1.2',
-                      'stroke-dasharray': '6 9'
-                    }),
-
-                    ...apiPositions.map((pos) => {
-                      const api = apis.find((x) => `${x.method} ${x.path}` === pos.id);
-                      if (!api) return null;
-                      const isSelected = selectedId === pos.id;
-                      return React.createElement(
-                        'g',
-                        {
-                          key: pos.id,
-                          className: `bubble ${isSelected ? 'selected' : ''}`,
-                          role: 'button',
-                          tabIndex: 0,
-                          onClick: () => onSelectApi(api, true),
-                          onKeyDown: (e) => {
-                            if (e.key === 'Enter' || e.key === ' ') onSelectApi(api, true);
-                          }
-                        },
-                        [
-                          React.createElement('circle', {
-                            key: 'halo',
-                            cx: pos.x,
-                            cy: pos.y,
-                            r: pos.r + 10,
-                            fill: isSelected ? 'rgba(231, 81, 115, 0.2)' : 'rgba(36, 95, 228, 0.12)'
-                          }),
-                          React.createElement('circle', {
-                            key: 'surface',
-                            className: 'surface',
-                            cx: pos.x,
-                            cy: pos.y,
-                            r: pos.r,
-                            fill: methodGradient(api.method),
-                            stroke: isSelected ? '#d04263' : '#2f66d8',
-                            'stroke-width': isSelected ? 2.6 : 1.7
-                          }),
-                          React.createElement('text', { key: 'm', className: 'api-label method', x: pos.x, y: pos.y - 8 }, api.method),
-                          React.createElement('text', { key: 'p', className: 'api-label path', x: pos.x, y: pos.y + 14 }, truncate(api.path, 21))
-                        ]
-                      );
-                    })
-                  ]
-                ),
-                React.createElement(
-                  'div',
-                  { className: 'map-note', key: 'n' },
-                  'This view only shows endpoint bubbles. Selecting one opens a dedicated journey screen so flow bubbles never overlap other endpoint bubbles.'
-                )
-              ])
-            ]),
-
-            React.createElement('aside', { className: 'panel', key: 'side' }, [
-              React.createElement('div', { className: 'panel-head', key: 'h' }, [
-                React.createElement('h2', { key: 't' }, 'Guided UX Flow'),
-                React.createElement('p', { key: 's' }, 'The same data and features, now split into cleaner interaction steps.')
-              ]),
-              React.createElement('div', { className: 'overview-side', key: 'b' }, [
-                React.createElement('div', { className: 'showcase', key: 'a' }, [
-                  React.createElement('h3', { key: 't' }, '1. Discover'),
-                  React.createElement('p', { key: 'p' }, 'Use search or the constellation map to pick an API endpoint.'),
-                  React.createElement('h3', { key: 't2', style: { marginTop: '12px' } }, '2. Dive Deep'),
-                  React.createElement('p', { key: 'p2' }, 'Open a focused screen where flow steps and dependencies are laid out with dedicated space.')
-                ]),
-                selectedApi
-                  ? React.createElement('div', { className: 'showcase', key: 's' }, [
-                      React.createElement('h3', { key: 't' }, `${selectedApi.method} ${selectedApi.path}`),
-                      React.createElement('p', { key: 'p' }, selectedApi.summary),
-                      React.createElement('button', {
-                        key: 'btn',
-                        type: 'button',
-                        className: 'primary-btn',
-                        onClick: () => setView('detail'),
-                        style: { marginTop: '12px' }
-                      }, 'Open Detail Screen')
-                    ])
-                  : React.createElement('div', { className: 'showcase', key: 'empty' }, [
-                      React.createElement('h3', { key: 't' }, 'No endpoint selected'),
-                      React.createElement('p', { key: 'p' }, 'Pick any bubble to continue to the detailed journey layout.')
-                    ]),
-                renderImpactAnalysisCard(),
-                error ? React.createElement('div', { className: 'error', key: 'err' }, error) : null
-              ])
-            ])
-          ]);
-        }
-
-        function renderDetail() {
-          if (!selectedApi) return renderOverview();
-
-          return React.createElement('main', { className: 'view-grid detail-grid' }, [
-            React.createElement('section', { className: 'panel journey-panel', key: 'journey' }, [
-              React.createElement('div', { className: 'panel-head journey-toolbar', key: 'h' }, [
-                React.createElement('div', { className: 'route', key: 'r' }, [
-                  React.createElement('span', { className: `method ${methodClass(selectedApi.method)}`, key: 'm' }, selectedApi.method),
-                  React.createElement('span', { key: 'p' }, selectedApi.path)
-                ]),
-                React.createElement('button', {
-                  key: 'back',
-                  type: 'button',
-                  className: 'ghost-btn',
-                  onClick: () => setView('overview')
-                }, 'Back to Constellation')
-              ]),
-
-              React.createElement('div', { className: 'journey-wrap', key: 'g' }, [
-                React.createElement('div', { className: 'journey-scroll', key: 'scroll' }, [
-                  React.createElement(
-                    'svg',
-                    {
-                      className: 'journey-svg',
-                      viewBox: `0 0 ${journey.width} ${journey.height}`,
-                      width: journey.width,
-                      height: journey.height,
-                      key: 'svg'
-                    },
-                    [
-                      React.createElement('defs', { key: 'defs' }, [
-                        React.createElement('linearGradient', { id: 'apiCore', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'a' }, [
-                          React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#ffd36b' }),
-                          React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#ff9f5d' })
-                        ]),
-                        React.createElement('linearGradient', { id: 'stepCore', x1: '0%', y1: '0%', x2: '100%', y2: '100%', key: 'b' }, [
-                          React.createElement('stop', { key: 's1', offset: '0%', 'stop-color': '#4d8cff' }),
-                          React.createElement('stop', { key: 's2', offset: '100%', 'stop-color': '#2a62da' })
-                        ])
-                      ]),
-
-                      React.createElement('rect', {
-                        key: 'bg',
-                        x: 0,
-                        y: 0,
-                        width: journey.width,
-                        height: journey.height,
-                        fill: 'rgba(255,255,255,0.26)'
-                      }),
-
-                      journey.flowNodes.length
-                        ? React.createElement('path', {
-                            key: 'api-edge',
-                            className: 'flow-edge',
-                            d: `M ${journey.apiNode.x + journey.apiNode.r} ${journey.apiNode.y} C ${journey.apiNode.x + 112} ${journey.apiNode.y}, ${journey.flowNodes[0].x - 120} ${journey.flowNodes[0].y}, ${journey.flowNodes[0].x - journey.flowNodes[0].w / 2} ${journey.flowNodes[0].y}`
-                          })
-                        : null,
-
-                      ...journey.flowNodes.map((node, i) => {
-                        if (i === journey.flowNodes.length - 1) return null;
-                        const next = journey.flowNodes[i + 1];
-                        return React.createElement('path', {
-                          key: `flow-edge-${node.id}`,
-                          className: 'flow-edge',
-                          d: `M ${node.x + node.w / 2} ${node.y} C ${node.x + 110} ${node.y}, ${next.x - 110} ${next.y}, ${next.x - next.w / 2} ${next.y}`
-                        });
-                      }),
-
-                      ...journey.resourceNodes.map((resource) =>
-                        React.createElement('path', {
-                          key: `res-edge-${resource.id}`,
-                          className: 'resource-edge',
-                          d: `M ${journey.anchor.x} ${journey.anchor.y} C ${journey.anchor.x + 92} ${journey.anchor.y}, ${resource.x - 80} ${resource.y}, ${resource.x - resource.r} ${resource.y}`
-                        })
-                      ),
-
-                      React.createElement(
-                        'g',
-                        {
-                          key: 'api-node',
-                          className: 'bubble',
-                          role: 'button',
-                          tabIndex: 0,
-                          onClick: () => setFocused({ title: `${selectedApi.method} ${selectedApi.path}`, body: selectedApi.summary }),
-                          onKeyDown: (e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              setFocused({ title: `${selectedApi.method} ${selectedApi.path}`, body: selectedApi.summary });
-                            }
-                          }
-                        },
-                        [
-                          React.createElement('circle', {
-                            key: 'halo',
-                            cx: journey.apiNode.x,
-                            cy: journey.apiNode.y,
-                            r: journey.apiNode.r + 9,
-                            fill: 'rgba(242, 154, 43, 0.24)'
-                          }),
-                          React.createElement('circle', {
-                            key: 'node',
-                            className: 'surface',
-                            cx: journey.apiNode.x,
-                            cy: journey.apiNode.y,
-                            r: journey.apiNode.r,
-                            fill: 'url(#apiCore)',
-                            stroke: '#dc7f20',
-                            'stroke-width': 2
-                          }),
-                          React.createElement('text', { key: 'm', className: 'api-label method', x: journey.apiNode.x, y: journey.apiNode.y - 8 }, selectedApi.method),
-                          React.createElement('text', { key: 'p', className: 'api-label path', x: journey.apiNode.x, y: journey.apiNode.y + 14 }, truncate(selectedApi.path, 17))
-                        ]
-                      ),
-
-                      ...journey.flowNodes.map((node) =>
-                        React.createElement(
-                          'g',
-                          {
-                            key: node.id,
-                            className: 'bubble',
-                            role: 'button',
-                            tabIndex: 0,
-                            onClick: () => setFocused({ title: `Flow Step ${node.index + 1}`, body: node.label }),
-                            onKeyDown: (e) => {
-                              if (e.key === 'Enter' || e.key === ' ') setFocused({ title: `Flow Step ${node.index + 1}`, body: node.label });
-                            }
-                          },
-                          [
-                            React.createElement('rect', {
-                              key: 'rect',
-                              className: 'surface',
-                              x: node.x - node.w / 2,
-                              y: node.y - node.h / 2,
-                              width: node.w,
-                              height: node.h,
-                              rx: 14,
-                              fill: 'url(#stepCore)',
-                              stroke: '#95bfff',
-                              'stroke-width': 1.5
-                            }),
-                            React.createElement('text', { key: 'step', className: 'flow-label step', x: node.x, y: node.y - 9 }, `STEP ${node.index + 1}`),
-                            React.createElement('text', { key: 'body', className: 'flow-label body', x: node.x, y: node.y + 13 }, truncate(node.label, 24))
-                          ]
-                        )
-                      ),
-
-                      ...journey.resourceNodes.map((resource) =>
-                        React.createElement(
-                          'g',
-                          {
-                            key: resource.id,
-                            className: 'bubble',
-                            role: 'button',
-                            tabIndex: 0,
-                            onClick: () => setFocused({ title: `${resource.title} Resource`, body: resource.label }),
-                            onKeyDown: (e) => {
-                              if (e.key === 'Enter' || e.key === ' ') setFocused({ title: `${resource.title} Resource`, body: resource.label });
-                            }
-                          },
-                          [
-                            React.createElement('circle', {
-                              key: 'c',
-                              className: 'surface',
-                              cx: resource.x,
-                              cy: resource.y,
-                              r: resource.r,
-                              fill: resource.color,
-                              stroke: '#ffffff',
-                              'stroke-width': 1.2
-                            }),
-                            React.createElement('text', { key: 't', className: 'resource-label', x: resource.x, y: resource.y + 4 }, truncate(resource.label, 14))
-                          ]
-                        )
-                      )
-                    ]
-                  )
-                ])
-              ])
-            ]),
-
-            React.createElement('section', { className: 'panel details-panel', key: 'details' }, [
-              React.createElement('div', { className: 'panel-head', key: 'h' }, [
-                React.createElement('h2', { key: 't' }, 'Route Intelligence'),
-                React.createElement('p', { key: 's' }, 'Same feature set, clearer structure: route summary, flow list, and linked resources.')
-              ]),
-              detailsContent()
-            ])
-          ]);
-        }
-
-        return React.createElement('div', { className: 'shell' }, [
-          React.createElement('header', { className: 'topbar', key: 'head' }, [
-            React.createElement('div', { className: 'brand', key: 'brand' }, [
-              React.createElement('h1', { key: 'h' }, 'APIFlow Constellation'),
-              React.createElement('p', { key: 'p' }, 'Discover endpoint journeys, then run impact analysis to see exactly which APIs are affected when a table or column changes.'),
-              React.createElement('div', { className: 'badge-row', key: 'badges' }, [
-                React.createElement('span', { className: 'badge', key: 'b1' }, 'Discover'),
-                React.createElement('span', { className: 'badge', key: 'b2' }, 'Detail Screen'),
-                React.createElement('span', { className: 'badge', key: 'b3' }, 'Flow + Dependencies'),
-                React.createElement('span', { className: 'badge', key: 'b4' }, 'Impact Analysis')
-              ])
-            ]),
-            React.createElement('div', { className: 'topbar-right', key: 'right' }, [
-              React.createElement('div', { className: 'stats', key: 'stats' }, [
-                React.createElement('div', { className: 'stat', key: 's1' }, [
-                  React.createElement('strong', { key: 'v' }, String(apis.length)),
-                  React.createElement('span', { key: 'l' }, 'Endpoints')
-                ]),
-                React.createElement('div', { className: 'stat', key: 's2' }, [
-                  React.createElement('strong', { key: 'v' }, String(selectedApi ? selectedApi.flow.length : 0)),
-                  React.createElement('span', { key: 'l' }, 'Flow Steps')
-                ]),
-                React.createElement('div', { className: 'stat', key: 's3' }, [
-                  React.createElement('strong', { key: 'v' }, String(selectedResourceCount)),
-                  React.createElement('span', { key: 'l' }, 'Resources')
-                ])
-              ]),
-              view === 'detail' && selectedApi
-                ? React.createElement('button', {
-                    key: 'back-main',
-                    type: 'button',
-                    className: 'back-main-btn',
-                    onClick: () => setView('overview')
-                  }, 'Back to Main Screen')
-                : null
+            h('div', { className: 'topbar-stat', key: 's2' }, [
+              h('span', { className: 'value', style: { color: '#ffb340' }, key: 'v' }, String(tableCount)),
+              h('span', { className: 'label', key: 'l' }, 'Tables')
             ])
           ]),
+          h('div', { className: 'topbar-actions', key: 'actions' }, [
+            h('button', { className: 'btn-sm btn-primary', key: 'scan',
+              onClick: () => addLog('Scan triggered from UI', 'ok')
+            }, 'Scan'),
+            h('button', { className: 'btn-sm', key: 'export',
+              onClick: () => addLog('Export initiated', 'ok')
+            }, 'Export')
+          ])
+        ]);
 
-          view === 'detail' && selectedApi ? renderDetail() : renderOverview()
+        /* ---- Left Panel ---- */
+        const leftPanel = h('aside', { className: 'left-panel', key: 'left-panel' }, [
+          h('div', { className: 'panel-section', key: 'scope' }, [
+            h('div', { className: 'panel-section-title', key: 'title' }, [
+              h('span', { className: 'dot', key: 'd' }),
+              'Scope'
+            ]),
+            h('select', {
+              className: 'scope-select', key: 'table-select',
+              value: impactTable,
+              onChange: e => { setImpactTable(e.target.value); setImpactColumn(''); }
+            }, [
+              h('option', { value: '', key: '_' }, 'Select table...'),
+              ...impactTables.map(t => h('option', { value: t.table, key: t.table },
+                t.table + ' (' + t.apiCount + ')'))
+            ]),
+            h('select', {
+              className: 'scope-select', key: 'column-select',
+              value: impactColumn,
+              disabled: !impactTable,
+              onChange: e => setImpactColumn(e.target.value)
+            }, [
+              h('option', { value: '', key: '_' }, impactTable ? 'All columns' : 'Select table first'),
+              ...availableImpactColumns.map(c => h('option', { value: c, key: c }, c))
+            ]),
+            impactLoading ? h('div', { className: 'scanning-indicator', key: 'loading' }, [
+              h('div', { className: 'spinner', key: 's' }),
+              'Scanning...'
+            ]) : null
+          ]),
+          h('div', { className: 'panel-section', key: 'active-title' }, [
+            h('div', { className: 'panel-section-title', key: 'title' }, [
+              h('span', { className: 'dot', style: { background: '#4f7cff', boxShadow: '0 0 6px rgba(79, 124, 255, 0.4)' }, key: 'd' }),
+              'Endpoints (' + filteredApis.length + ')'
+            ])
+          ]),
+          h('div', { className: 'endpoint-list-container', key: 'ep-list' },
+            filteredApis.length
+              ? filteredApis.map((api, i) => {
+                  const id = api.method + ' ' + api.path;
+                  return h('div', {
+                    className: 'ep-item' + (id === selectedId ? ' active' : ''),
+                    key: id + '-' + i,
+                    onClick: () => onSelectApi(api, false)
+                  }, [
+                    h('span', { className: 'method-badge ' + methodBadgeClass(api.method), key: 'm' }, api.method),
+                    h('div', { className: 'ep-info', key: 'info' }, [
+                      h('div', { className: 'ep-path', key: 'p' }, truncate(api.path, 24)),
+                      h('div', { className: 'ep-summary', key: 's' }, truncate(api.summary, 40))
+                    ])
+                  ]);
+                })
+              : [h('div', { className: 'empty-text', key: 'empty' }, 'No APIs match.')]
+          ),
+          /* Streaming Logs */
+          h('div', { className: 'panel-section', key: 'log-title', style: { marginTop: 'auto' } }, [
+            h('div', { className: 'panel-section-title', key: 'title' }, [
+              h('span', { className: 'dot', style: { background: '#ffb340', boxShadow: '0 0 6px rgba(255, 179, 64, 0.4)' }, key: 'd' }),
+              'Activity Log'
+            ])
+          ]),
+          h('div', { className: 'streaming-logs', key: 'logs' },
+            logs.map((log, i) =>
+              h('div', { className: 'log-entry', key: 'log-' + i }, [
+                h('span', { className: 'log-time', key: 't' }, log.time),
+                h('span', { className: 'log-' + (log.type || 'msg'), key: 'm' }, log.msg)
+              ])
+            )
+          )
+        ]);
+
+        /* ---- Main Canvas ---- */
+        const mainCanvas = h('main', { className: 'main-canvas', key: 'main-canvas' }, [
+          h(BubbleGraph, {
+            key: 'bubble-graph',
+            apis: filteredApis,
+            selectedId,
+            onSelectApi,
+            onHoverApi
+          }),
+          /* Tooltip */
+          tooltip ? h('div', {
+            className: 'bubble-tooltip visible',
+            key: 'tooltip',
+            style: {
+              left: Math.min(tooltip.x + 12, window.innerWidth - 280) + 'px',
+              top: (tooltip.y - 60) + 'px'
+            }
+          }, [
+            h('div', { className: 'tt-method', key: 'm', style: { color: methodColor(tooltip.api.method) } }, tooltip.api.method),
+            h('div', { className: 'tt-path', key: 'p' }, tooltip.api.path),
+            h('div', { className: 'tt-summary', key: 's' }, truncate(tooltip.api.summary, 120)),
+            h('div', {
+              style: { fontSize: 9, color: '#5a6478', marginTop: 6 }, key: 'hint'
+            }, 'Click to select \u2022 Double-click for flow view')
+          ]) : null,
+          /* Canvas footer with legend */
+          h('div', { className: 'canvas-footer', key: 'footer' }, [
+            h('div', { className: 'canvas-legend', key: 'legend' }, [
+              h('div', { className: 'legend-item', key: 'get' }, [
+                h('div', { className: 'legend-dot', style: { background: '#00d4b1' }, key: 'd' }),
+                'GET'
+              ]),
+              h('div', { className: 'legend-item', key: 'post' }, [
+                h('div', { className: 'legend-dot', style: { background: '#4f7cff' }, key: 'd' }),
+                'POST'
+              ]),
+              h('div', { className: 'legend-item', key: 'put' }, [
+                h('div', { className: 'legend-dot', style: { background: '#ffb340' }, key: 'd' }),
+                'PUT'
+              ]),
+              h('div', { className: 'legend-item', key: 'del' }, [
+                h('div', { className: 'legend-dot', style: { background: '#ff4d9e' }, key: 'd' }),
+                'DELETE'
+              ])
+            ]),
+            selectedApi
+              ? h('button', {
+                  className: 'btn-sm btn-primary', key: 'view-flow',
+                  onClick: () => setFlowApi(selectedApi)
+                }, 'View Flow: ' + selectedApi.method + ' ' + truncate(selectedApi.path, 20))
+              : null
+          ])
+        ]);
+
+        /* ---- Right Panel ---- */
+        const rightPanel = h('aside', { className: 'right-panel', key: 'right-panel' }, [
+          /* Impact count header */
+          h('div', { className: 'right-panel-header', key: 'header' }, [
+            h('h3', { key: 't' }, 'Impact Analysis'),
+          ]),
+          impactTable ? h('div', { className: 'impact-count-display count-animate', key: 'count-display' }, [
+            h('div', { className: 'impact-big-number', key: 'num' }, [
+              String(animatedCount),
+              h('span', { className: 'ring', key: 'ring' })
+            ]),
+            h('div', { className: 'impact-label', key: 'label' },
+              'API' + (impactResults.length !== 1 ? 's' : '') + ' Impacted'),
+            h('div', { className: 'impact-scope', key: 'scope' },
+              impactTable + (impactColumn ? '.' + impactColumn : ''))
+          ]) : h('div', { className: 'no-impact-message', key: 'no-scope' },
+            'Select a table scope in the sidebar to analyze impact.'),
+
+          /* Impact results list */
+          impactTable && impactResults.length
+            ? h('div', { className: 'impact-list-container', key: 'impact-list' },
+                impactResults.map((r, i) =>
+                  h('div', {
+                    className: 'impact-card', key: r.method + '-' + r.path + '-' + i,
+                    onClick: () => {
+                      const match = apis.find(a => a.method === r.method && a.path === r.path);
+                      if (match) onSelectApi(match, true);
+                    }
+                  }, [
+                    h('div', { className: 'impact-card-top', key: 'top' }, [
+                      h('span', { className: 'method-badge ' + methodBadgeClass(r.method), key: 'm' }, r.method),
+                      h('span', { className: 'impact-card-path', key: 'p' }, r.path)
+                    ]),
+                    h('div', { className: 'impact-card-how', key: 'how' }, r.how),
+                    h('div', { className: 'impact-card-meta', key: 'meta' },
+                      'Ops: ' + (r.operations || []).join(', ') +
+                      ' \u2022 ' + columnMatchLabel(r.columnMatch)
+                    ),
+                    r.flowMatches && r.flowMatches.length
+                      ? h('div', { className: 'impact-card-meta', key: 'flow' },
+                          'Flow: ' + truncate(r.flowMatches[0], 60))
+                      : null
+                  ])
+                )
+              )
+            : impactTable
+              ? h('div', { className: 'no-impact-message', key: 'no-results' },
+                  impactLoading ? 'Scanning...' : 'No APIs impact this scope.')
+              : null,
+          impactError ? h('div', { className: 'error-banner', key: 'impact-err' }, impactError) : null,
+
+          /* Selected API details */
+          selectedApi ? h(React.Fragment, { key: 'selected-api-details' },
+            h('div', { className: 'right-details-section', key: 'api-detail',
+              style: { borderTop: '1px solid var(--border)' } }, [
+              h('h4', { key: 'h' }, 'Selected API'),
+              h('div', { style: { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }, key: 'top' }, [
+                h('span', { className: 'method-badge ' + methodBadgeClass(selectedApi.method), key: 'm' }, selectedApi.method),
+                h('span', { style: { fontSize: 12, fontWeight: 700 }, key: 'p' }, selectedApi.path)
+              ]),
+              h('div', { style: { fontSize: 11, color: '#8892a8', lineHeight: '1.4' }, key: 'sum' }, selectedApi.summary)
+            ]),
+            h('div', { className: 'right-details-section', key: 'flow-detail' }, [
+              h('h4', { key: 'h' }, 'Flow Steps'),
+              ...(selectedApi.flow.length
+                ? selectedApi.flow.map((step, i) =>
+                    h('div', { className: 'flow-step-item', key: 'step-' + i }, [
+                      h('span', { className: 'flow-step-num', key: 'n' }, String(i + 1)),
+                      h('span', { key: 't' }, step)
+                    ])
+                  )
+                : [h('div', { className: 'empty-text', key: 'e' }, 'No flow steps.')]
+              )
+            ]),
+            h('div', { className: 'right-details-section', key: 'resources' }, [
+              h('h4', { key: 'h' }, 'Resources'),
+              h('div', { key: 'chips' }, [
+                ...selectedApi.tables.map(t => h('span', { className: 'detail-chip', key: 'table-' + t, style: { borderColor: 'rgba(0, 212, 177, 0.3)' } }, t)),
+                ...selectedApi.services.map(s => h('span', { className: 'detail-chip', key: 'svc-' + s, style: { borderColor: 'rgba(79, 124, 255, 0.3)' } }, s)),
+                ...selectedApi.caches.map(c => h('span', { className: 'detail-chip', key: 'cache-' + c, style: { borderColor: 'rgba(167, 139, 250, 0.3)' } }, c)),
+                ...selectedApi.queues.map(q => h('span', { className: 'detail-chip', key: 'queue-' + q, style: { borderColor: 'rgba(255, 179, 64, 0.3)' } }, q)),
+                ...(selectedApi.tables.length + selectedApi.services.length + selectedApi.caches.length + selectedApi.queues.length === 0
+                  ? [h('div', { className: 'empty-text', key: 'e' }, 'No linked resources.')]
+                  : [])
+              ]),
+              h('button', {
+                className: 'btn-sm btn-primary',
+                key: 'view-flow-btn',
+                style: { marginTop: 8, width: '100%' },
+                onClick: () => setFlowApi(selectedApi)
+              }, 'View Full Flow')
+            ])
+          ) : h('div', { className: 'no-impact-message', key: 'no-api',
+              style: { borderTop: '1px solid var(--border)', paddingTop: 16 }
+            }, 'Click a bubble to view API details.'),
+
+          error ? h('div', { className: 'error-banner', key: 'err' }, error) : null
+        ]);
+
+        /* ---- Flow Overlay ---- */
+        const overlay = flowApi ? h(FlowOverlay, {
+          key: 'flow-overlay',
+          api: flowApi,
+          onClose: () => setFlowApi(null)
+        }) : null;
+
+        return h('div', { className: 'app-shell' }, [
+          iconSidebar,
+          topbar,
+          leftPanel,
+          mainCanvas,
+          rightPanel,
+          overlay
         ]);
       }
 

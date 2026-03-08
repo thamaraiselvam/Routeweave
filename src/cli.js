@@ -14,7 +14,9 @@ function printUsage() {
   console.log(`Usage: apimap <init|scan|scan-prompt|serve> [path]
 
 Path behavior:
-  If path is omitted (or points inside a git repo), apimap scans the repository root containing that location.
+  - Provide [path] (or --dir <path>) to target that exact directory.
+  - If omitted for init/scan/scan-prompt, apimap uses the nearest git repository root.
+  - If omitted for serve, apimap serves the current working directory.
 `);
 }
 
@@ -37,11 +39,27 @@ function findRepositoryRoot(targetPath) {
 }
 
 function resolveTargetPath(command, argPath, options) {
-  if (command === 'serve') {
-    return path.resolve(options.dir || argPath || '.');
+  const explicitPath = options.dir || argPath;
+  if (explicitPath) {
+    return path.resolve(explicitPath);
   }
 
-  return findRepositoryRoot(argPath || '.');
+  if (command === 'serve') {
+    return path.resolve('.');
+  }
+
+  return findRepositoryRoot('.');
+}
+
+function assertDirectoryExists(targetPath) {
+  if (!fs.existsSync(targetPath)) {
+    throw new Error(`Target path does not exist: ${targetPath}`);
+  }
+
+  const stats = fs.statSync(targetPath);
+  if (!stats.isDirectory()) {
+    throw new Error(`Target path is not a directory: ${targetPath}`);
+  }
 }
 
 function parseArgs(argv) {
@@ -98,6 +116,7 @@ async function main() {
   }
   const argPath = positional[0];
   const targetPath = resolveTargetPath(command, argPath, options);
+  assertDirectoryExists(targetPath);
 
   if (command === 'init') {
     ensureCacheDir(targetPath);
@@ -148,4 +167,5 @@ module.exports = {
   OPTION_ALIASES,
   findRepositoryRoot,
   resolveTargetPath,
+  assertDirectoryExists,
 };

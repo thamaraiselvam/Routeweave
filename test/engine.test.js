@@ -94,6 +94,8 @@ test('generateOpenCodeScanPrompt includes repository scan instructions', () => {
   assert.ok(output.routeCount >= 0);
   assert.match(output.prompt, /REPOSITORY_ROOT:/);
   assert.match(output.prompt, /Scan the entire repository rooted at REPOSITORY_ROOT/);
+   assert.match(output.prompt, /Impact analysis completeness is mandatory/);
+  assert.match(output.prompt, /tableAccess.*required for every API object/);
   assert.match(output.prompt, /HINT_ROUTE_METADATA_JSON:/);
 });
 

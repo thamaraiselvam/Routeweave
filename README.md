@@ -10,19 +10,27 @@ Current scanning scope is intentionally limited to popular Node frameworks:
 ## Commands
 
 - `npm test`
-- `npx apimap init`
-- `npx apimap scan .`
-- `npx apimap scan-prompt .`
-- `npx apimap serve`
-- `npm run server -- --dir /path/to/project`
+- `npx apimap init [path]`
+- `npx apimap scan [path]`
+- `npx apimap scan-prompt [path]`
+- `npx apimap serve [path]`
 
 Server runs at `http://localhost:3789` by default.
 
-When using npm scripts, you can choose which directory to serve:
+## Simple npm usage
 
-- `npm run server` (serves from current working directory)
-- `npm run server -- /path/to/project`
-- `npm run server -- --dir /path/to/project`
+You can now pass target directories directly with simple npm commands:
+
+- `npm run scan -- /path/to/project`
+- `npm run scan:prompt -- /path/to/project`
+- `npm run serve -- /path/to/project`
+- `npm run apimap -- scan /path/to/project`
+
+Path behavior:
+
+- For `scan`, `scan-prompt`, and `init`: if no path is passed, APIMap uses the nearest git repository root.
+- For `serve`: if no path is passed, APIMap serves the current working directory.
+- `--dir /path/to/project` is also supported for all commands.
 
 ## Scan behavior
 

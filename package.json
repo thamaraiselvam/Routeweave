@@ -7,8 +7,9 @@
     "apimap": "src/cli.js"
   },
   "scripts": {
-    "scan": "node src/cli.js scan .",
-    "scan:prompt": "node src/cli.js scan-prompt .",
+    "apimap": "node src/cli.js",
+    "scan": "node src/cli.js scan",
+    "scan:prompt": "node src/cli.js scan-prompt",
     "server": "node src/cli.js serve",
     "serve": "node src/cli.js serve",
     "test": "node --test"

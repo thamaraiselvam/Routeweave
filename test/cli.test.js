@@ -1,7 +1,7 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('path');
-const { parseArgs, main, findRepositoryRoot } = require('../src/cli');
+const { parseArgs, main, findRepositoryRoot, resolveTargetPath } = require('../src/cli');
 
 test('parseArgs supports --key=value format', () => {
   const { positional, options } = parseArgs(['.']);
@@ -37,4 +37,16 @@ test('findRepositoryRoot resolves nearest git root for nested paths', () => {
   const nestedPath = path.join(process.cwd(), 'src', 'engine');
   const resolved = findRepositoryRoot(nestedPath);
   assert.equal(resolved, process.cwd());
+});
+
+test('resolveTargetPath keeps explicit scan target directory', () => {
+  const explicitPath = path.join(process.cwd(), 'src');
+  const resolved = resolveTargetPath('scan', explicitPath, {});
+  assert.equal(resolved, explicitPath);
+});
+
+test('resolveTargetPath accepts --dir for scan-prompt', () => {
+  const explicitPath = path.join(process.cwd(), 'test');
+  const resolved = resolveTargetPath('scan-prompt', undefined, { dir: explicitPath });
+  assert.equal(resolved, explicitPath);
 });
