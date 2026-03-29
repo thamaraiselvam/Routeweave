@@ -4,7 +4,7 @@
 
 **AI-powered API knowledge graph for Node.js backends**
 
-> Visualise every endpoint, trace business logic step-by-step, and instantly see what breaks when a database column changes.
+> Visualise every endpoint, trace business logic step-by-step, and instantly see what breaks when a database column, dependency, or external service changes.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org)
@@ -23,7 +23,7 @@ Routeweave scans your Node.js/TypeScript backend with an AI coding agent and bui
 | **Bubble Graph** | One bubble per endpoint, clustered by route domain (users / tasks / products / …) |
 | **API Explorer** | Searchable list with one-line summaries, flow steps, DB tables, and dependencies |
 | **Flow Overlay** | Step-by-step business logic for each endpoint — with DB, service, and cache nodes |
-| **Impact Analysis** | Select any DB table or column to instantly see every API that touches it |
+| **Impact Analysis** | Select any DB table, dependency, or external service to instantly see every API affected by a change |
 
 ---
 
@@ -134,10 +134,14 @@ The AI scan writes to `.routeweave/` inside your project:
 ## Impact Analysis API
 
 ```
-GET /api/impact                          # table catalog
-GET /api/impact?table=users              # all APIs touching `users`
-GET /api/impact?table=users&column=email # APIs that access the `email` column
+GET /api/impact                            # full catalog (tables, dependencies, services)
+GET /api/impact?table=users                # all APIs touching `users`
+GET /api/impact?table=users&column=email   # APIs that access the `email` column
+GET /api/impact?dependency=bcrypt          # all APIs using `bcrypt`
+GET /api/impact?service=SendGrid           # all APIs calling `SendGrid`
 ```
+
+The dashboard provides a **category switcher** (Tables / Dependencies / Ext. Services) so you can explore impact across all three dimensions interactively.
 
 ---
 
