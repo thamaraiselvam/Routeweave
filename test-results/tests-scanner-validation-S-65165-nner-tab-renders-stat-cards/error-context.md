@@ -1,0 +1,112 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5]: RW
+    - button "API Explorer" [ref=e6] [cursor=pointer]:
+      - img [ref=e7]
+    - button "Impact Analysis" [ref=e9] [cursor=pointer]:
+      - img [ref=e10]
+    - button "API Flows" [ref=e12] [cursor=pointer]:
+      - img [ref=e13]
+    - button "Code Scanner" [ref=e15] [cursor=pointer]:
+      - img [ref=e16]
+    - button "Change Project" [ref=e18] [cursor=pointer]:
+      - img [ref=e19]
+  - banner [ref=e21]:
+    - generic [ref=e22]: Routeweave
+    - generic [ref=e23]:
+      - generic: ⊗
+      - textbox "Search endpoints, tables, services..." [ref=e24]
+    - generic [ref=e25]:
+      - generic [ref=e26]:
+        - generic [ref=e27]: "3"
+        - generic [ref=e28]: APIs
+      - generic [ref=e29]:
+        - generic [ref=e30]: "2"
+        - generic [ref=e31]: Tables
+    - button "⬡ Routeweave" [ref=e32] [cursor=pointer]:
+      - generic [ref=e33]: ⬡
+      - generic [ref=e34]: Routeweave
+    - button "↻ Rescan" [ref=e35] [cursor=pointer]
+  - complementary [ref=e36]:
+    - generic [ref=e38]: Endpoints (3)
+    - generic [ref=e40]:
+      - generic [ref=e41] [cursor=pointer]:
+        - generic [ref=e42]: GET
+        - generic [ref=e43]:
+          - generic [ref=e44]: /api/graph
+          - generic [ref=e45]: Returns generated API dependency graph data for visualizati...
+      - generic [ref=e46] [cursor=pointer]:
+        - generic [ref=e47]: GET
+        - generic [ref=e48]:
+          - generic [ref=e49]: /api/apis
+          - generic [ref=e50]: Returns API knowledge summaries from cache for endpoint nav...
+      - generic [ref=e51] [cursor=pointer]:
+        - generic [ref=e52]: GET
+        - generic [ref=e53]:
+          - generic [ref=e54]: /api/accounts/:accountId
+          - generic [ref=e55]: Reads profile columns and updates the account audit trail.
+    - generic [ref=e57]: Activity Log
+    - generic [ref=e59]:
+      - generic [ref=e60]:
+        - generic [ref=e61]: 23:11:25
+        - generic [ref=e62]: Loading API knowledge...
+      - generic [ref=e63]:
+        - generic [ref=e64]: 23:11:25
+        - generic [ref=e65]: "Using demo data. Run `routeweave scan .` to load live cache."
+  - main [ref=e66]:
+    - img [ref=e67]:
+      - generic [ref=e495]:
+        - generic [ref=e496] [cursor=pointer]:
+          - generic [ref=e499]: GET
+          - generic [ref=e500]: /api/graph
+        - generic [ref=e501] [cursor=pointer]:
+          - generic [ref=e504]: GET
+          - generic [ref=e505]: /api/apis
+        - generic [ref=e506] [cursor=pointer]:
+          - generic [ref=e509]: GET
+          - generic [ref=e510]: /api/accounts/:ac..
+          - generic [ref=e511]: Reads profile columns a..
+      - generic:
+        - generic: GRAPH · 1
+      - generic:
+        - generic: APIS · 1
+      - generic:
+        - generic: ACCOUNTS · 1
+    - generic [ref=e512]:
+      - generic [ref=e513]: GET
+      - generic [ref=e515]: POST
+      - generic [ref=e517]: PUT
+      - generic [ref=e519]: PATCH
+      - generic [ref=e521]: DELETE
+  - generic [ref=e524]:
+    - generic [ref=e525]:
+      - generic [ref=e526]:
+        - generic [ref=e527]: RW
+        - generic [ref=e528]: Routeweave
+      - generic [ref=e529]:
+        - generic [ref=e530]:
+          - generic [ref=e531]: "1"
+          - generic [ref=e532]: Choose Project
+        - generic [ref=e533]:
+          - generic [ref=e534]: "2"
+          - generic [ref=e535]: Parse & AI
+        - generic [ref=e536]:
+          - generic [ref=e537]: "3"
+          - generic [ref=e538]: Explore
+    - generic [ref=e539]:
+      - generic [ref=e540]: Choose Your Project
+      - generic [ref=e541]: Select an existing scanned repository or point Routeweave to a new directory to begin analysis.
+      - generic [ref=e542]:
+        - button "📁 Existing Repository 1 repo already scanned — switch instantly." [ref=e543] [cursor=pointer]:
+          - generic [ref=e544]: 📁
+          - generic [ref=e545]: Existing Repository
+          - generic [ref=e546]: 1 repo already scanned — switch instantly.
+        - button "✨ New Repository Choose a directory on disk. Routeweave will parse it and generate AI-enriched API knowledge." [ref=e547] [cursor=pointer]:
+          - generic [ref=e548]: ✨
+          - generic [ref=e549]: New Repository
+          - generic [ref=e550]: Choose a directory on disk. Routeweave will parse it and generate AI-enriched API knowledge.
+    - button "Continue →" [disabled] [ref=e552]
+```

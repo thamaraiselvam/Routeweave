@@ -13,5 +13,8 @@
     "server": "node src/cli.js serve",
     "serve": "node src/cli.js serve",
     "test": "node --test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
   }
 }

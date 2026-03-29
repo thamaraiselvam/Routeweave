@@ -47,6 +47,9 @@
         height: 100vh;
         gap: 0;
       }
+      .app-shell.no-right-panel {
+        grid-template-columns: 56px 260px 1fr;
+      }
 
       /* ---- Icon Sidebar ---- */
       .icon-sidebar {
@@ -87,6 +90,8 @@
       .icon-btn.nav-impact.active::before { background: var(--teal); }
       .icon-btn.nav-flows.active { color: var(--violet); box-shadow: 0 0 12px rgba(167,139,250,0.3); }
       .icon-btn.nav-flows.active::before { background: var(--violet); }
+      .icon-btn.nav-scanner.active { color: var(--amber); box-shadow: 0 0 12px var(--amber-glow); }
+      .icon-btn.nav-scanner.active::before { background: var(--amber); }
       .sidebar-spacer { flex: 1; }
 
       /* ---- Top Bar ---- */
@@ -118,6 +123,81 @@
       .topbar-stat { display: flex; flex-direction: column; align-items: center; }
       .topbar-stat .value { font-size: 16px; font-weight: 700; color: var(--teal); line-height: 1; }
       .topbar-stat .label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-top: 2px; }
+
+      /* ---- Repo Switcher ---- */
+      .repo-switcher { position: relative; display: flex; align-items: center; gap: 6px; margin-left: 12px; }
+
+      /* ---- AI Status Banner ---- */
+      .ai-banner {
+        position: fixed; top: 48px; left: 56px; right: 0; z-index: 80;
+        display: flex; align-items: flex-start; gap: 12px;
+        padding: 10px 16px; font-size: 12px; line-height: 1.5;
+        border-bottom: 1px solid transparent;
+        animation: bannerSlide 0.25s ease;
+      }
+      @keyframes bannerSlide { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+      .ai-banner.parser-only {
+        background: rgba(255, 179, 64, 0.12); border-color: rgba(255, 179, 64, 0.3);
+        color: #ffb340;
+      }
+      .ai-banner.prompt-ready {
+        background: rgba(79, 124, 255, 0.12); border-color: rgba(79, 124, 255, 0.3);
+        color: var(--blue);
+      }
+      .ai-banner-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+      .ai-banner-body { flex: 1; }
+      .ai-banner-title { font-weight: 700; margin-bottom: 2px; }
+      .ai-banner-desc { color: var(--text-secondary); font-size: 11px; }
+      .ai-banner-cmd {
+        display: inline-flex; align-items: center; gap: 6px;
+        margin-top: 6px; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 6px; padding: 4px 10px; font-family: monospace; font-size: 11px;
+        color: var(--text-primary); cursor: pointer; transition: background 0.15s;
+      }
+      .ai-banner-cmd:hover { background: rgba(0,0,0,0.4); }
+      .ai-banner-cmd .copy-icon { font-size: 10px; opacity: 0.6; }
+      .ai-banner-cmd .copy-ok { color: var(--teal); font-size: 10px; }
+      .ai-banner-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+      .ai-banner-dismiss {
+        flex-shrink: 0; background: none; border: none; cursor: pointer;
+        color: var(--text-muted); font-size: 16px; line-height: 1; padding: 2px 4px;
+        transition: color 0.15s;
+      }
+      .ai-banner-dismiss:hover { color: var(--text-primary); }
+      /* push content down when banner is visible */
+      .app-shell.has-banner .left-panel,
+      .app-shell.has-banner .main-canvas,
+      .app-shell.has-banner .right-panel { padding-top: 52px; }
+      .repo-switcher-btn {
+        display: flex; align-items: center; gap: 6px;
+        background: rgba(79,124,255,0.08); border: 1px solid rgba(79,124,255,0.25);
+        border-radius: 8px; padding: 5px 10px; cursor: pointer; color: var(--text-primary);
+        font: inherit; font-size: 12px; font-weight: 600; white-space: nowrap;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .repo-switcher-btn:hover { background: rgba(79,124,255,0.15); border-color: rgba(79,124,255,0.5); }
+      .repo-switcher-btn .repo-icon { color: var(--blue); font-size: 11px; }
+      .repo-switcher-btn .repo-caret { color: var(--text-muted); font-size: 10px; margin-left: 2px; }
+      .repo-dropdown {
+        position: absolute; top: calc(100% + 6px); right: 0; min-width: 260px;
+        background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4); z-index: 999; overflow: hidden;
+      }
+      .repo-dropdown-header {
+        padding: 8px 12px 6px; font-size: 10px; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--text-muted); border-bottom: 1px solid var(--border);
+      }
+      .repo-dropdown-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 9px 12px; cursor: pointer; font-size: 12px;
+        transition: background 0.12s;
+      }
+      .repo-dropdown-item:hover { background: rgba(255,255,255,0.04); }
+      .repo-dropdown-item.active { background: rgba(79,124,255,0.1); color: var(--blue); }
+      .repo-dropdown-item .repo-item-label { font-weight: 600; flex: 1; }
+      .repo-dropdown-item .repo-item-path { font-size: 10px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+      .repo-dropdown-item .repo-item-check { color: var(--blue); font-size: 11px; }
+      .repo-dropdown-empty { padding: 12px; font-size: 12px; color: var(--text-muted); text-align: center; }
 
       /* ---- Left Panel ---- */
       .left-panel {
@@ -209,6 +289,10 @@
       .impact-card-path { font-size: 11px; font-weight: 700; color: var(--text-primary); word-break: break-word; flex: 1; }
       .impact-card-how { font-size: 10px; color: var(--text-secondary); margin-top: 4px; line-height: 1.4; }
       .impact-card-meta { font-size: 9px; color: var(--text-muted); margin-top: 3px; }
+      .impact-category-switcher { display: flex; gap: 2px; background: rgba(255,255,255,0.04); border-radius: 8px; padding: 2px; margin-bottom: 10px; }
+      .impact-cat-btn { flex: 1; background: transparent; border: none; color: var(--text-muted); font-size: 11px; padding: 6px 0; border-radius: 6px; cursor: pointer; transition: all 0.2s; font-family: inherit; }
+      .impact-cat-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+      .impact-cat-btn.active { color: var(--text-primary); background: rgba(79,124,255,0.15); }
       .no-scope-message { text-align: center; padding: 24px 14px; color: var(--text-muted); font-size: 12px; }
 
       /* ---- Flows View (Left Panel) ---- */
@@ -224,6 +308,90 @@
       .flow-list-path { font-size: 11px; font-weight: 600; color: var(--text-primary); flex: 1; word-break: break-word; }
       .flow-step-count { font-size: 9px; color: var(--violet); font-weight: 700; }
       .flow-list-summary { font-size: 10px; color: var(--text-muted); line-height: 1.35; }
+
+      /* ---- Scanner View ---- */
+      .scanner-left-view { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+      .scanner-header-section { padding: 12px; border-bottom: 1px solid var(--border); }
+      .scanner-title {
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.1em; color: var(--amber);
+        display: flex; align-items: center; gap: 6px; margin-bottom: 8px;
+      }
+      .scanner-desc { font-size: 10px; color: var(--text-muted); line-height: 1.4; }
+      .scanner-score-hero { text-align: center; padding: 14px 12px; border-bottom: 1px solid var(--border); }
+      .scanner-score-ring {
+        display: inline-flex; flex-direction: column; align-items: center;
+        justify-content: center; position: relative;
+      }
+      .scanner-score-num {
+        font-size: 44px; font-weight: 800; line-height: 1;
+        display: inline-block;
+      }
+      .scanner-score-grade {
+        font-size: 14px; font-weight: 700; margin-top: 2px; letter-spacing: 0.06em;
+      }
+      .scanner-score-label { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+      .scanner-stat-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
+        padding: 10px 12px; border-bottom: 1px solid var(--border);
+      }
+      .scanner-stat-card {
+        border: 1px solid var(--border); border-radius: 6px;
+        background: rgba(255,255,255,0.02); padding: 7px 8px;
+      }
+      .scanner-stat-value { font-size: 20px; font-weight: 800; line-height: 1; }
+      .scanner-stat-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-top: 2px; }
+      .scanner-chips-section { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+      .scanner-chips-title { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 6px; }
+      .scanner-chip {
+        display: inline-block; border-radius: 4px; font-size: 10px;
+        padding: 2px 7px; margin: 2px; font-weight: 600;
+      }
+      .scanner-file-list { flex: 1; overflow-y: auto; padding: 8px 12px; }
+      .scanner-file-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 5px 6px; border-radius: 5px; border: 1px solid transparent;
+        margin-bottom: 2px; cursor: pointer; transition: all 0.15s;
+      }
+      .scanner-file-item:hover { background: rgba(255,179,64,0.06); border-color: rgba(255,179,64,0.2); }
+      .scanner-file-item.active { background: rgba(255,179,64,0.1); border-color: rgba(255,179,64,0.35); }
+      .scanner-file-score {
+        width: 30px; height: 18px; border-radius: 3px;
+        font-size: 9px; font-weight: 800; display: flex;
+        align-items: center; justify-content: center; flex-shrink: 0;
+      }
+      .scanner-file-path { font-size: 10px; color: var(--text-secondary); flex: 1; word-break: break-all; }
+      .scanner-file-role {
+        font-size: 8px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.06em; color: var(--text-muted); flex-shrink: 0;
+      }
+      .scanner-detail-panel {
+        grid-row: 2; background: rgba(12,17,30,0.95);
+        border-left: 1px solid var(--border);
+        display: flex; flex-direction: column; overflow: hidden;
+      }
+      .scanner-detail-header {
+        padding: 12px 14px; border-bottom: 1px solid var(--border);
+        flex-shrink: 0;
+      }
+      .scanner-detail-header h3 { font-size: 13px; font-weight: 700; }
+      .scanner-detail-body { flex: 1; overflow-y: auto; }
+      .scanner-detail-section { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+      .scanner-detail-section h4 {
+        font-size: 10px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px;
+        display: flex; align-items: center; gap: 6px;
+      }
+      .progress-bar-wrap { background: rgba(255,255,255,0.06); border-radius: 4px; height: 6px; overflow: hidden; margin-top: 4px; }
+      .progress-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+      .role-row { display: flex; align-items: center; justify-content: space-between; padding: 3px 0; font-size: 10px; }
+      .role-name { color: var(--text-secondary); text-transform: capitalize; min-width: 80px; }
+      .role-count { color: var(--text-muted); font-size: 9px; }
+      .role-score-badge { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; }
+      .pkg-row { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; font-size: 10px; }
+      .pkg-name { color: var(--text-secondary); font-family: monospace; font-size: 9px; }
+      .pkg-bar { flex: 1; margin: 0 8px; }
+      .pkg-count { color: var(--text-muted); font-size: 9px; min-width: 20px; text-align: right; }
 
       /* ---- Main Canvas ---- */
       .main-canvas {
@@ -352,6 +520,63 @@
       .log-ok { color: var(--teal); }
       .log-warn { color: var(--amber); }
 
+      /* ---- Live Scan Progress ---- */
+      .scan-input-row { display: flex; gap: 6px; align-items: stretch; margin-bottom: 8px; }
+      .scan-path-input {
+        flex: 1; min-width: 0; background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border); border-radius: 6px;
+        padding: 6px 8px; font: inherit; font-size: 11px; font-family: monospace;
+        color: var(--text-primary); outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .scan-path-input:focus { border-color: var(--amber); box-shadow: 0 0 0 2px var(--amber-glow); }
+      .scan-path-input::placeholder { color: var(--text-muted); font-family: inherit; }
+      .btn-scan {
+        background: linear-gradient(135deg, #ffb340, #ff8c42); color: #000;
+        border: none; border-radius: 6px; padding: 6px 12px;
+        font: inherit; font-size: 11px; font-weight: 700; cursor: pointer;
+        white-space: nowrap; transition: all 0.2s; flex-shrink: 0;
+      }
+      .btn-scan:hover { box-shadow: 0 0 14px var(--amber-glow); }
+      .btn-scan:disabled { opacity: 0.5; cursor: not-allowed; }
+      .dir-autocomplete {
+        position: absolute; z-index: 50; background: var(--bg-card-solid);
+        border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+        max-height: 160px; overflow-y: auto; width: 100%; margin-top: 2px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      }
+      .dir-item {
+        padding: 6px 10px; font-size: 10px; font-family: monospace;
+        color: var(--text-secondary); cursor: pointer; transition: background 0.1s;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      }
+      .dir-item:hover { background: rgba(255,179,64,0.1); color: var(--amber); }
+      .scan-progress-section { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+      .scan-progress-bar-wrap { background: rgba(255,255,255,0.06); border-radius: 4px; height: 6px; overflow: hidden; margin: 6px 0; }
+      .scan-progress-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--amber), #ff8c42); transition: width 0.3s ease; }
+      .scan-progress-label { font-size: 9px; color: var(--text-muted); display: flex; justify-content: space-between; }
+      .scan-live-log {
+        font-size: 9px; font-family: 'SF Mono', 'Fira Code', monospace;
+        color: var(--text-muted); max-height: 80px; overflow-y: auto;
+        background: rgba(0,0,0,0.2); border-radius: 4px; padding: 6px 8px; margin-top: 6px;
+      }
+      .scan-live-log-line { padding: 1px 0; }
+      .scan-live-log-line.ok { color: var(--teal); }
+      .scan-live-log-line.error { color: var(--pink); }
+      .scan-done-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        background: rgba(0,212,177,0.12); border: 1px solid rgba(0,212,177,0.3);
+        color: var(--teal); border-radius: 5px; font-size: 10px; font-weight: 700;
+        padding: 4px 10px; margin-top: 4px;
+      }
+      .scan-cta-section {
+        flex: 1; display: flex; flex-direction: column; align-items: center;
+        justify-content: center; padding: 24px 16px; text-align: center; gap: 12px;
+      }
+      .scan-cta-icon { font-size: 40px; opacity: 0.25; }
+      .scan-cta-title { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+      .scan-cta-desc { font-size: 11px; color: var(--text-muted); line-height: 1.5; max-width: 200px; }
+
       /* ---- Flow Overlay ---- */
       .flow-overlay {
         position: fixed; inset: 0; z-index: 100;
@@ -418,11 +643,395 @@
       @keyframes dash-flow { to { stroke-dashoffset: -20; } }
       .flow-edge-animated { stroke-dasharray: 8, 6; animation: dash-flow 1s linear infinite; }
 
-      @media (max-width: 1200px) { .app-shell { grid-template-columns: 56px 220px 1fr 280px; } }
+      @media (max-width: 1200px) { .app-shell { grid-template-columns: 56px 220px 1fr 280px; } .app-shell.no-right-panel { grid-template-columns: 56px 220px 1fr; } }
       @media (max-width: 960px) {
         .app-shell { grid-template-columns: 48px 1fr; grid-template-rows: 48px 1fr; }
         .left-panel, .right-panel { display: none; }
       }
+
+      /* ═══════════════════════════════════════════════════════════
+         SETUP WIZARD
+      ═══════════════════════════════════════════════════════════ */
+
+      /* Fullscreen backdrop */
+      .setup-backdrop {
+        position: fixed; inset: 0; z-index: 200;
+        background: radial-gradient(ellipse at 30% 40%, rgba(79,124,255,0.12) 0%, transparent 60%),
+                    radial-gradient(ellipse at 70% 70%, rgba(0,212,177,0.08) 0%, transparent 60%),
+                    rgba(7, 11, 20, 0.97);
+        display: flex; align-items: center; justify-content: center;
+        animation: backdrop-in 0.35s ease;
+      }
+      @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+
+      /* Central wizard card */
+      .setup-card {
+        width: 680px; max-width: calc(100vw - 48px);
+        background: rgba(14, 20, 38, 0.98);
+        border: 1px solid rgba(79,124,255,0.25);
+        border-radius: 20px;
+        box-shadow: 0 32px 96px rgba(0,0,0,0.6), 0 0 0 1px rgba(79,124,255,0.1);
+        overflow: hidden;
+        animation: card-rise 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @keyframes card-rise { from { opacity: 0; transform: translateY(24px) scale(0.97); } to { opacity: 1; transform: none; } }
+
+      /* Card header */
+      .setup-header {
+        padding: 28px 32px 0;
+      }
+      .setup-logo-row {
+        display: flex; align-items: center; gap: 12px; margin-bottom: 20px;
+      }
+      .setup-logo {
+        width: 40px; height: 40px; border-radius: 12px;
+        background: linear-gradient(135deg, var(--blue), var(--teal));
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 800; font-size: 16px; color: #fff;
+        box-shadow: 0 0 24px var(--blue-glow);
+      }
+      .setup-logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; }
+      .setup-logo-text .hi { color: var(--blue); }
+
+      /* Step progress indicator */
+      .setup-steps {
+        display: flex; align-items: center; gap: 0; margin-bottom: 0;
+      }
+      .setup-step-item {
+        display: flex; align-items: center; gap: 8px; flex: 1;
+        position: relative;
+      }
+      .setup-step-item:not(:last-child)::after {
+        content: ''; position: absolute; left: calc(20px + 8px); right: 0;
+        top: 50%; transform: translateY(-50%);
+        height: 1px; background: rgba(79,124,255,0.15);
+        z-index: 0;
+      }
+      .setup-step-item.done::after { background: rgba(79,124,255,0.4); }
+      .setup-step-circle {
+        width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 11px; font-weight: 700; z-index: 1;
+        border: 2px solid rgba(79,124,255,0.2);
+        background: var(--bg-primary); color: var(--text-muted);
+        transition: all 0.3s;
+      }
+      .setup-step-item.active .setup-step-circle {
+        border-color: var(--blue); color: var(--blue);
+        background: rgba(79,124,255,0.12); box-shadow: 0 0 12px var(--blue-glow);
+      }
+      .setup-step-item.done .setup-step-circle {
+        border-color: var(--teal); color: #fff;
+        background: var(--teal); box-shadow: 0 0 10px var(--teal-glow);
+      }
+      .setup-step-label {
+        font-size: 10px; font-weight: 600; color: var(--text-muted);
+        text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;
+        transition: color 0.3s;
+      }
+      .setup-step-item.active .setup-step-label { color: var(--blue); }
+      .setup-step-item.done .setup-step-label { color: var(--teal); }
+
+      /* Card body */
+      .setup-body {
+        padding: 28px 32px 32px;
+      }
+      .setup-step-title {
+        font-size: 22px; font-weight: 800; letter-spacing: -0.02em;
+        color: var(--text-primary); margin-bottom: 8px;
+      }
+      .setup-step-desc {
+        font-size: 13px; color: var(--text-secondary); line-height: 1.6;
+        margin-bottom: 24px;
+      }
+
+      /* ── Step 1: Project chooser ── */
+      .setup-options-grid {
+        display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;
+      }
+      .setup-option-card {
+        border: 2px solid var(--border); border-radius: 12px;
+        background: rgba(255,255,255,0.02); padding: 20px;
+        cursor: pointer; transition: all 0.2s; text-align: left;
+      }
+      .setup-option-card:hover {
+        border-color: rgba(79,124,255,0.5); background: rgba(79,124,255,0.06);
+        box-shadow: 0 0 20px rgba(79,124,255,0.1);
+      }
+      .setup-option-card.selected {
+        border-color: var(--blue); background: rgba(79,124,255,0.1);
+        box-shadow: 0 0 24px var(--blue-glow);
+      }
+      .setup-option-icon {
+        font-size: 28px; margin-bottom: 10px; display: block;
+      }
+      .setup-option-title {
+        font-size: 14px; font-weight: 700; color: var(--text-primary);
+        margin-bottom: 4px;
+      }
+      .setup-option-desc {
+        font-size: 11px; color: var(--text-muted); line-height: 1.5;
+      }
+
+      /* Existing repos list */
+      .setup-repo-list { margin-bottom: 20px; }
+      .setup-repo-item {
+        display: flex; align-items: center; gap: 10px;
+        border: 1px solid var(--border); border-radius: 10px;
+        background: rgba(255,255,255,0.02); padding: 12px 14px;
+        cursor: pointer; transition: all 0.2s; margin-bottom: 6px;
+      }
+      .setup-repo-item:hover {
+        border-color: rgba(79,124,255,0.4); background: rgba(79,124,255,0.06);
+      }
+      .setup-repo-item.selected {
+        border-color: var(--blue); background: rgba(79,124,255,0.1);
+      }
+      .setup-repo-dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: var(--teal); box-shadow: 0 0 6px var(--teal-glow);
+        flex-shrink: 0;
+      }
+      .setup-repo-info { flex: 1; min-width: 0; }
+      .setup-repo-name { font-size: 13px; font-weight: 700; color: var(--text-primary); }
+      .setup-repo-path { font-size: 10px; color: var(--text-muted); font-family: monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .setup-repo-badge {
+        font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em;
+        padding: 2px 7px; border-radius: 4px; flex-shrink: 0;
+      }
+      .setup-repo-badge.enriched { background: rgba(0,212,177,0.15); color: var(--teal); border: 1px solid rgba(0,212,177,0.3); }
+      .setup-repo-badge.partial { background: rgba(255,179,64,0.15); color: var(--amber); border: 1px solid rgba(255,179,64,0.3); }
+      .setup-repo-delete {
+        flex-shrink: 0; background: none; border: none; cursor: pointer;
+        color: var(--text-muted); font-size: 16px; line-height: 1; padding: 4px 6px;
+        border-radius: 4px; opacity: 0; transition: opacity 0.15s, color 0.15s, background 0.15s;
+      }
+      .setup-repo-item:hover .setup-repo-delete { opacity: 1; }
+      .setup-repo-delete:hover { color: #ff4d9e; background: rgba(255,77,158,0.1); }
+
+      /* Directory browser */
+      .setup-dir-browser {
+        border: 1px solid var(--border); border-radius: 10px;
+        overflow: hidden; margin-bottom: 20px;
+      }
+      .setup-dir-header {
+        padding: 8px 12px; background: rgba(255,255,255,0.03);
+        border-bottom: 1px solid var(--border);
+        display: flex; align-items: center; gap: 8px;
+      }
+      .setup-dir-breadcrumb {
+        font-size: 10px; font-family: monospace; color: var(--text-muted);
+        flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      }
+      .setup-dir-list {
+        max-height: 220px; overflow-y: auto;
+      }
+      .setup-dir-item {
+        display: flex; align-items: center; gap: 8px;
+        padding: 8px 12px; cursor: pointer; transition: background 0.1s;
+        font-size: 12px; color: var(--text-secondary); border-bottom: 1px solid rgba(79,124,255,0.05);
+      }
+      .setup-dir-item:hover { background: rgba(79,124,255,0.08); color: var(--text-primary); }
+      .setup-dir-item.selected { background: rgba(79,124,255,0.12); color: var(--blue); }
+      .setup-dir-item .dir-icon { font-size: 14px; flex-shrink: 0; }
+      .setup-dir-item .dir-name { flex: 1; font-weight: 500; }
+      .setup-dir-selected-path {
+        padding: 8px 12px; background: rgba(0,212,177,0.06);
+        border-top: 1px solid rgba(0,212,177,0.2);
+        font-size: 10px; font-family: monospace; color: var(--teal);
+        display: flex; align-items: center; gap: 6px;
+      }
+      .setup-path-input-row {
+        display: flex; gap: 8px; align-items: stretch; margin-bottom: 12px;
+      }
+      .setup-path-input {
+        flex: 1; background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border); border-radius: 8px;
+        padding: 10px 12px; font: inherit; font-size: 12px; font-family: monospace;
+        color: var(--text-primary); outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+      }
+      .setup-path-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-glow); }
+      .setup-path-input::placeholder { color: var(--text-muted); font-family: inherit; }
+      .setup-browse-btn {
+        background: rgba(79,124,255,0.1); border: 1px solid rgba(79,124,255,0.3);
+        border-radius: 8px; padding: 10px 14px; font: inherit; font-size: 11px;
+        font-weight: 600; color: var(--blue); cursor: pointer; white-space: nowrap;
+        transition: all 0.2s; flex-shrink: 0;
+      }
+      .setup-browse-btn:hover { background: rgba(79,124,255,0.2); border-color: var(--blue); }
+
+      /* ── Step 2: Parse & AI ── */
+      .setup-pipeline {
+        display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px;
+      }
+      .setup-pipeline-step {
+        display: flex; align-items: flex-start; gap: 14px;
+        padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px;
+        background: rgba(255,255,255,0.02); transition: all 0.3s;
+      }
+      .setup-pipeline-step.active {
+        border-color: var(--blue); background: rgba(79,124,255,0.06);
+        box-shadow: 0 0 16px rgba(79,124,255,0.1);
+      }
+      .setup-pipeline-step.done {
+        border-color: rgba(0,212,177,0.3); background: rgba(0,212,177,0.04);
+      }
+      .setup-pipeline-step.error {
+        border-color: rgba(255,77,158,0.35); background: rgba(255,77,158,0.04);
+      }
+      .setup-pipeline-icon {
+        width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 14px; background: rgba(255,255,255,0.05);
+        border: 1px solid var(--border);
+      }
+      .setup-pipeline-step.active .setup-pipeline-icon {
+        background: rgba(79,124,255,0.15); border-color: rgba(79,124,255,0.4);
+      }
+      .setup-pipeline-step.done .setup-pipeline-icon {
+        background: rgba(0,212,177,0.15); border-color: rgba(0,212,177,0.4);
+      }
+      .setup-pipeline-body { flex: 1; min-width: 0; }
+      .setup-pipeline-title {
+        font-size: 13px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px;
+      }
+      .setup-pipeline-desc {
+        font-size: 11px; color: var(--text-muted); line-height: 1.5;
+      }
+      .setup-pipeline-status {
+        font-size: 10px; font-weight: 700; margin-top: 6px;
+        display: flex; align-items: center; gap: 6px;
+      }
+      .setup-pipeline-status.running { color: var(--blue); }
+      .setup-pipeline-status.done { color: var(--teal); }
+      .setup-pipeline-status.error { color: var(--pink); }
+      .setup-pipeline-status.waiting { color: var(--text-muted); }
+
+      /* Scan progress in step 2 */
+      .setup-scan-progress {
+        margin-top: 8px;
+      }
+      .setup-scan-bar-wrap {
+        background: rgba(255,255,255,0.06); border-radius: 4px; height: 4px;
+        overflow: hidden; margin-bottom: 4px;
+      }
+      .setup-scan-bar-fill {
+        height: 100%; border-radius: 4px;
+        background: linear-gradient(90deg, var(--blue), var(--teal));
+        transition: width 0.3s ease;
+      }
+      .setup-scan-log {
+        font-size: 9px; font-family: 'SF Mono', 'Fira Code', monospace;
+        color: var(--text-muted); max-height: 48px; overflow-y: auto;
+        background: rgba(0,0,0,0.2); border-radius: 4px; padding: 4px 6px;
+      }
+      .setup-scan-log-line.ok { color: var(--teal); }
+      .setup-scan-log-line.error { color: var(--pink); }
+
+      /* AI instructions panel */
+      .setup-ai-instructions {
+        border: 1px solid rgba(79,124,255,0.3); border-radius: 10px;
+        padding: 14px 16px; margin-top: 10px;
+        background: rgba(79,124,255,0.06);
+      }
+      .setup-ai-instructions-title {
+        font-size: 11px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--blue); margin-bottom: 8px;
+        display: flex; align-items: center; gap: 6px;
+      }
+      .setup-ai-cmd {
+        display: flex; align-items: center; gap: 8px;
+        background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 6px; padding: 8px 12px; font-family: monospace; font-size: 10px;
+        color: var(--text-primary); cursor: pointer; transition: background 0.15s;
+        word-break: break-all;
+      }
+      .setup-ai-cmd:hover { background: rgba(0,0,0,0.5); }
+
+      /* ── Step 3: Results ── */
+      .setup-results-grid {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+        margin-bottom: 24px;
+      }
+      .setup-results-stat {
+        border: 1px solid var(--border); border-radius: 10px;
+        background: rgba(255,255,255,0.02); padding: 14px;
+        text-align: center;
+      }
+      .setup-results-num {
+        font-size: 32px; font-weight: 800; line-height: 1;
+        background: linear-gradient(135deg, var(--blue), var(--teal));
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .setup-results-label {
+        font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em;
+        color: var(--text-muted); margin-top: 4px;
+      }
+
+      /* ── Wizard footer ── */
+      .setup-footer {
+        padding: 0 32px 28px;
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px;
+      }
+      .setup-back-btn {
+        background: transparent; border: 1px solid var(--border);
+        border-radius: 8px; padding: 10px 18px; font: inherit; font-size: 12px;
+        font-weight: 600; color: var(--text-secondary); cursor: pointer;
+        transition: all 0.2s;
+      }
+      .setup-back-btn:hover { border-color: var(--border-hover); color: var(--text-primary); }
+      .setup-next-btn {
+        background: linear-gradient(135deg, var(--blue), #6366f1);
+        border: none; border-radius: 8px; padding: 10px 24px;
+        font: inherit; font-size: 13px; font-weight: 700; color: #fff;
+        cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        display: flex; align-items: center; gap: 8px;
+        box-shadow: 0 4px 16px rgba(79,124,255,0.25);
+      }
+      .setup-next-btn:hover { box-shadow: 0 4px 24px rgba(79,124,255,0.45); transform: translateY(-1px); }
+      .setup-next-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+      .setup-launch-btn {
+        background: linear-gradient(135deg, var(--teal), #00b89a);
+        border: none; border-radius: 8px; padding: 10px 24px;
+        font: inherit; font-size: 13px; font-weight: 700; color: #000;
+        cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        display: flex; align-items: center; gap: 8px;
+        box-shadow: 0 4px 16px rgba(0,212,177,0.3);
+      }
+      .setup-launch-btn:hover { box-shadow: 0 4px 24px rgba(0,212,177,0.5); transform: translateY(-1px); }
+
+      /* Project change button in topbar / sidebar */
+      .project-btn {
+        display: flex; align-items: center; gap: 7px;
+        background: rgba(79,124,255,0.08); border: 1px solid rgba(79,124,255,0.25);
+        border-radius: 8px; padding: 5px 10px; cursor: pointer; color: var(--text-primary);
+        font: inherit; font-size: 12px; font-weight: 600; white-space: nowrap;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .project-btn:hover { background: rgba(79,124,255,0.15); border-color: rgba(79,124,255,0.5); }
+      .project-btn .proj-icon { color: var(--blue); font-size: 11px; }
+      .project-btn .proj-name { max-width: 120px; overflow: hidden; text-overflow: ellipsis; }
+      .project-btn .proj-caret { color: var(--text-muted); font-size: 10px; margin-left: 2px; }
+
+      /* Change project sidebar button */
+      .change-project-btn {
+        width: 40px; height: 40px; border-radius: 10px; border: none;
+        background: transparent; color: var(--text-muted); font-size: 16px;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: all 0.2s; position: relative; margin-top: auto;
+      }
+      .change-project-btn:hover { background: rgba(79,124,255,0.1); color: var(--blue); }
+      .change-project-btn .proj-badge {
+        position: absolute; top: 6px; right: 6px;
+        width: 7px; height: 7px; border-radius: 50%;
+        background: var(--teal); border: 1px solid var(--bg-deep);
+      }
+
+      /* Spinner animation */
+      .spin-anim { animation: spin 0.8s linear infinite; }
     </style>
   </head>
   <body>
@@ -435,23 +1044,24 @@
           method: 'GET', path: '/api/graph',
           summary: 'Returns generated API dependency graph data for visualization.',
           flow: ['Receive request from UI explorer', 'Read .routeweave/graph.json from cache files', 'Respond with graph payload'],
-          tables: [], services: [], caches: ['.routeweave/graph.json'], queues: [], tableAccess: []
+          tables: [], services: [], dependencies: ['express'], caches: ['.routeweave/graph.json'], queues: [], tableAccess: []
         },
         {
           method: 'GET', path: '/api/apis',
           summary: 'Returns API knowledge summaries from cache for endpoint navigation.',
           flow: ['Receive request from UI explorer', 'Read .routeweave/api_knowledge.json from cache', 'Flatten API entries and return list'],
-          tables: [], services: [], caches: ['.routeweave/api_knowledge.json'], queues: [], tableAccess: []
+          tables: [], services: [], dependencies: ['express'], caches: ['.routeweave/api_knowledge.json'], queues: [], tableAccess: []
         },
         {
           method: 'GET', path: '/api/accounts/:accountId',
           summary: 'Reads profile columns and updates the account audit trail.',
           flow: [
             'Read accounts.id, accounts.status, accounts.tier to build response payload',
+            'Call Auth0 to validate access token before reading account',
             'Update account_audit.last_viewed_at for recent activity tracking',
             'Return enriched account information to the caller'
           ],
-          tables: ['accounts', 'account_audit'], services: [], caches: [], queues: [],
+          tables: ['accounts', 'account_audit'], services: ['Auth0'], dependencies: ['express', 'jsonwebtoken'], caches: [], queues: [],
           tableAccess: [
             { table: 'accounts', columns: ['id', 'status', 'tier'], operations: ['SELECT'], evidence: ['select id, status, tier from accounts where id = ?'] },
             { table: 'account_audit', columns: ['last_viewed_at', 'account_id'], operations: ['UPDATE'], evidence: ['update account_audit set last_viewed_at = now()'] }
@@ -634,6 +1244,34 @@
           filters: { table: tf, column: cf },
           results: results.sort((a, b) => (a.method + ' ' + a.path).localeCompare(b.method + ' ' + b.path))
         };
+      }
+
+      function buildLocalDependencyCatalog(apis) {
+        const map = new Map();
+        for (const api of apis || []) {
+          const id = api.method + ' ' + api.path;
+          for (const dep of api.dependencies || []) {
+            const k = dep.toLowerCase();
+            if (!map.has(k)) map.set(k, { dependency: dep, apiIds: new Set() });
+            map.get(k).apiIds.add(id);
+          }
+        }
+        return [...map.values()].map(e => ({ dependency: e.dependency, apiCount: e.apiIds.size }))
+          .sort((a, b) => (a.dependency < b.dependency ? -1 : a.dependency > b.dependency ? 1 : 0));
+      }
+
+      function buildLocalServiceCatalog(apis) {
+        const map = new Map();
+        for (const api of apis || []) {
+          const id = api.method + ' ' + api.path;
+          for (const svc of api.services || []) {
+            const k = svc.toLowerCase();
+            if (!map.has(k)) map.set(k, { service: svc, apiIds: new Set() });
+            map.get(k).apiIds.add(id);
+          }
+        }
+        return [...map.values()].map(e => ({ service: e.service, apiCount: e.apiIds.size }))
+          .sort((a, b) => (a.service < b.service ? -1 : a.service > b.service ? 1 : 0));
       }
 
       function columnMatchLabel(v) {
@@ -1347,6 +1985,911 @@
         ]);
       }
 
+      /* ---- Scanner file detail renderer ---- */
+      function ScanFileDetailSection({ title, color, children }) {
+        const h = React.createElement;
+        return h('div', { className: 'scanner-detail-section' }, [
+          h('h4', { key: 'h' }, [
+            h('span', { className: 'section-dot', key: 'd', style: { background: color } }),
+            title
+          ]),
+          ...React.Children.toArray(children)
+        ]);
+      }
+
+      function renderScanFileDetail(f) {
+        const h = React.createElement;
+        if (!f) return null;
+
+        function scoreColor(s) {
+          if (s >= 90) return '#00d4b1';
+          if (s >= 75) return '#4f7cff';
+          if (s >= 55) return '#ffb340';
+          if (s >= 35) return '#ff8c42';
+          return '#ff4d9e';
+        }
+
+        const sc = scoreColor(f.coverageScore);
+
+        const sections = [
+          /* Header */
+          h('div', { className: 'scanner-detail-section', key: 'file-hdr' }, [
+            h('h4', { key: 'h' }, [
+              h('span', { className: 'section-dot', key: 'd', style: { background: sc } }),
+              'File'
+            ]),
+            h('div', { style: { fontFamily: 'monospace', fontSize: 10, color: 'var(--text-secondary)', wordBreak: 'break-all', marginBottom: 8 }, key: 'path' }, f.filePath),
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: 8 }, key: 'meta' }, [
+              h('span', { key: 'role', style: { fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', background: 'rgba(255,255,255,0.06)', color: 'var(--text-muted)', padding: '2px 6px', borderRadius: 3 } }, f.role),
+              h('span', { key: 'ext', style: { fontSize: 9, color: 'var(--text-muted)' } }, f.ext),
+              h('span', { key: 'lines', style: { fontSize: 9, color: 'var(--text-muted)' } }, f.lines + ' lines'),
+            ]),
+          ]),
+
+          /* Coverage score */
+          h('div', { className: 'scanner-detail-section', key: 'cov' }, [
+            h('h4', { key: 'h' }, [h('span', { className: 'section-dot', key: 'd', style: { background: sc } }), 'Coverage Score']),
+            h('div', { style: { display: 'flex', alignItems: 'center', gap: 10 }, key: 'row' }, [
+              h('span', { style: { fontSize: 28, fontWeight: 800, color: sc }, key: 'num' }, f.coverageScore + '%'),
+              h('div', { style: { flex: 1 }, key: 'bar' }, [
+                h('div', { className: 'progress-bar-wrap', key: 'wrap' }, [
+                  h('div', { className: 'progress-bar-fill', key: 'fill', style: { width: f.coverageScore + '%', background: sc } })
+                ])
+              ])
+            ])
+          ]),
+        ];
+
+        /* Routes */
+        if (f.routes && f.routes.length > 0) {
+          sections.push(
+            h('div', { className: 'scanner-detail-section', key: 'routes' }, [
+              h('h4', { key: 'h' }, [h('span', { className: 'section-dot', key: 'd', style: { background: '#4f7cff' } }), 'Routes (' + f.routes.length + ')']),
+              ...f.routes.map((r, i) =>
+                h('div', { key: i, style: { display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 } }, [
+                  h('span', { className: 'method-badge mb-' + (r.method || '').toLowerCase(), key: 'm' }, r.method || '?'),
+                  h('span', { style: { fontSize: 10, color: 'var(--text-secondary)', fontFamily: 'monospace' }, key: 'p' }, r.path),
+                  h('span', { style: { fontSize: 8, color: 'var(--text-muted)', marginLeft: 'auto' }, key: 'fw' }, r.framework)
+                ])
+              )
+            ])
+          );
+        }
+
+        /* SQL */
+        if (f.sqlInfo && (f.sqlInfo.fragmentCount > 0 || f.sqlInfo.tables.length > 0)) {
+          sections.push(
+            h('div', { className: 'scanner-detail-section', key: 'sql' }, [
+              h('h4', { key: 'h' }, [h('span', { className: 'section-dot', key: 'd', style: { background: '#00d4b1' } }), 'SQL / Tables']),
+              h('div', { style: { fontSize: 10, color: 'var(--text-muted)', marginBottom: 4 }, key: 'frags' }, f.sqlInfo.fragmentCount + ' SQL fragment(s) · ops: ' + (f.sqlInfo.operations.join(', ') || '—')),
+              f.sqlInfo.tables.length > 0
+                ? h('div', { key: 'tables', style: { display: 'flex', flexWrap: 'wrap', gap: 3 } },
+                    f.sqlInfo.tables.map(t => h('span', { className: 'db-col-chip', key: t }, t))
+                  )
+                : null
+            ])
+          );
+        }
+
+        /* ORM */
+        if (f.ormUsage && Object.keys(f.ormUsage).length > 0) {
+          sections.push(
+            h('div', { className: 'scanner-detail-section', key: 'orm' }, [
+              h('h4', { key: 'h' }, [h('span', { className: 'section-dot', key: 'd', style: { background: '#00d4b1' } }), 'ORM Usage']),
+              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 4 }, key: 'chips' },
+                Object.entries(f.ormUsage).map(([orm, count]) =>
+                  h('span', { key: orm, style: { fontSize: 10, padding: '2px 7px', borderRadius: 4, background: 'rgba(0,212,177,0.1)', color: '#00d4b1', border: '1px solid rgba(0,212,177,0.25)' } },
+                    orm + ' ×' + count
+                  )
+                )
+              )
+            ])
+          );
+        }
+
+        /* HTTP calls */
+        if (f.httpCallCount > 0) {
+          sections.push(
+            h('div', { className: 'scanner-detail-section', key: 'http' }, [
+              h('h4', { key: 'h' }, [h('span', { className: 'section-dot', key: 'd', style: { background: '#4f7cff' } }), 'Outbound HTTP Calls']),
+              h('div', { style: { fontSize: 12, fontWeight: 700, color: '#4f7cff' }, key: 'count' }, f.httpCallCount + ' call-site' + (f.httpCallCount !== 1 ? 's' : '') + ' detected')
+            ])
+          );
+        }
+
+        /* Caches */
+        if (f.caches && f.caches.length > 0) {
+          sections.push(
+            h('div', { className: 'scanner-detail-section', key: 'caches' }, [
+              h('h4', { key: 'h' }, [h('span', { className: 'section-dot', key: 'd', style: { background: '#a78bfa' } }), 'Cache Usage']),
+              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 4 }, key: 'c' },
+                f.caches.map(c => h('span', { className: 'cache-chip', key: c }, c))
+              )
+            ])
+          );
+        }
+
+        /* Queues */
+        if (f.queues && f.queues.length > 0) {
+          sections.push(
+            h('div', { className: 'scanner-detail-section', key: 'queues' }, [
+              h('h4', { key: 'h' }, [h('span', { className: 'section-dot', key: 'd', style: { background: '#ffb340' } }), 'Queue Usage']),
+              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 4 }, key: 'q' },
+                f.queues.map(q => h('span', { className: 'queue-chip', key: q }, q))
+              )
+            ])
+          );
+        }
+
+        /* Imports */
+        if (f.imports && f.imports.length > 0) {
+          sections.push(
+            h('div', { className: 'scanner-detail-section', key: 'imports' }, [
+              h('h4', { key: 'h' }, [h('span', { className: 'section-dot', key: 'd', style: { background: '#8892a8' } }), 'Imports (' + f.imports.length + ')']),
+              h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: 3 }, key: 'pkgs' },
+                f.imports.slice(0, 30).map(pkg =>
+                  h('span', { key: pkg, style: { fontSize: 9, padding: '1px 5px', borderRadius: 3, background: 'rgba(136,146,168,0.08)', color: '#8892a8', border: '1px solid rgba(136,146,168,0.18)', fontFamily: 'monospace' } }, pkg)
+                )
+              )
+            ])
+          );
+        }
+
+        return h(React.Fragment, {}, sections);
+      }
+
+      /* ════════════════════════════════════════════════════════════
+         SETUP WIZARD COMPONENT
+         Three steps:
+           1. Choose project (existing repo or new directory)
+           2. Parse & AI enrichment
+           3. Launch — show results summary
+      ════════════════════════════════════════════════════════════ */
+      function SetupWizard({ onComplete, onSwitchRepo, rescanRepo }) {
+        const h = React.createElement;
+
+        // ── Wizard state ──
+        const [step, setStep] = useState(1);                // 1 | 2 | 3
+        const [mode, setMode] = useState(null);             // 'existing' | 'new'
+        const [selectedExisting, setSelectedExisting] = useState(null);
+        const [newRepoPath, setNewRepoPath] = useState('');
+        const [showDirBrowser, setShowDirBrowser] = useState(false);
+        const [browserPath, setBrowserPath] = useState('');
+        const [browserDirs, setBrowserDirs] = useState([]);
+        const [browserSelected, setBrowserSelected] = useState('');
+        const [knownRepos, setKnownRepos] = useState([]);
+        const [dirInputValue, setDirInputValue] = useState('');
+        const [dirSuggestions, setDirSuggestions] = useState([]);
+        const [showDirSugg, setShowDirSugg] = useState(false);
+
+        // ── Step 2 state ──
+        const [parseStatus, setParseStatus] = useState('idle');    // idle | running | done | error
+        const [parseProgress, setParseProgress] = useState({ percent: 0, index: 0, total: 0, file: '' });
+        const [parseLogs, setParseLogs] = useState([]);
+        const [parseDone, setParseDone] = useState(null);          // scan result
+        const [parseError, setParseError] = useState('');
+        const [aiState, setAiState] = useState('none');            // none | parser_only | prompt_ready | ai_enriched
+        const [cmdCopied, setCmdCopied] = useState(false);
+        const [promptGenerating, setPromptGenerating] = useState(false);  // true while /api/scan-prompt is running
+        const [promptResult, setPromptResult] = useState(null);           // { fileCount, routeCount, instructionFile }
+
+        // ── Step 3 state ──
+        const [finalApis, setFinalApis] = useState([]);
+        const [finalTables, setFinalTables] = useState(0);
+
+        // ── Load known repos on mount ──
+        useEffect(() => {
+          fetch('/api/setup-status')
+            .then(r => r.ok ? r.json() : null)
+            .then(data => {
+              if (data && Array.isArray(data.knownRepos)) setKnownRepos(data.knownRepos);
+            })
+            .catch(() => {});
+        }, []);
+
+        // ── Rescan mode: skip step 1, jump to step 2, force fresh parse ──
+        useEffect(() => {
+          if (!rescanRepo) return;
+          setMode('existing');
+          setSelectedExisting(rescanRepo);
+          setStep(2);
+          setAiState('none');
+          setParseStatus('idle');
+          setParseDone(null);
+          setPromptResult(null);
+          setPromptGenerating(false);
+          startParse(rescanRepo);
+        }, [rescanRepo]);
+
+        // ── Directory browser ──
+        async function loadBrowserDirs(p) {
+          try {
+            const res = await fetch('/api/dirs?path=' + encodeURIComponent(p || '/'));
+            if (!res.ok) return;
+            const data = await res.json();
+            setBrowserDirs(data.dirs || []);
+            setBrowserPath(data.current || p || '/');
+          } catch { setBrowserDirs([]); }
+        }
+
+        function openBrowser() {
+          const start = dirInputValue || newRepoPath || '/';
+          setBrowserSelected('');
+          setShowDirBrowser(true);
+          loadBrowserDirs(start);
+        }
+
+        function browserNavigate(dir) {
+          setBrowserSelected(dir);
+          loadBrowserDirs(dir);
+        }
+
+        function browserGoUp() {
+          const parts = browserPath.split('/').filter(Boolean);
+          parts.pop();
+          const parent = '/' + parts.join('/') || '/';
+          loadBrowserDirs(parent);
+        }
+
+        function browserConfirm() {
+          const chosen = browserSelected || browserPath;
+          setNewRepoPath(chosen);
+          setDirInputValue(chosen);
+          setShowDirBrowser(false);
+        }
+
+        // ── Dir input autocomplete ──
+        async function fetchDirSuggestions(p) {
+          if (!p || p.length < 2) { setDirSuggestions([]); setShowDirSugg(false); return; }
+          try {
+            const res = await fetch('/api/dirs?path=' + encodeURIComponent(p));
+            if (!res.ok) return;
+            const data = await res.json();
+            setDirSuggestions((data.dirs || []).slice(0, 6));
+            setShowDirSugg((data.dirs || []).length > 0);
+          } catch { setDirSuggestions([]); setShowDirSugg(false); }
+        }
+
+        function onDirInputChange(e) {
+          const v = e.target.value;
+          setDirInputValue(v);
+          setNewRepoPath(v);
+          fetchDirSuggestions(v);
+        }
+
+        function pickDirSugg(dir) {
+          setDirInputValue(dir);
+          setNewRepoPath(dir);
+          setShowDirSugg(false);
+          setDirSuggestions([]);
+        }
+
+        // ── Delete a repo from the registry ──
+        async function deleteRepo(repoPath, e) {
+          if (e) { e.stopPropagation(); e.preventDefault(); }
+          if (!confirm('Remove "' + (repoPath.split('/').pop() || repoPath) + '" and delete its scan cache?')) return;
+          try {
+            const res = await fetch('/api/scan/delete', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ repoPath }),
+            });
+            if (res.ok) {
+              setKnownRepos(prev => prev.filter(r => r.path !== repoPath));
+              if (selectedExisting === repoPath) setSelectedExisting(null);
+            }
+          } catch { /* non-fatal */ }
+        }
+
+        // ── Step 1 → Step 2 transition ──
+        async function proceedToStep2() {
+          let repoPath = '';
+          if (mode === 'existing' && selectedExisting) {
+            repoPath = selectedExisting;
+          } else if (mode === 'new' && newRepoPath.trim()) {
+            repoPath = newRepoPath.trim();
+            // Register the new repo path on the server
+            try {
+              const res = await fetch('/api/repos/add', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ repoPath }),
+              });
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                setParseError(err.error || 'Could not add repository path.');
+                return;
+              }
+            } catch (err) {
+              setParseError(err.message || 'Network error.');
+              return;
+            }
+          } else {
+            return;
+          }
+          // For existing repos, switch the server's active repo FIRST
+          // so that subsequent /api/ai-status reads from the correct repo
+          if (mode === 'existing') {
+            try {
+              await fetch('/api/repos/switch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ repoPath }),
+              });
+            } catch { /* non-fatal, ai-status may still work */ }
+          }
+          setStep(2);
+          // Auto-start the parse if mode is 'new'
+          if (mode === 'new') {
+            startParse(repoPath);
+          } else {
+            // Existing repo: fetch its AI status and skip to step 3 if ai_enriched,
+            // or show appropriate instructions if not
+            try {
+              const r = await fetch('/api/ai-status');
+              const data = r.ok ? await r.json() : null;
+              const st = data ? data.state : 'none';
+              setAiState(st);
+              if (st === 'ai_enriched') {
+                await loadFinalStats();
+                setStep(3);
+              } else if (st === 'prompt_ready') {
+                setParseStatus('done');
+                setParseDone({ alreadyScanned: true });
+              } else if (st === 'parser_only') {
+                setParseStatus('done');
+                setParseDone({ alreadyScanned: true });
+                // Auto-generate prompt since parser already ran
+                setPromptGenerating(true);
+                try {
+                  const promptRes = await fetch('/api/scan-prompt', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ repoPath }),
+                  });
+                  if (promptRes.ok) {
+                    const promptData = await promptRes.json();
+                    setPromptResult(promptData);
+                    setAiState('prompt_ready');
+                  }
+                } catch { /* non-fatal */ }
+                setPromptGenerating(false);
+              } else {
+                // Has no data — start scan
+                startParse(repoPath);
+              }
+            } catch { startParse(repoPath); }
+          }
+        }
+
+        // ── Run parse/scan via SSE ──
+        async function startParse(repoPath) {
+          setParseStatus('running');
+          setParseError('');
+          setParseLogs([]);
+          setParseProgress({ percent: 0, index: 0, total: 0, file: '' });
+          setParseDone(null);
+          try {
+            const res = await fetch('/api/scan/start', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ repoPath }),
+            });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.error || 'Scan failed to start');
+            }
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buf = '';
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              buf += decoder.decode(value, { stream: true });
+              const lines = buf.split('\n');
+              buf = lines.pop();
+              for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                try {
+                  const evt = JSON.parse(line.slice(6));
+                  if (evt.type === 'progress') {
+                    setParseProgress({ index: evt.index, total: evt.total, percent: evt.percent || 0, file: evt.file || '' });
+                    setParseLogs(prev => [...prev.slice(-20), { text: evt.message, cls: '' }]);
+                  } else if (evt.type === 'done') {
+                    setParseStatus('done');
+                    setParseDone({ routeCount: evt.routeCount, fileCount: evt.fileCount, durationMs: evt.durationMs });
+                    setParseLogs(prev => [...prev.slice(-20), { text: evt.message, cls: 'ok' }]);
+                    // Auto-generate SCAN_INSTRUCTIONS.md
+                    setPromptGenerating(true);
+                    try {
+                      const promptRes = await fetch('/api/scan-prompt', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ repoPath }),
+                      });
+                      if (promptRes.ok) {
+                        const promptData = await promptRes.json();
+                        setPromptResult(promptData);
+                        setAiState('prompt_ready');
+                      }
+                    } catch { /* non-fatal */ }
+                    setPromptGenerating(false);
+                    // Fetch AI status after scan + prompt generation
+                    const sr = await fetch('/api/ai-status');
+                    const sd = sr.ok ? await sr.json() : null;
+                    if (sd && sd.state) setAiState(sd.state);
+                  } else if (evt.type === 'error') {
+                    setParseStatus('error');
+                    setParseError(evt.message);
+                    setParseLogs(prev => [...prev.slice(-20), { text: 'Error: ' + evt.message, cls: 'error' }]);
+                  }
+                } catch { /* ignore */ }
+              }
+            }
+          } catch (err) {
+            setParseStatus('error');
+            setParseError(err.message || String(err));
+          }
+        }
+
+        // ── Step 2 → Step 3 ──
+        async function proceedToStep3() {
+          await loadFinalStats();
+          setStep(3);
+        }
+
+        async function loadFinalStats() {
+          try {
+            const r = await fetch('/api/apis');
+            if (r.ok) {
+              const data = await r.json();
+              const apis = Array.isArray(data.apis) ? data.apis : [];
+              setFinalApis(apis);
+              const tSet = new Set();
+              apis.forEach(a => (a.tables || []).forEach(t => tSet.add(t)));
+              setFinalTables(tSet.size);
+            }
+          } catch { /* non-fatal */ }
+        }
+
+        // ── Copy to clipboard ──
+        function copyCmd(text) {
+          navigator.clipboard.writeText(text).catch(() => {});
+          setCmdCopied(true);
+          setTimeout(() => setCmdCopied(false), 2000);
+        }
+
+        // ── Helpers ──
+        const canProceedStep1 = (mode === 'existing' && selectedExisting) ||
+                                (mode === 'new' && newRepoPath.trim().length > 0);
+
+        const canProceedStep2 = parseStatus === 'done' || aiState === 'ai_enriched';
+
+        function stepClass(n) {
+          if (n < step) return 'done';
+          if (n === step) return 'active';
+          return '';
+        }
+
+        // ── Render: Step indicator ──
+        const stepIndicator = h('div', { className: 'setup-steps', key: 'steps' },
+          [
+            { n: 1, label: 'Choose Project' },
+            { n: 2, label: 'Parse & AI' },
+            { n: 3, label: 'Explore' }
+          ].map(({ n, label }) =>
+            h('div', { className: 'setup-step-item ' + stepClass(n), key: 'si-' + n }, [
+              h('div', { className: 'setup-step-circle', key: 'c' }, n < step ? '✓' : String(n)),
+              h('span', { className: 'setup-step-label', key: 'l' }, label)
+            ])
+          )
+        );
+
+        // ── Render: Step 1 body ──
+        function renderStep1() {
+          return h(React.Fragment, {}, [
+            h('div', { className: 'setup-step-title', key: 'title' }, 'Choose Your Project'),
+            h('div', { className: 'setup-step-desc', key: 'desc' },
+              'Select an existing scanned repository or point Routeweave to a new directory to begin analysis.'),
+
+            // Mode chooser cards
+            h('div', { className: 'setup-options-grid', key: 'grid' }, [
+              // Existing repos card
+              h('button', {
+                key: 'existing',
+                className: 'setup-option-card' + (mode === 'existing' ? ' selected' : ''),
+                onClick: () => { setMode('existing'); setNewRepoPath(''); },
+                disabled: knownRepos.length === 0,
+                style: knownRepos.length === 0 ? { opacity: 0.45, cursor: 'not-allowed' } : {}
+              }, [
+                h('span', { className: 'setup-option-icon', key: 'ic' }, '📁'),
+                h('div', { className: 'setup-option-title', key: 't' }, 'Existing Repository'),
+                h('div', { className: 'setup-option-desc', key: 'd' },
+                  knownRepos.length > 0
+                    ? knownRepos.length + ' repo' + (knownRepos.length !== 1 ? 's' : '') + ' already scanned — switch instantly.'
+                    : 'No repositories scanned yet. Add a new one below.')
+              ]),
+              // New repo card
+              h('button', {
+                key: 'new',
+                className: 'setup-option-card' + (mode === 'new' ? ' selected' : ''),
+                onClick: () => { setMode('new'); setSelectedExisting(null); }
+              }, [
+                h('span', { className: 'setup-option-icon', key: 'ic' }, '✨'),
+                h('div', { className: 'setup-option-title', key: 't' }, 'New Repository'),
+                h('div', { className: 'setup-option-desc', key: 'd' }, 'Choose a directory on disk. Routeweave will parse it and generate AI-enriched API knowledge.')
+              ])
+            ]),
+
+            // Existing repos list
+            mode === 'existing' && knownRepos.length > 0 ? h('div', { className: 'setup-repo-list', key: 'repo-list' },
+              knownRepos.map(r => {
+                const label = r.label || r.path.split('/').pop();
+                const badge = r.aiState === 'ai_enriched' ? 'enriched' : 'partial';
+                const badgeLabel = r.aiState === 'ai_enriched' ? 'AI Ready' : 'Parsed';
+                return h('div', {
+                  key: r.path,
+                  className: 'setup-repo-item' + (selectedExisting === r.path ? ' selected' : ''),
+                  onClick: () => { setSelectedExisting(r.path); }
+                }, [
+                  h('div', { className: 'setup-repo-dot', key: 'd' }),
+                  h('div', { className: 'setup-repo-info', key: 'i' }, [
+                    h('div', { className: 'setup-repo-name', key: 'n' }, label),
+                    h('div', { className: 'setup-repo-path', key: 'p' }, r.path)
+                  ]),
+                  h('span', { className: 'setup-repo-badge ' + badge, key: 'b' }, badgeLabel),
+                  h('button', {
+                    key: 'del',
+                    className: 'setup-repo-delete',
+                    title: 'Remove project',
+                    onClick: (e) => deleteRepo(r.path, e),
+                  }, '×')
+                ]);
+              })
+            ) : null,
+
+            // New repo path input
+            mode === 'new' ? h('div', { key: 'new-input' }, [
+              h('div', { className: 'setup-path-input-row', key: 'row' }, [
+                h('div', { style: { flex: 1, position: 'relative' }, key: 'wrap' }, [
+                  h('input', {
+                    key: 'input',
+                    className: 'setup-path-input',
+                    value: dirInputValue,
+                    onChange: onDirInputChange,
+                    onFocus: () => dirInputValue.length > 2 && fetchDirSuggestions(dirInputValue),
+                    onBlur: () => setTimeout(() => setShowDirSugg(false), 200),
+                    placeholder: '/path/to/your/project',
+                    spellCheck: false,
+                    autoComplete: 'off',
+                  }),
+                  showDirSugg && dirSuggestions.length > 0
+                    ? h('div', {
+                        key: 'sugg',
+                        style: {
+                          position: 'absolute', top: 'calc(100% + 4px)', left: 0, right: 0,
+                          background: 'var(--bg-card-solid)', border: '1px solid var(--border)',
+                          borderRadius: 8, overflow: 'hidden', zIndex: 50,
+                          boxShadow: '0 8px 24px rgba(0,0,0,0.4)', maxHeight: 160, overflowY: 'auto'
+                        }
+                      },
+                      dirSuggestions.map(d => h('div', {
+                        key: d,
+                        className: 'setup-dir-item',
+                        onMouseDown: () => pickDirSugg(d)
+                      }, [
+                        h('span', { className: 'dir-icon', key: 'ic' }, '📂'),
+                        h('span', { className: 'dir-name', key: 'n' }, d.split('/').pop() || d),
+                        h('span', { style: { fontSize: 9, color: 'var(--text-muted)', fontFamily: 'monospace', marginLeft: 'auto' }, key: 'p' }, d)
+                      ]))
+                    )
+                    : null
+                ]),
+                h('button', {
+                  key: 'browse',
+                  className: 'setup-browse-btn',
+                  onClick: openBrowser,
+                }, '📂 Browse')
+              ]),
+
+              // Directory browser panel
+              showDirBrowser ? h('div', { className: 'setup-dir-browser', key: 'browser' }, [
+                h('div', { className: 'setup-dir-header', key: 'hdr' }, [
+                  h('button', {
+                    key: 'up', onClick: browserGoUp,
+                    style: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: 12, padding: '0 4px' }
+                  }, '↑'),
+                  h('span', { className: 'setup-dir-breadcrumb', key: 'bc' }, browserPath || '/'),
+                  h('button', {
+                    key: 'close', onClick: () => setShowDirBrowser(false),
+                    style: { background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: 14 }
+                  }, '×')
+                ]),
+                h('div', { className: 'setup-dir-list', key: 'list' },
+                  browserDirs.length > 0
+                    ? browserDirs.map(dir => {
+                        const name = dir.split('/').pop() || dir;
+                        return h('div', {
+                          key: dir,
+                          className: 'setup-dir-item' + (browserSelected === dir ? ' selected' : ''),
+                          onClick: () => browserNavigate(dir)
+                        }, [
+                          h('span', { className: 'dir-icon', key: 'ic' }, '📂'),
+                          h('span', { className: 'dir-name', key: 'n' }, name)
+                        ]);
+                      })
+                    : [h('div', { key: 'empty', style: { padding: 12, textAlign: 'center', fontSize: 11, color: 'var(--text-muted)' } }, 'No subdirectories')]
+                ),
+                browserSelected
+                  ? h('div', { className: 'setup-dir-selected-path', key: 'sel' }, [
+                      h('span', { key: 'ic' }, '✓'),
+                      h('span', { key: 't' }, browserSelected)
+                    ])
+                  : null,
+                h('div', { key: 'actions', style: { padding: '8px 12px', display: 'flex', gap: 8, justifyContent: 'flex-end', borderTop: '1px solid var(--border)' } }, [
+                  h('button', { key: 'cancel', onClick: () => setShowDirBrowser(false), className: 'setup-back-btn', style: { padding: '6px 12px', fontSize: 11 } }, 'Cancel'),
+                  h('button', {
+                    key: 'confirm', onClick: browserConfirm,
+                    className: 'setup-next-btn', style: { padding: '6px 14px', fontSize: 11 },
+                    disabled: !browserSelected && !browserPath
+                  }, 'Select This Folder')
+                ])
+              ]) : null
+            ]) : null,
+          ]);
+        }
+
+        // ── Render: Step 2 body ──
+        function renderStep2() {
+          const repoName = (mode === 'existing' ? selectedExisting : newRepoPath || '').split('/').pop() || 'project';
+          const repoFullPath = mode === 'existing' ? selectedExisting : newRepoPath || '.';
+          const aiInstructionText = 'Follow the instructions in ' + repoFullPath + '/.routeweave/SCAN_INSTRUCTIONS.md';
+
+          function pipelineStepState(idx) {
+            // idx 0 = parse, idx 1 = generate instructions (auto), idx 2 = AI enrichment (manual)
+            if (idx === 0) {
+              if (parseStatus === 'running') return 'active';
+              if (parseStatus === 'done' || parseStatus === 'error') return parseStatus;
+              return 'idle';
+            }
+            if (idx === 1) {
+              if (promptGenerating) return 'active';
+              if (aiState === 'prompt_ready' || aiState === 'ai_enriched' || promptResult) return 'done';
+              if (parseStatus === 'done') return 'active';
+              return 'idle';
+            }
+            if (idx === 2) {
+              if (aiState === 'ai_enriched') return 'done';
+              if (aiState === 'prompt_ready' || promptResult) return 'active';
+              return 'idle';
+            }
+            return 'idle';
+          }
+
+          function pipelineIcon(idx) {
+            const st = pipelineStepState(idx);
+            if (st === 'done') return '✓';
+            if (st === 'running' || st === 'active') return h('div', { className: 'spinner spin-anim', style: { width: 14, height: 14, border: '2px solid rgba(79,124,255,0.2)', borderTopColor: 'var(--blue)', borderRadius: '50%' }, key: 'sp' });
+            if (st === 'error') return '✗';
+            if (idx === 0) return '⚡';
+            if (idx === 1) return '📄';
+            return '🤖';
+          }
+
+          return h(React.Fragment, {}, [
+            h('div', { className: 'setup-step-title', key: 'title' }, 'Parse & AI Enrichment'),
+            h('div', { className: 'setup-step-desc', key: 'desc' },
+              'Routeweave is scanning ' + repoName + ', extracting routes and database access patterns, then generating AI-enriched API knowledge.'),
+
+            h('div', { className: 'setup-pipeline', key: 'pipeline' }, [
+              // Pipeline Step 1: Code parse
+              h('div', {
+                key: 'p0',
+                className: 'setup-pipeline-step ' + pipelineStepState(0)
+              }, [
+                h('div', { className: 'setup-pipeline-icon', key: 'ic' }, pipelineIcon(0)),
+                h('div', { className: 'setup-pipeline-body', key: 'body' }, [
+                  h('div', { className: 'setup-pipeline-title', key: 't' }, 'Step 1 — Static Code Analysis'),
+                  h('div', { className: 'setup-pipeline-desc', key: 'd' },
+                    'Traverses source files, extracts API routes, SQL patterns, and ORM calls.'),
+                  parseStatus === 'running' ? h('div', { className: 'setup-scan-progress', key: 'prog' }, [
+                    h('div', { className: 'setup-scan-bar-wrap', key: 'bar' }, [
+                      h('div', { className: 'setup-scan-bar-fill', key: 'fill', style: { width: parseProgress.percent + '%' } })
+                    ]),
+                    parseLogs.length > 0 ? h('div', { className: 'setup-scan-log', key: 'log' },
+                      parseLogs.slice(-6).map((l, i) =>
+                        h('div', { key: i, className: 'setup-scan-log-line ' + (l.cls || '') }, l.text)
+                      )
+                    ) : null
+                  ]) : null,
+                  parseDone ? h('div', { className: 'setup-pipeline-status done', key: 'done' }, [
+                    h('span', { key: 'ic' }, '✓'),
+                    parseDone.alreadyScanned
+                      ? 'Previously scanned — data loaded'
+                      : (parseDone.routeCount || 0) + ' routes · ' + (parseDone.fileCount || 0) + ' files'
+                  ]) : null,
+                  parseError ? h('div', { className: 'setup-pipeline-status error', key: 'err' }, '✗ ' + parseError) : null,
+                  parseStatus === 'idle' ? h('div', { className: 'setup-pipeline-status waiting', key: 'wait' }, 'Waiting to start…') : null,
+                ])
+              ]),
+
+              // Pipeline Step 2: Generate SCAN_INSTRUCTIONS.md (automatic)
+              h('div', {
+                key: 'p1',
+                className: 'setup-pipeline-step ' + pipelineStepState(1)
+              }, [
+                h('div', { className: 'setup-pipeline-icon', key: 'ic' }, pipelineIcon(1)),
+                h('div', { className: 'setup-pipeline-body', key: 'body' }, [
+                  h('div', { className: 'setup-pipeline-title', key: 't' }, 'Step 2 — Generating AI Instructions'),
+                  h('div', { className: 'setup-pipeline-desc', key: 'd' },
+                    'Creates SCAN_INSTRUCTIONS.md with detailed prompts for your AI assistant.'),
+                  promptGenerating
+                    ? h('div', { className: 'setup-pipeline-status waiting', key: 'gen' }, 'Generating instructions…')
+                    : null,
+                  (promptResult || aiState === 'prompt_ready' || aiState === 'ai_enriched')
+                    ? h('div', { className: 'setup-pipeline-status done', key: 'done' }, [
+                        h('span', { key: 'ic' }, '✓'),
+                        'SCAN_INSTRUCTIONS.md created' + (promptResult ? ' (' + promptResult.routeCount + ' routes)' : '')
+                      ])
+                    : null,
+                  pipelineStepState(1) === 'idle'
+                    ? h('div', { className: 'setup-pipeline-status waiting', key: 'wait' }, 'Waiting for parse to complete…')
+                    : null,
+                ])
+              ]),
+
+              // Pipeline Step 3: AI enrichment (manual — user's only action)
+              h('div', {
+                key: 'p2',
+                className: 'setup-pipeline-step ' + pipelineStepState(2)
+              }, [
+                h('div', { className: 'setup-pipeline-icon', key: 'ic' }, pipelineIcon(2)),
+                h('div', { className: 'setup-pipeline-body', key: 'body' }, [
+                  h('div', { className: 'setup-pipeline-title', key: 't' }, 'Step 3 — AI Enrichment'),
+                  h('div', { className: 'setup-pipeline-desc', key: 'd' },
+                    'Open the generated instructions in your AI assistant (Claude, Copilot, Cursor) to write rich business-language summaries.'),
+
+                  aiState === 'ai_enriched'
+                    ? h('div', { className: 'setup-pipeline-status done', key: 'done' }, [
+                        h('span', { key: 'ic' }, '✓'),
+                        'AI enrichment complete — api_knowledge.json is ready'
+                      ])
+                    : (aiState === 'prompt_ready' || promptResult)
+                      ? h('div', { key: 'ai-instructions', className: 'setup-ai-instructions' }, [
+                          h('div', { className: 'setup-ai-instructions-title', key: 'title' }, [
+                            h('span', { key: 'ic' }, '🤖'),
+                            'Your only action — tell your AI assistant:'
+                          ]),
+                          h('div', {
+                            className: 'setup-ai-cmd', key: 'cmd',
+                            onClick: () => copyCmd(aiInstructionText),
+                            title: 'Click to copy'
+                          }, [
+                            h('span', { key: 'txt', style: { flex: 1 } }, '"' + aiInstructionText + '"'),
+                            h('span', { key: 'ic', style: { fontSize: 10, opacity: 0.6, color: cmdCopied ? 'var(--teal)' : undefined } },
+                              cmdCopied ? '✓ copied' : '⎘')
+                          ]),
+                          h('div', { key: 'hint', style: { fontSize: 10, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 } },
+                            'The AI will read the instructions, scan your repo, and write .routeweave/api_knowledge.json with enriched summaries. Once done, click Continue below.')
+                        ])
+                      : h('div', { className: 'setup-pipeline-status waiting', key: 'wait' }, 'Waiting for instructions to be generated…')
+                ])
+              ])
+            ]),
+
+            // Check enrichment status button
+            parseStatus === 'done' && aiState !== 'ai_enriched'
+              ? h('button', {
+                  key: 'check',
+                  className: 'setup-back-btn',
+                  style: { fontSize: 11 },
+                  onClick: async () => {
+                    try {
+                      const r = await fetch('/api/ai-status');
+                      const d = r.ok ? await r.json() : null;
+                      if (d) setAiState(d.state);
+                    } catch { /* ignore */ }
+                  }
+                }, '↻ Check enrichment status')
+              : null
+          ]);
+        }
+
+        // ── Render: Step 3 body ──
+        function renderStep3() {
+          const tableCount = finalTables;
+          const apiCount = finalApis.length;
+          const flowApis = finalApis.filter(a => a.flow && a.flow.length > 0).length;
+          return h(React.Fragment, {}, [
+            h('div', { className: 'setup-step-title', key: 'title' }, '🎉 You\'re all set!'),
+            h('div', { className: 'setup-step-desc', key: 'desc' },
+              'Routeweave has successfully analysed your project. Here\'s what was found:'),
+
+            h('div', { className: 'setup-results-grid', key: 'grid' }, [
+              h('div', { className: 'setup-results-stat', key: 'apis' }, [
+                h('div', { className: 'setup-results-num', key: 'n' }, String(apiCount || '—')),
+                h('div', { className: 'setup-results-label', key: 'l' }, 'API Endpoints')
+              ]),
+              h('div', { className: 'setup-results-stat', key: 'tables' }, [
+                h('div', { className: 'setup-results-num', key: 'n', style: { background: 'linear-gradient(135deg, #00d4b1, #4f7cff)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } }, String(tableCount || '—')),
+                h('div', { className: 'setup-results-label', key: 'l' }, 'DB Tables')
+              ]),
+              h('div', { className: 'setup-results-stat', key: 'flows' }, [
+                h('div', { className: 'setup-results-num', key: 'n', style: { background: 'linear-gradient(135deg, #a78bfa, #ff4d9e)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' } }, String(flowApis || '—')),
+                h('div', { className: 'setup-results-label', key: 'l' }, 'APIs with Flows')
+              ]),
+            ]),
+
+            h('div', { key: 'features', style: { border: '1px solid var(--border)', borderRadius: 10, padding: 16, background: 'rgba(255,255,255,0.02)' } }, [
+              h('div', { key: 't', style: { fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', marginBottom: 12 } }, 'What you can explore'),
+              ...[
+                { icon: '🔷', title: 'API Explorer', desc: 'Interactive bubble graph — click any endpoint to inspect its business logic, DB tables, and services.' },
+                { icon: '⚡', title: 'Impact Analysis', desc: 'See which APIs are affected when a database table or column changes.' },
+                { icon: '🔀', title: 'Flow Visualization', desc: 'Step-by-step flow diagrams showing how each API interacts with your data layer.' },
+              ].map(({ icon, title, desc }) =>
+                h('div', { key: title, style: { display: 'flex', gap: 10, marginBottom: 10 } }, [
+                  h('span', { key: 'ic', style: { fontSize: 18, flexShrink: 0 } }, icon),
+                  h('div', { key: 'body' }, [
+                    h('div', { key: 't', style: { fontSize: 12, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 2 } }, title),
+                    h('div', { key: 'd', style: { fontSize: 11, color: 'var(--text-muted)', lineHeight: 1.5 } }, desc)
+                  ])
+                ])
+              )
+            ])
+          ]);
+        }
+
+        // ── Full render ──
+        return h('div', { className: 'setup-backdrop', 'data-testid': 'setup-wizard' }, [
+          h('div', { className: 'setup-card', key: 'card' }, [
+            h('div', { className: 'setup-header', key: 'hdr' }, [
+              h('div', { className: 'setup-logo-row', key: 'logo' }, [
+                h('div', { className: 'setup-logo', key: 'l' }, 'RW'),
+                h('div', { className: 'setup-logo-text', key: 't' }, [
+                  h('span', { className: 'hi', key: 'h' }, 'Route'),
+                  'weave'
+                ])
+              ]),
+              stepIndicator
+            ]),
+            h('div', { className: 'setup-body', key: 'body' },
+              step === 1 ? renderStep1() : step === 2 ? renderStep2() : renderStep3()
+            ),
+            h('div', { className: 'setup-footer', key: 'footer' }, [
+              // Back button
+              step > 1 && parseStatus !== 'running'
+                ? h('button', {
+                    key: 'back',
+                    className: 'setup-back-btn',
+                    onClick: () => { setStep(step - 1); setParseStatus('idle'); setParseError(''); setParseDone(null); setAiState('none'); }
+                  }, '← Back')
+                : h('div', { key: 'spacer' }),
+
+              // Next / Launch button
+              step === 1 ? h('button', {
+                key: 'next1',
+                className: 'setup-next-btn',
+                disabled: !canProceedStep1,
+                onClick: proceedToStep2
+              }, ['Continue →']) :
+
+              step === 2 ? h('button', {
+                key: 'next2',
+                className: 'setup-next-btn',
+                disabled: !canProceedStep2,
+                onClick: proceedToStep3
+              }, ['Continue →']) :
+
+              h('button', {
+                key: 'launch',
+                className: 'setup-launch-btn',
+                onClick: onComplete
+              }, ['🚀 Open Dashboard'])
+            ])
+          ])
+        ]);
+      }
+
       /* ---- Main App ---- */
       function App() {
         const [rawApis, setRawApis] = useState(fallbackApis);
@@ -1359,11 +2902,45 @@
         const [impactResults, setImpactResults] = useState([]);
         const [impactLoading, setImpactLoading] = useState(false);
         const [impactError, setImpactError] = useState('');
+        const [impactCategory, setImpactCategory] = useState('tables');  // 'tables' | 'dependencies' | 'services'
+        const [impactDependency, setImpactDependency] = useState('');
+        const [impactService, setImpactService] = useState('');
+        const [impactDependencies, setImpactDependencies] = useState([]);
+        const [impactServices, setImpactServices] = useState([]);
         const [flowApi, setFlowApi] = useState(null);
         const [tooltip, setTooltip] = useState(null);
         const [activeNav, setActiveNav] = useState('explorer');
         const [animatedCount, setAnimatedCount] = useState(0);
         const [logs, setLogs] = useState([]);
+        const [scanStats, setScanStats] = useState(null);
+        const [scanStatsLoading, setScanStatsLoading] = useState(false);
+        const [selectedScanFile, setSelectedScanFile] = useState(null);
+        const [scanFileSearch, setScanFileSearch] = useState('');
+
+        // ── Scanner: new-scan state ──
+        const [scanRepoPath, setScanRepoPath] = useState('');
+        const [scanRunning, setScanRunning] = useState(false);
+        const [scanProgress, setScanProgress] = useState({ index: 0, total: 0, percent: 0, file: '' });
+        const [scanLiveLog, setScanLiveLog] = useState([]);
+        const [scanDone, setScanDone] = useState(null);   // { routeCount, fileCount, durationMs, coverageScore, coverageGrade }
+        const [scanError, setScanError] = useState('');
+        const [dirSuggestions, setDirSuggestions] = useState([]);
+        const [showDirs, setShowDirs] = useState(false);
+
+        // ── Repo switcher state ──
+        const [repos, setRepos] = useState([]);
+        const [activeRepoPath, setActiveRepoPath] = useState('');
+        const [repoSwitching, setRepoSwitching] = useState(false);
+
+        // ── Setup wizard state ──
+        const [showWizard, setShowWizard] = useState(false);
+        const [wizardChecked, setWizardChecked] = useState(false);
+        const [rescanRepo, setRescanRepo] = useState(null); // when set, wizard opens in rescan mode
+
+        // ── AI enrichment status ──
+        const [aiStatus, setAiStatus] = useState(null);   // null | { state, promptPath, repoDir }
+        const [bannerDismissed, setBannerDismissed] = useState(false);
+        const [cmdCopied, setCmdCopied] = useState(false);
 
         const apis = useMemo(() => normalizeApis(rawApis), [rawApis]);
         const filteredApis = useMemo(() => {
@@ -1388,6 +2965,12 @@
           const s = new Set(); apis.forEach(a => (a.tables || []).forEach(t => s.add(t))); return s.size;
         }, [apis]);
 
+        const filteredScanFiles = useMemo(() => {
+          if (!scanStats || !scanStats.files) return [];
+          const q = scanFileSearch.trim().toLowerCase();
+          return scanStats.files.filter(f => !q || f.filePath.toLowerCase().includes(q) || f.role.toLowerCase().includes(q));
+        }, [scanStats, scanFileSearch]);
+
         /* Animated count-up */
         useEffect(() => {
           const target = impactResults.length;
@@ -1408,28 +2991,364 @@
           setLogs(prev => [...prev.slice(-20), { time, msg, type }]);
         }
 
-        async function runImpactQuery(nextTable, nextColumn) {
+        // ── Directory autocomplete ────────────────────────────────────────────
+        async function fetchDirs(p) {
+          try {
+            const res = await fetch('/api/dirs?path=' + encodeURIComponent(p));
+            if (!res.ok) return;
+            const data = await res.json();
+            setDirSuggestions((data.dirs || []).slice(0, 8));
+            setShowDirs((data.dirs || []).length > 0);
+          } catch { setDirSuggestions([]); setShowDirs(false); }
+        }
+
+        function onScanPathChange(e) {
+          const v = e.target.value;
+          setScanRepoPath(v);
+          setScanDone(null); setScanError('');
+          if (v.length > 2) fetchDirs(v); else setShowDirs(false);
+        }
+
+        function onDirPick(dir) {
+          setScanRepoPath(dir);
+          setShowDirs(false);
+          setDirSuggestions([]);
+        }
+
+        // ── Start scan via SSE ────────────────────────────────────────────────
+        async function startScan() {
+          const rp = scanRepoPath.trim();
+          if (!rp) return;
+          setScanRunning(true);
+          setScanDone(null);
+          setScanError('');
+          setScanProgress({ index: 0, total: 0, percent: 0, file: '' });
+          setScanLiveLog([]);
+          addLog('Starting scan: ' + rp, 'ok');
+
+          try {
+            const res = await fetch('/api/scan/start', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ repoPath: rp }),
+            });
+
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.error || 'Scan failed to start');
+            }
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buf = '';
+
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              buf += decoder.decode(value, { stream: true });
+              const lines = buf.split('\n');
+              buf = lines.pop();  // last partial line stays in buf
+
+              for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                try {
+                  const event = JSON.parse(line.slice(6));
+                  if (event.type === 'progress') {
+                    setScanProgress({ index: event.index, total: event.total, percent: event.percent || 0, file: event.file || '' });
+                    setScanLiveLog(prev => [...prev.slice(-30), { text: event.message, cls: '' }]);
+                  } else if (event.type === 'done') {
+                    setScanDone({ routeCount: event.routeCount, fileCount: event.fileCount, durationMs: event.durationMs, coverageScore: event.coverageScore, coverageGrade: event.coverageGrade });
+                    setScanLiveLog(prev => [...prev.slice(-30), { text: event.message, cls: 'ok' }]);
+                    addLog(event.message, 'ok');
+                    // Reload APIs, scan stats, and repo registry
+                    await reloadData();
+                    await fetchRepos();
+                    await fetchAiStatus();
+                  } else if (event.type === 'error') {
+                    setScanError(event.message);
+                    setScanLiveLog(prev => [...prev.slice(-30), { text: 'Error: ' + event.message, cls: 'error' }]);
+                    addLog('Scan error: ' + event.message, 'warn');
+                  }
+                } catch { /* ignore parse errors */ }
+              }
+            }
+          } catch (err) {
+            const msg = err && err.message ? err.message : String(err);
+            setScanError(msg);
+            addLog('Scan failed: ' + msg, 'warn');
+          } finally {
+            setScanRunning(false);
+          }
+        }
+
+        async function deleteScan() {
+          if (!activeRepoPath) return;
+          try {
+            const res = await fetch('/api/scan/delete', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ repoPath: activeRepoPath }),
+            });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              addLog('Delete failed: ' + (err.error || 'unknown'), 'warn');
+              return;
+            }
+            const data = await res.json();
+            addLog('Deleted scan data: ' + (data.deleted || []).join(', '), 'ok');
+            setRawApis(fallbackApis);
+            setScanStats(null);
+            setScanDone(null);
+            setScanError('');
+            setScanLiveLog([]);
+            setSelectedScanFile(null);
+            await fetchRepos();
+            await fetchAiStatus();
+          } catch (err) {
+            addLog('Delete error: ' + (err.message || String(err)), 'warn');
+          }
+        }
+
+        async function startRescan() {
+          const rp = scanRepoPath.trim() || activeRepoPath;
+          if (!rp) return;
+          setScanRepoPath(rp);
+          setScanRunning(true);
+          setScanDone(null);
+          setScanError('');
+          setScanProgress({ index: 0, total: 0, percent: 0, file: '' });
+          setScanLiveLog([]);
+          addLog('Rescan (delete + full scan): ' + rp, 'ok');
+
+          try {
+            const res = await fetch('/api/scan/start', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ repoPath: rp, rescan: true }),
+            });
+
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.error || 'Rescan failed to start');
+            }
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            let buf = '';
+
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              buf += decoder.decode(value, { stream: true });
+              const lines = buf.split('\n');
+              buf = lines.pop();
+
+              for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                try {
+                  const event = JSON.parse(line.slice(6));
+                  if (event.type === 'progress') {
+                    setScanProgress({ index: event.index, total: event.total, percent: event.percent || 0, file: event.file || '' });
+                    setScanLiveLog(prev => [...prev.slice(-30), { text: event.message, cls: '' }]);
+                  } else if (event.type === 'done') {
+                    setScanDone({ routeCount: event.routeCount, fileCount: event.fileCount, durationMs: event.durationMs, coverageScore: event.coverageScore, coverageGrade: event.coverageGrade });
+                    setScanLiveLog(prev => [...prev.slice(-30), { text: event.message, cls: 'ok' }]);
+                    addLog(event.message, 'ok');
+                    await reloadData();
+                    await fetchRepos();
+                    await fetchAiStatus();
+                  } else if (event.type === 'error') {
+                    setScanError(event.message);
+                    setScanLiveLog(prev => [...prev.slice(-30), { text: 'Error: ' + event.message, cls: 'error' }]);
+                    addLog('Rescan error: ' + event.message, 'warn');
+                  }
+                } catch { /* ignore parse errors */ }
+              }
+            }
+          } catch (err) {
+            const msg = err && err.message ? err.message : String(err);
+            setScanError(msg);
+            addLog('Rescan failed: ' + msg, 'warn');
+          } finally {
+            setScanRunning(false);
+          }
+        }
+
+        // ── Reload APIs + scan stats + impact data after a scan or repo switch ─
+        async function reloadData() {
+          try {
+            const res = await fetch('/api/apis');
+            if (res.ok) {
+              const payload = await res.json();
+              const loaded = Array.isArray(payload.apis) ? payload.apis : [];
+              setRawApis(loaded.length > 0 ? loaded : fallbackApis);
+            }
+          } catch { /* keep current apis */ }
+          try {
+            const res = await fetch('/api/scan-stats');
+            if (res.ok) {
+              const data = await res.json();
+              setScanStats(data);
+            } else {
+              setScanStats(null);
+            }
+          } catch { setScanStats(null); }
+        }
+
+        // ── Fetch repo registry from server ───────────────────────────────────
+        async function fetchRepos() {
+          try {
+            const res = await fetch('/api/repos');
+            if (res.ok) {
+              const data = await res.json();
+              setRepos(Array.isArray(data.repos) ? data.repos : []);
+              setActiveRepoPath(data.active || '');
+            }
+          } catch { /* non-fatal */ }
+        }
+
+        // ── Fetch AI enrichment status for current active repo ───────────────
+        async function fetchAiStatus() {
+          try {
+            const res = await fetch('/api/ai-status');
+            if (res.ok) {
+              const data = await res.json();
+              setAiStatus(data);
+              // Reset dismiss whenever status changes (new scan or repo switch)
+              setBannerDismissed(false);
+            }
+          } catch { /* non-fatal */ }
+        }
+
+        // ── Check setup status — show wizard only if no data loaded ───────────
+        async function fetchSetupStatus() {
+          try {
+            const res = await fetch('/api/setup-status');
+            if (res.ok) {
+              const data = await res.json();
+              // If active repo has data, skip the wizard entirely
+              if (data.hasData) {
+                setShowWizard(false);
+                setWizardChecked(true);
+                return;
+              }
+              // If no active data but known repos exist, still show wizard
+              // so user can pick one — but they'll get the fast-switch flow
+            }
+          } catch { /* non-fatal */ }
+          setShowWizard(true);
+          setWizardChecked(true);
+        }
+
+        // ── Switch active repo ────────────────────────────────────────────────
+        async function switchRepo(repoPath) {
+          if (repoPath === activeRepoPath) { return; }
+          setRepoSwitching(true);
+          try {
+            const res = await fetch('/api/repos/switch', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ repoPath }),
+            });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              addLog('Repo switch failed: ' + (err.error || 'unknown error'), 'warn');
+              return;
+            }
+            const data = await res.json();
+            setActiveRepoPath(data.active || repoPath);
+            addLog('Switched to ' + (data.label || repoPath), 'ok');
+            // Reset dashboard state to prevent stale data from previous repo
+            setSelectedId('');
+            setFlowApi(null);
+            setSearch('');
+            setImpactTable('');
+            setImpactColumn('');
+            setImpactTables([]);
+            setImpactResults([]);
+            setImpactError('');
+            setError('');
+            setSelectedScanFile(null);
+            setScanFileSearch('');
+            // Reload all data from the newly-active repo
+            await reloadData();
+            await fetchAiStatus();
+          } catch (err) {
+            addLog('Repo switch error: ' + (err.message || String(err)), 'warn');
+          } finally {
+            setRepoSwitching(false);
+          }
+        }
+
+        async function runImpactQuery(category, opts) {
           setImpactLoading(true);
-          const tv = String(nextTable || '').trim(), cv = String(nextColumn || '').trim();
           const params = new URLSearchParams();
-          if (tv) params.set('table', tv);
-          if (cv) params.set('column', cv);
-          if (tv) addLog('Analyzing impact for ' + tv + (cv ? '.' + cv : '') + '...', 'ok');
+          if (category === 'tables') {
+            const tv = String(opts.table || '').trim(), cv = String(opts.column || '').trim();
+            if (tv) params.set('table', tv);
+            if (cv) params.set('column', cv);
+            if (tv) addLog('Analyzing impact for ' + tv + (cv ? '.' + cv : '') + '...', 'ok');
+          } else if (category === 'dependencies') {
+            const dv = String(opts.dependency || '').trim();
+            if (dv) params.set('dependency', dv);
+            if (dv) addLog('Analyzing impact for dependency ' + dv + '...', 'ok');
+          } else if (category === 'services') {
+            const sv = String(opts.service || '').trim();
+            if (sv) params.set('service', sv);
+            if (sv) addLog('Analyzing impact for service ' + sv + '...', 'ok');
+          }
           try {
             const suffix = params.toString() ? '?' + params.toString() : '';
             const res = await fetch('/api/impact' + suffix);
             if (!res.ok) throw new Error('Impact cache unavailable.');
             const payload = await res.json();
             setImpactTables(Array.isArray(payload.tables) ? payload.tables : []);
+            setImpactDependencies(Array.isArray(payload.dependencies) ? payload.dependencies : []);
+            setImpactServices(Array.isArray(payload.services) ? payload.services : []);
             setImpactResults(Array.isArray(payload.results) ? payload.results : []);
             setImpactError('');
-            if (tv) addLog('Found ' + (payload.results || []).length + ' impacted APIs', 'ok');
+            const count = (payload.results || []).length;
+            if (category === 'tables' && opts.table) addLog('Found ' + count + ' impacted APIs', 'ok');
+            if (category === 'dependencies' && opts.dependency) addLog('Found ' + count + ' impacted APIs', 'ok');
+            if (category === 'services' && opts.service) addLog('Found ' + count + ' impacted APIs', 'ok');
           } catch (err) {
-            const local = buildLocalImpactPayload(apis, { table: tv, column: cv });
-            setImpactTables(local.tables);
-            setImpactResults(local.results);
-            setImpactError(tv ? (err.message || 'Using local inference.') : '');
-            if (tv) addLog('Using locally inferred impact data', 'warn');
+            // Local fallback: build catalogs from loaded APIs
+            const localDepCatalog = buildLocalDependencyCatalog(apis);
+            const localSvcCatalog = buildLocalServiceCatalog(apis);
+            setImpactDependencies(localDepCatalog);
+            setImpactServices(localSvcCatalog);
+            if (category === 'tables') {
+              const local = buildLocalImpactPayload(apis, { table: opts.table || '', column: opts.column || '' });
+              setImpactTables(local.tables);
+              setImpactResults(local.results);
+            } else if (category === 'dependencies') {
+              // Local dependency impact: filter APIs by matching dependency
+              const dv = String(opts.dependency || '').trim().toLowerCase();
+              if (dv) {
+                const results = (apis || []).filter(a => (a.dependencies || []).some(d => d.toLowerCase() === dv))
+                  .map(a => ({ method: a.method, path: a.path, summary: a.summary, dependency: opts.dependency, impact: 'uses', how: 'Uses dependency ' + opts.dependency }))
+                  .sort((a, b) => (a.method + ' ' + a.path).localeCompare(b.method + ' ' + b.path));
+                setImpactResults(results);
+              } else {
+                setImpactResults([]);
+              }
+            } else if (category === 'services') {
+              // Local service impact: filter APIs by matching service
+              const sv = String(opts.service || '').trim().toLowerCase();
+              if (sv) {
+                const results = (apis || []).filter(a => (a.services || []).some(s => s.toLowerCase() === sv))
+                  .map(a => ({ method: a.method, path: a.path, summary: a.summary, service: opts.service, impact: 'calls', how: 'Calls external service ' + opts.service }))
+                  .sort((a, b) => (a.method + ' ' + a.path).localeCompare(b.method + ' ' + b.path));
+                setImpactResults(results);
+              } else {
+                setImpactResults([]);
+              }
+            } else {
+              setImpactResults([]);
+            }
+            const hasFilter = (category === 'tables' && opts.table) || (category === 'dependencies' && opts.dependency) || (category === 'services' && opts.service);
+            setImpactError(hasFilter ? (err.message || 'Using local inference.') : '');
+            if (hasFilter) addLog('Using locally inferred impact data', 'warn');
           } finally {
             setImpactLoading(false);
           }
@@ -1455,13 +3374,42 @@
           loadApis();
         }, []);
 
+        // ── Load repo registry + setup status on mount ───────────────────────
+        useEffect(() => { fetchRepos(); fetchAiStatus(); fetchSetupStatus(); }, []);
+
         useEffect(() => {
-          setImpactTable(''); setImpactColumn(''); runImpactQuery('', '');
+          async function loadScanStats() {
+            setScanStatsLoading(true);
+            try {
+              const res = await fetch('/api/scan-stats');
+              if (!res.ok) throw new Error('No scan stats');
+              const data = await res.json();
+              setScanStats(data);
+              addLog('Loaded scan parse report (' + (data.summary ? data.summary.totalFiles : '?') + ' files)', 'ok');
+            } catch {
+              setScanStats(null);
+            } finally {
+              setScanStatsLoading(false);
+            }
+          }
+          loadScanStats();
+        }, []);
+
+        useEffect(() => {
+          setImpactTable(''); setImpactColumn(''); setImpactDependency(''); setImpactService('');
+          setImpactDependencies([]); setImpactServices([]);
+          runImpactQuery('tables', {});
         }, [apis]);
 
         useEffect(() => {
-          if (impactTable) runImpactQuery(impactTable, impactColumn);
-        }, [impactTable, impactColumn]);
+          if (impactCategory === 'tables') {
+            if (impactTable) runImpactQuery('tables', { table: impactTable, column: impactColumn });
+          } else if (impactCategory === 'dependencies') {
+            if (impactDependency) runImpactQuery('dependencies', { dependency: impactDependency });
+          } else if (impactCategory === 'services') {
+            if (impactService) runImpactQuery('services', { service: impactService });
+          }
+        }, [impactCategory, impactTable, impactColumn, impactDependency, impactService]);
 
         function onSelectApi(api, openFlow) {
           const id = api.method + ' ' + api.path;
@@ -1498,10 +3446,26 @@
             key: 'nav-flows', title: 'API Flows',
             onClick: () => setActiveNav('flows')
           }, h(SvgIcon, { d: 'M13 10V3L4 14h7v7l9-11h-7z' })),
-          h('div', { className: 'sidebar-spacer', key: 'spacer' })
+          /* Scanner */
+          h('button', {
+            className: 'icon-btn nav-scanner' + (activeNav === 'scanner' ? ' active' : ''),
+            key: 'nav-scanner', title: 'Code Scanner',
+            onClick: () => setActiveNav('scanner')
+          }, h(SvgIcon, { d: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' })),
+          h('div', { className: 'sidebar-spacer', key: 'spacer' }),
+          /* Change Project */
+          h('button', {
+            className: 'icon-btn change-project-btn',
+            key: 'nav-project', title: 'Change Project',
+            onClick: () => setShowWizard(true)
+          }, h(SvgIcon, { d: 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z' }))
         ]);
 
-        /* ---- Top Bar (Issue #5: removed Scan/Export buttons) ---- */
+        /* ---- Top Bar ---- */
+        const activeRepoLabel = repos.find(r => r.path === activeRepoPath)
+          ? repos.find(r => r.path === activeRepoPath).label
+          : (activeRepoPath ? activeRepoPath.split('/').pop() : 'No repo');
+
         const topbar = h('header', { className: 'topbar', key: 'topbar' }, [
           h('div', { className: 'topbar-brand', key: 'brand' }, [
             h('span', { className: 'highlight', key: 'h' }, 'Route'),
@@ -1523,8 +3487,38 @@
             h('div', { className: 'topbar-stat', key: 's2' }, [
               h('span', { className: 'value', style: { color: '#ffb340' }, key: 'v' }, String(tableCount)),
               h('span', { className: 'label', key: 'l' }, 'Tables')
-            ])
-          ])
+            ]),
+            scanStats && scanStats.summary ? h('div', { className: 'topbar-stat', key: 's3' }, [
+              h('span', { className: 'value', style: { color: scanStats.summary.overallCoverageScore >= 75 ? '#00d4b1' : scanStats.summary.overallCoverageScore >= 55 ? '#ffb340' : '#ff4d9e' }, key: 'v' }, scanStats.summary.totalFiles),
+              h('span', { className: 'label', key: 'l' }, 'Parsed')
+            ]) : null,
+            scanStats && scanStats.summary ? h('div', { className: 'topbar-stat', key: 's4' }, [
+              h('span', { className: 'value', style: { color: scanStats.summary.overallCoverageScore >= 75 ? '#00d4b1' : scanStats.summary.overallCoverageScore >= 55 ? '#ffb340' : '#ff4d9e' }, key: 'v' }, scanStats.summary.overallCoverageScore + '%'),
+              h('span', { className: 'label', key: 'l' }, 'Coverage')
+            ]) : null
+          ]),
+          /* Active project label (replaces old dropdown-in-topbar) */
+          activeRepoPath
+            ? h('button', {
+                className: 'project-btn',
+                key: 'proj-btn',
+                title: activeRepoPath,
+                onClick: () => setShowWizard(true),
+              }, [
+                h('span', { className: 'repo-icon', key: 'ic' }, '⬡'),
+                h('span', { key: 'lbl' }, activeRepoLabel),
+              ])
+            : null,
+          /* Rescan button */
+          activeRepoPath
+            ? h('button', {
+                className: 'project-btn',
+                key: 'rescan-btn',
+                title: 'Rescan ' + activeRepoLabel,
+                style: { marginLeft: 6, fontSize: 11, padding: '4px 10px' },
+                onClick: () => { setActiveNav('scanner'); startRescan(); },
+              }, '↻ Rescan')
+            : null
         ]);
 
         /* ---- Left Panel (Issue #6: content changes per activeNav) ---- */
@@ -1581,26 +3575,77 @@
                 h(SvgIcon, { d: 'M22 12h-4l-3 9L9 3l-3 9H2', size: 12, color: 'var(--teal)', key: 'icon' }),
                 'Impact Analysis'
               ]),
+              /* Category segmented control */
+              h('div', { className: 'impact-category-switcher', key: 'cat-switch' }, [
+                h('button', {
+                  className: 'impact-cat-btn' + (impactCategory === 'tables' ? ' active' : ''),
+                  key: 'cat-tables',
+                  onClick: () => { setImpactCategory('tables'); setImpactDependency(''); setImpactService(''); }
+                }, 'Tables'),
+                h('button', {
+                  className: 'impact-cat-btn' + (impactCategory === 'dependencies' ? ' active' : ''),
+                  key: 'cat-deps',
+                  onClick: () => { setImpactCategory('dependencies'); setImpactTable(''); setImpactColumn(''); setImpactService(''); }
+                }, 'Dependencies'),
+                h('button', {
+                  className: 'impact-cat-btn' + (impactCategory === 'services' ? ' active' : ''),
+                  key: 'cat-svcs',
+                  onClick: () => { setImpactCategory('services'); setImpactTable(''); setImpactColumn(''); setImpactDependency(''); }
+                }, 'Ext. Services')
+              ]),
               h('div', { style: { fontSize: 10, color: 'var(--text-muted)', marginBottom: 8 }, key: 'desc' },
-                'Select a database table to find all APIs that touch it.'),
-              /* Issue #1: Table selector shows table name + api count */
-              h('select', {
-                className: 'scope-select', key: 'table-select',
-                value: impactTable,
-                onChange: e => { setImpactTable(e.target.value); setImpactColumn(''); }
-              }, [
-                h('option', { value: '', key: '_' }, '— Select a table —'),
-                ...impactTables.map(t => h('option', { value: t.table, key: t.table },
-                  t.table + '  (' + t.apiCount + ' API' + (t.apiCount !== 1 ? 's' : '') + ')'))
-              ]),
-              h('select', {
-                className: 'scope-select', key: 'column-select',
-                value: impactColumn, disabled: !impactTable,
-                onChange: e => setImpactColumn(e.target.value)
-              }, [
-                h('option', { value: '', key: '_' }, impactTable ? 'All columns' : 'Select table first'),
-                ...availableImpactColumns.map(c => h('option', { value: c, key: c }, c))
-              ]),
+                impactCategory === 'tables'
+                  ? 'Select a database table to find all APIs that touch it.'
+                  : impactCategory === 'dependencies'
+                    ? 'Select a dependency to find all APIs that use it.'
+                    : 'Select an external service to find all APIs that call it.'
+              ),
+              /* Conditional selectors based on category */
+              impactCategory === 'tables' ? [
+                h('select', {
+                  className: 'scope-select', key: 'table-select',
+                  value: impactTable,
+                  onChange: e => { setImpactTable(e.target.value); setImpactColumn(''); }
+                }, impactTables.length > 0 ? [
+                  h('option', { value: '', key: '_' }, '— Select a table —'),
+                  ...impactTables.map(t => h('option', { value: t.table, key: t.table },
+                    t.table + '  (' + t.apiCount + ' API' + (t.apiCount !== 1 ? 's' : '') + ')'))
+                ] : [
+                  h('option', { value: '', key: '_' }, 'No database tables detected')
+                ]),
+                h('select', {
+                  className: 'scope-select', key: 'column-select',
+                  value: impactColumn, disabled: !impactTable,
+                  onChange: e => setImpactColumn(e.target.value)
+                }, [
+                  h('option', { value: '', key: '_' }, impactTable ? 'All columns' : 'Select table first'),
+                  ...availableImpactColumns.map(c => h('option', { value: c, key: c }, c))
+                ])
+              ] : impactCategory === 'dependencies' ? [
+                h('select', {
+                  className: 'scope-select', key: 'dep-select',
+                  value: impactDependency,
+                  onChange: e => setImpactDependency(e.target.value)
+                }, impactDependencies.length > 0 ? [
+                  h('option', { value: '', key: '_' }, '— Select a dependency —'),
+                  ...impactDependencies.map(d => h('option', { value: d.dependency, key: d.dependency },
+                    d.dependency + '  (' + d.apiCount + ' API' + (d.apiCount !== 1 ? 's' : '') + ')'))
+                ] : [
+                  h('option', { value: '', key: '_' }, 'No dependencies detected')
+                ])
+              ] : [
+                h('select', {
+                  className: 'scope-select', key: 'svc-select',
+                  value: impactService,
+                  onChange: e => setImpactService(e.target.value)
+                }, impactServices.length > 0 ? [
+                  h('option', { value: '', key: '_' }, '— Select a service —'),
+                  ...impactServices.map(s => h('option', { value: s.service, key: s.service },
+                    s.service + '  (' + s.apiCount + ' API' + (s.apiCount !== 1 ? 's' : '') + ')'))
+                ] : [
+                  h('option', { value: '', key: '_' }, 'No external services detected')
+                ])
+              ],
               impactLoading ? h('div', { className: 'scanning-indicator', key: 'loading' }, [
                 h('div', { className: 'spinner', key: 's' }),
                 'Analyzing...'
@@ -1608,18 +3653,53 @@
             ]),
 
             /* Impact count hero */
-            impactTable ? h('div', { className: 'impact-count-hero count-animate', key: 'count' }, [
-              h('div', { className: 'impact-hero-num', key: 'num' }, String(animatedCount)),
-              h('div', { className: 'impact-hero-label', key: 'lbl' }, 'API' + (impactResults.length !== 1 ? 's' : '') + ' Impacted'),
-              h('div', { className: 'impact-hero-scope', key: 'scope' }, impactTable + (impactColumn ? ' → ' + impactColumn : ''))
-            ]) : h('div', { className: 'no-scope-message', key: 'no-scope' }, [
-              h('div', { style: { fontSize: 28, marginBottom: 8, opacity: 0.3 }, key: 'icon' }, '⚡'),
-              h('div', { key: 'msg' }, 'Select a table above to see which APIs are impacted by changes to it.')
-            ]),
+            (impactCategory === 'tables' ? impactTable : impactCategory === 'dependencies' ? impactDependency : impactService)
+              ? h('div', { className: 'impact-count-hero count-animate', key: 'count' }, [
+                  h('div', { className: 'impact-hero-num', key: 'num' }, String(animatedCount)),
+                  h('div', { className: 'impact-hero-label', key: 'lbl' }, 'API' + (impactResults.length !== 1 ? 's' : '') + ' Impacted'),
+                  h('div', { className: 'impact-hero-scope', key: 'scope' },
+                    impactCategory === 'tables'
+                      ? impactTable + (impactColumn ? ' → ' + impactColumn : '')
+                      : impactCategory === 'dependencies'
+                        ? impactDependency
+                        : impactService
+                  )
+                ])
+              : h('div', { className: 'no-scope-message', key: 'no-scope' },
+                  impactCategory === 'tables'
+                    ? (impactTables.length === 0 ? [
+                        h('div', { style: { fontSize: 28, marginBottom: 8, opacity: 0.3 }, key: 'icon' }, '🗄️'),
+                        h('div', { key: 'msg' }, 'No database tables detected in this project.'),
+                        h('div', { style: { fontSize: 10, color: 'var(--text-muted)', marginTop: 4 }, key: 'hint' },
+                          'Impact analysis requires APIs with table access data.')
+                      ] : [
+                        h('div', { style: { fontSize: 28, marginBottom: 8, opacity: 0.3 }, key: 'icon' }, '⚡'),
+                        h('div', { key: 'msg' }, 'Select a table above to see which APIs are impacted by changes to it.')
+                      ])
+                    : impactCategory === 'dependencies'
+                      ? (impactDependencies.length === 0 ? [
+                          h('div', { style: { fontSize: 28, marginBottom: 8, opacity: 0.3 }, key: 'icon' }, '📦'),
+                          h('div', { key: 'msg' }, 'No dependencies detected in this project.'),
+                          h('div', { style: { fontSize: 10, color: 'var(--text-muted)', marginTop: 4 }, key: 'hint' },
+                            'Dependency impact requires APIs with dependency data.')
+                        ] : [
+                          h('div', { style: { fontSize: 28, marginBottom: 8, opacity: 0.3 }, key: 'icon' }, '⚡'),
+                          h('div', { key: 'msg' }, 'Select a dependency above to see which APIs use it.')
+                        ])
+                      : (impactServices.length === 0 ? [
+                          h('div', { style: { fontSize: 28, marginBottom: 8, opacity: 0.3 }, key: 'icon' }, '🌐'),
+                          h('div', { key: 'msg' }, 'No external services detected in this project.'),
+                          h('div', { style: { fontSize: 10, color: 'var(--text-muted)', marginTop: 4 }, key: 'hint' },
+                            'Service impact requires APIs with external service data.')
+                        ] : [
+                          h('div', { style: { fontSize: 28, marginBottom: 8, opacity: 0.3 }, key: 'icon' }, '⚡'),
+                          h('div', { key: 'msg' }, 'Select an external service above to see which APIs call it.')
+                        ])
+                ),
 
             /* Impact results */
             h('div', { className: 'impact-results-list', key: 'results' },
-              impactTable && impactResults.length
+              (impactCategory === 'tables' ? impactTable : impactCategory === 'dependencies' ? impactDependency : impactService) && impactResults.length
                 ? impactResults.map((r, i) =>
                     h('div', {
                       className: 'impact-card', key: r.method + '-' + r.path + '-' + i,
@@ -1634,11 +3714,13 @@
                       ]),
                       h('div', { className: 'impact-card-how', key: 'how' }, r.how),
                       h('div', { className: 'impact-card-meta', key: 'meta' },
-                        'Ops: ' + (r.operations || []).join(', ') + ' · ' + columnMatchLabel(r.columnMatch)
+                        impactCategory === 'tables'
+                          ? 'Ops: ' + (r.operations || []).join(', ') + ' · ' + columnMatchLabel(r.columnMatch)
+                          : 'Impact: ' + r.impact
                       )
                     ])
                   )
-                : impactTable && !impactLoading
+                : (impactCategory === 'tables' ? impactTable : impactCategory === 'dependencies' ? impactDependency : impactService) && !impactLoading
                   ? [h('div', { className: 'no-scope-message', key: 'no-r' }, 'No APIs impact this scope.')]
                   : []
             ),
@@ -1675,6 +3757,239 @@
                   })
                 : [h('div', { className: 'empty-text', key: 'e' }, 'No API flows found.')]
             )
+          ]);
+
+        } else if (activeNav === 'scanner') {
+          /* Scanner view — repo path input + live scan + per-file parse stats */
+          const stats = scanStats;
+          const s = stats && stats.summary;
+          const hasScanData = !!s;
+
+          function scoreColor(score) {
+            if (score >= 90) return '#00d4b1';
+            if (score >= 75) return '#4f7cff';
+            if (score >= 55) return '#ffb340';
+            if (score >= 35) return '#ff8c42';
+            return '#ff4d9e';
+          }
+
+          function scoreGrade(score) {
+            if (score >= 90) return 'A';
+            if (score >= 75) return 'B';
+            if (score >= 55) return 'C';
+            if (score >= 35) return 'D';
+            return 'F';
+          }
+
+          /* ── Scan input + button ── */
+          const scanInputSection = h('div', { className: 'scanner-header-section', key: 'scan-input' }, [
+            h('div', { className: 'scanner-title', key: 'title' }, [
+              h(SvgIcon, { d: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4', size: 12, color: 'var(--amber)', key: 'icon' }),
+              'Code Scanner'
+            ]),
+            h('div', { style: { position: 'relative' }, key: 'input-wrap' }, [
+              h('div', { className: 'scan-input-row', key: 'row' }, [
+                h('input', {
+                  key: 'path',
+                  className: 'scan-path-input',
+                  value: scanRepoPath,
+                  onChange: onScanPathChange,
+                  onFocus: () => scanRepoPath.length > 2 && fetchDirs(scanRepoPath),
+                  onBlur: () => setTimeout(() => setShowDirs(false), 200),
+                  placeholder: '/path/to/your/repo',
+                  disabled: scanRunning,
+                  spellCheck: false,
+                }),
+                h('button', {
+                  key: 'btn',
+                  className: 'btn-scan',
+                  onClick: startScan,
+                  disabled: scanRunning || !scanRepoPath.trim(),
+                }, scanRunning ? '⏳ Scanning…' : '⚡ Scan'),
+                hasScanData ? h('button', {
+                  key: 'rescan-btn',
+                  className: 'btn-scan',
+                  style: { background: 'rgba(79,124,255,0.18)', color: '#4f7cff', marginLeft: 4 },
+                  onClick: startRescan,
+                  disabled: scanRunning,
+                }, '↻ Rescan') : null,
+                hasScanData ? h('button', {
+                  key: 'delete-btn',
+                  className: 'btn-scan',
+                  style: { background: 'rgba(255,77,158,0.18)', color: 'var(--pink)', marginLeft: 4 },
+                  onClick: () => { if (confirm('Delete all scan data for this repo?')) deleteScan(); },
+                  disabled: scanRunning,
+                }, '🗑 Delete') : null
+              ]),
+              /* Autocomplete dropdown */
+              showDirs && dirSuggestions.length > 0
+                ? h('div', { className: 'dir-autocomplete', key: 'autocomplete' },
+                    dirSuggestions.map(d => h('div', {
+                      className: 'dir-item', key: d,
+                      onMouseDown: () => onDirPick(d)
+                    }, d))
+                  )
+                : null
+            ]),
+            /* Desc / status */
+            h('div', { className: 'scanner-desc', key: 'desc', style: { marginTop: 4 } },
+              s
+                ? `Last scan: ${s.totalFiles} files · ${s.totalLines ? s.totalLines.toLocaleString() : 0} lines`
+                : 'Enter a repository path above and click Scan.'
+            )
+          ]);
+
+          /* ── Live scan progress ── */
+          const progressSection = scanRunning || scanDone || scanError
+            ? h('div', { className: 'scan-progress-section', key: 'progress' }, [
+                /* Progress bar */
+                scanRunning ? h(React.Fragment, { key: 'running' }, [
+                  h('div', { className: 'scan-progress-label', key: 'lbl' }, [
+                    h('span', { key: 'l' }, 'Scanning files…'),
+                    h('span', { key: 'r' }, `${scanProgress.index} / ${scanProgress.total}`)
+                  ]),
+                  h('div', { className: 'scan-progress-bar-wrap', key: 'bar' }, [
+                    h('div', { className: 'scan-progress-bar-fill', key: 'fill', style: { width: scanProgress.percent + '%' } })
+                  ]),
+                ]) : null,
+                /* Done badge */
+                scanDone
+                  ? h('div', { className: 'scan-done-badge', key: 'done' }, [
+                      h('span', { key: 'icon' }, '✓'),
+                      `${scanDone.routeCount} routes · ${scanDone.fileCount} files · ${scanDone.durationMs}ms`
+                    ])
+                  : null,
+                /* Error */
+                scanError
+                  ? h('div', { style: { fontSize: 10, color: 'var(--pink)', marginTop: 4 }, key: 'err' }, '✗ ' + scanError)
+                  : null,
+                /* Live log */
+                scanLiveLog.length > 0
+                  ? h('div', { className: 'scan-live-log', key: 'log' },
+                      scanLiveLog.slice(-12).map((l, i) =>
+                        h('div', { className: 'scan-live-log-line ' + (l.cls || ''), key: i }, l.text)
+                      )
+                    )
+                  : null
+              ])
+            : null;
+
+          leftPanelContent = h('aside', { className: 'left-panel', key: 'left-panel' }, [
+            scanInputSection,
+            progressSection,
+
+            /* Score hero — only show if we have stats */
+            s ? h('div', { className: 'scanner-score-hero', key: 'score' }, [
+              h('div', { className: 'scanner-score-ring', key: 'ring' }, [
+                h('span', {
+                  className: 'scanner-score-num',
+                  key: 'num',
+                  style: {
+                    background: `linear-gradient(135deg, ${scoreColor(s.overallCoverageScore)}, ${scoreColor(s.averageCoverageScore)})`,
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }
+                }, s.overallCoverageScore + '%'),
+                h('span', { className: 'scanner-score-grade', key: 'grade', style: { color: scoreColor(s.overallCoverageScore) } }, 'Grade ' + s.overallCoverageGrade)
+              ]),
+              h('div', { className: 'scanner-score-label', key: 'lbl' }, 'Overall Coverage Score')
+            ]) : null,
+
+            /* Stat grid */
+            s ? h('div', { className: 'scanner-stat-grid', key: 'grid' }, [
+              h('div', { className: 'scanner-stat-card', key: 'files' }, [
+                h('div', { className: 'scanner-stat-value', style: { color: 'var(--amber)' }, key: 'v' }, s.totalFiles),
+                h('div', { className: 'scanner-stat-label', key: 'l' }, 'Files Scanned')
+              ]),
+              h('div', { className: 'scanner-stat-card', key: 'lines' }, [
+                h('div', { className: 'scanner-stat-value', style: { color: 'var(--teal)' }, key: 'v' }, (s.totalCodeLines || 0).toLocaleString()),
+                h('div', { className: 'scanner-stat-label', key: 'l' }, 'Code Lines')
+              ]),
+              h('div', { className: 'scanner-stat-card', key: 'routes' }, [
+                h('div', { className: 'scanner-stat-value', style: { color: 'var(--blue)' }, key: 'v' }, s.totalRoutes),
+                h('div', { className: 'scanner-stat-label', key: 'l' }, 'Routes Found')
+              ]),
+              h('div', { className: 'scanner-stat-card', key: 'tables' }, [
+                h('div', { className: 'scanner-stat-value', style: { color: '#00d4b1' }, key: 'v' }, s.totalTables),
+                h('div', { className: 'scanner-stat-label', key: 'l' }, 'DB Tables')
+              ]),
+              h('div', { className: 'scanner-stat-card', key: 'fwr' }, [
+                h('div', { className: 'scanner-stat-value', style: { color: 'var(--violet)' }, key: 'v' }, s.filesWithRoutes),
+                h('div', { className: 'scanner-stat-label', key: 'l' }, 'Files w/ Routes')
+              ]),
+              h('div', { className: 'scanner-stat-card', key: 'fworm' }, [
+                h('div', { className: 'scanner-stat-value', style: { color: 'var(--pink)' }, key: 'v' }, (s.filesWithOrm || 0) + (s.filesWithSql || 0)),
+                h('div', { className: 'scanner-stat-label', key: 'l' }, 'Files w/ DB')
+              ])
+            ]) : null,
+
+            /* Tech chips */
+            stats ? h('div', { className: 'scanner-chips-section', key: 'chips' }, [
+              stats.frameworks && stats.frameworks.length > 0 ? h('div', { key: 'fw' }, [
+                h('div', { className: 'scanner-chips-title', key: 't' }, 'Frameworks'),
+                ...stats.frameworks.map(f => h('span', { className: 'scanner-chip', key: f, style: { background: 'rgba(79,124,255,0.12)', color: 'var(--blue)', border: '1px solid rgba(79,124,255,0.3)' } }, f))
+              ]) : null,
+              stats.orms && stats.orms.length > 0 ? h('div', { key: 'orm', style: { marginTop: 6 } }, [
+                h('div', { className: 'scanner-chips-title', key: 't' }, 'ORMs'),
+                ...stats.orms.map(o => h('span', { className: 'scanner-chip', key: o, style: { background: 'rgba(0,212,177,0.12)', color: 'var(--teal)', border: '1px solid rgba(0,212,177,0.3)' } }, o))
+              ]) : null,
+              stats.caches && stats.caches.length > 0 ? h('div', { key: 'caches', style: { marginTop: 6 } }, [
+                h('div', { className: 'scanner-chips-title', key: 't' }, 'Caches'),
+                ...stats.caches.map(c => h('span', { className: 'scanner-chip', key: c, style: { background: 'rgba(167,139,250,0.12)', color: 'var(--violet)', border: '1px solid rgba(167,139,250,0.3)' } }, c))
+              ]) : null,
+              stats.queues && stats.queues.length > 0 ? h('div', { key: 'queues', style: { marginTop: 6 } }, [
+                h('div', { className: 'scanner-chips-title', key: 't' }, 'Queues'),
+                ...stats.queues.map(q => h('span', { className: 'scanner-chip', key: q, style: { background: 'rgba(255,179,64,0.12)', color: 'var(--amber)', border: '1px solid rgba(255,179,64,0.3)' } }, q))
+              ]) : null,
+            ]) : null,
+
+            /* File search */
+            stats && stats.files ? h('div', { style: { padding: '8px 12px', borderBottom: '1px solid var(--border)' }, key: 'fsearch' }, [
+              h('input', {
+                key: 'fi',
+                value: scanFileSearch,
+                onChange: e => setScanFileSearch(e.target.value),
+                placeholder: 'Filter files...',
+                style: {
+                  width: '100%', background: 'rgba(255,255,255,0.05)',
+                  border: '1px solid var(--border)', borderRadius: 6,
+                  padding: '5px 8px', font: 'inherit', fontSize: 11,
+                  color: 'var(--text-primary)', outline: 'none'
+                }
+              })
+            ]) : null,
+
+            /* Per-file list */
+            stats && stats.files ? h('div', { className: 'scanner-file-list', key: 'flist' },
+              filteredScanFiles.map((f, i) =>
+                h('div', {
+                  className: 'scanner-file-item' + (selectedScanFile && selectedScanFile.filePath === f.filePath ? ' active' : ''),
+                  key: f.filePath + i,
+                  onClick: () => setSelectedScanFile(f)
+                }, [
+                  h('span', {
+                    className: 'scanner-file-score',
+                    key: 'score',
+                    style: {
+                      background: scoreColor(f.coverageScore) + '22',
+                      color: scoreColor(f.coverageScore),
+                      border: '1px solid ' + scoreColor(f.coverageScore) + '44'
+                    }
+                  }, f.coverageScore),
+                  h('span', { className: 'scanner-file-path', key: 'path' }, f.filePath),
+                  h('span', { className: 'scanner-file-role', key: 'role' }, f.role)
+                ])
+              )
+            ) : (!scanRunning && !s)
+              ? h('div', { className: 'scan-cta-section', key: 'cta' }, [
+                  h('div', { className: 'scan-cta-icon', key: 'i' }, '⚡'),
+                  h('div', { className: 'scan-cta-title', key: 't' }, 'Scan a repository'),
+                  h('div', { className: 'scan-cta-desc', key: 'd' }, 'Enter a repository path above and click Scan to extract API routes, DB tables, and flow steps.')
+                ])
+              : scanStatsLoading
+                ? h('div', { key: 'loading', style: { padding: 16, textAlign: 'center', color: 'var(--text-muted)', fontSize: 11 } }, 'Loading…')
+                : null
           ]);
         }
 
@@ -1714,17 +4029,27 @@
         /* ---- Right Panel (Issue #3: separate sections) ---- */
         const rightPanel = h('aside', { className: 'right-panel', key: 'right-panel' }, [
           h('div', { className: 'right-panel-header', key: 'header' }, [
-            h('h3', { key: 't' }, selectedApi ? 'API Details' : 'API Explorer')
+            h('h3', { key: 't' }, activeNav === 'scanner'
+              ? (selectedScanFile ? 'File Details' : 'Scanner')
+              : (selectedApi ? 'API Details' : 'API Explorer'))
           ]),
           h('div', { className: 'right-panel-body', key: 'body' }, [
-            selectedApi
-              ? h(ApiDetailsPanel, { key: 'details', api: selectedApi, onViewFlow: () => setFlowApi(selectedApi) })
-              : h('div', { key: 'no-sel', style: { padding: '24px 14px', textAlign: 'center' } }, [
-                  h('div', { style: { fontSize: 28, opacity: 0.15, marginBottom: 8 }, key: 'i' }, '◎'),
-                  h('div', { style: { fontSize: 12, color: 'var(--text-muted)' }, key: 't' }, 'Click a bubble to view API details.'),
-                  h('div', { style: { fontSize: 10, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }, key: 's' },
-                    'Use the ⚡ Impact tab to analyze which APIs are affected by database changes.')
-                ]),
+            activeNav === 'scanner'
+              ? (selectedScanFile
+                  ? renderScanFileDetail(selectedScanFile)
+                  : h('div', { key: 'no-sel', style: { padding: '24px 14px', textAlign: 'center' } }, [
+                      h('div', { style: { fontSize: 28, opacity: 0.15, marginBottom: 8 }, key: 'i' }, '◎'),
+                      h('div', { style: { fontSize: 12, color: 'var(--text-muted)' }, key: 't' }, 'Click a file to view parse details.'),
+                    ])
+                )
+              : (selectedApi
+                  ? h(ApiDetailsPanel, { key: 'details', api: selectedApi, onViewFlow: () => setFlowApi(selectedApi) })
+                  : h('div', { key: 'no-sel', style: { padding: '24px 14px', textAlign: 'center' } }, [
+                      h('div', { style: { fontSize: 28, opacity: 0.15, marginBottom: 8 }, key: 'i' }, '◎'),
+                      h('div', { style: { fontSize: 12, color: 'var(--text-muted)' }, key: 't' }, 'Click a bubble to view API details.'),
+                      h('div', { style: { fontSize: 10, color: 'var(--text-muted)', marginTop: 6, lineHeight: 1.5 }, key: 's' },
+                        'Use the ⚡ Impact tab to analyze which APIs are affected by database changes.')
+                    ])),
             error ? h('div', { className: 'error-banner', key: 'err' }, error) : null
           ])
         ]);
@@ -1732,13 +4057,101 @@
         /* ---- Flow Overlay ---- */
         const overlay = flowApi ? h(FlowOverlay, { key: 'flow-overlay', api: flowApi, onClose: () => setFlowApi(null) }) : null;
 
-        return h('div', { className: 'app-shell' }, [
+        /* ---- AI Status Banner ---- */
+        const showBanner = !bannerDismissed && aiStatus &&
+          (aiStatus.state === 'parser_only' || aiStatus.state === 'prompt_ready');
+
+        const bannerRepoName = activeRepoPath ? activeRepoPath.split('/').pop() : 'this repo';
+        const scanPromptCmd = 'routeweave scan-prompt ' + (activeRepoPath || '.');
+        const aiInstructionText = 'Follow the instructions in ' + (activeRepoPath || '.') + '/.routeweave/SCAN_INSTRUCTIONS.md';
+
+        function copyToClipboard(text) {
+          navigator.clipboard.writeText(text).catch(() => {});
+          setCmdCopied(true);
+          setTimeout(() => setCmdCopied(false), 2000);
+        }
+
+        const aiBanner = showBanner
+          ? h('div', {
+              className: 'ai-banner ' + (aiStatus.state === 'prompt_ready' ? 'prompt-ready' : 'parser-only'),
+              key: 'ai-banner',
+            }, [
+              h('div', { className: 'ai-banner-icon', key: 'ic' },
+                aiStatus.state === 'prompt_ready' ? '🤖' : '⚡'
+              ),
+              h('div', { className: 'ai-banner-body', key: 'body' }, [
+                aiStatus.state === 'parser_only'
+                  ? h('div', { className: 'ai-banner-title', key: 't' },
+                      'Parser complete — AI enrichment needed for ' + bannerRepoName)
+                  : h('div', { className: 'ai-banner-title', key: 't' },
+                      'AI prompt ready — open it in your AI assistant'),
+
+                aiStatus.state === 'parser_only'
+                  ? h('div', { className: 'ai-banner-desc', key: 'd' },
+                      'The current data shows mechanical, low-fidelity summaries. Run the command below to generate an AI prompt, then pass it to Claude, Copilot, or Cursor for rich business-language descriptions.')
+                  : h('div', { className: 'ai-banner-desc', key: 'd' },
+                      'SCAN_INSTRUCTIONS.md has been generated. Open it in your AI assistant and tell it to follow the instructions — it will write the enriched api_knowledge.json for you.'),
+
+                h('div', { className: 'ai-banner-actions', key: 'actions' }, [
+                  aiStatus.state === 'parser_only'
+                    ? h('div', {
+                        className: 'ai-banner-cmd',
+                        key: 'cmd',
+                        onClick: () => copyToClipboard(scanPromptCmd),
+                        title: 'Click to copy',
+                      }, [
+                        h('span', { key: 'txt' }, scanPromptCmd),
+                        h('span', { className: cmdCopied ? 'copy-ok' : 'copy-icon', key: 'ic' }, cmdCopied ? '✓ copied' : '⎘'),
+                      ])
+                    : h('div', {
+                        className: 'ai-banner-cmd',
+                        key: 'cmd2',
+                        onClick: () => copyToClipboard(aiInstructionText),
+                        title: 'Click to copy',
+                      }, [
+                        h('span', { key: 'txt' }, '"' + aiInstructionText + '"'),
+                        h('span', { className: cmdCopied ? 'copy-ok' : 'copy-icon', key: 'ic' }, cmdCopied ? '✓ copied' : '⎘'),
+                      ]),
+                ])
+              ]),
+              h('button', {
+                className: 'ai-banner-dismiss', key: 'dismiss',
+                onClick: () => setBannerDismissed(true),
+                title: 'Dismiss',
+              }, '×'),
+            ])
+          : null;
+
+        /** Called by SetupWizard when user picks an existing repo to switch to */
+        async function onWizardSwitchRepo(repoPath) {
+          await switchRepo(repoPath);
+        }
+
+        const showRightPanel = (activeNav === 'scanner' && selectedScanFile) || (activeNav !== 'scanner' && selectedApi);
+
+        return h('div', { className: 'app-shell' + (showBanner ? ' has-banner' : '') + (!showRightPanel ? ' no-right-panel' : '') }, [
           iconSidebar,
           topbar,
+          aiBanner,
           leftPanelContent,
           mainCanvas,
-          rightPanel,
-          overlay
+          showRightPanel ? rightPanel : null,
+          overlay,
+          /* Setup Wizard overlay — shown on first load or when user clicks Change Project */
+          wizardChecked && showWizard
+            ? h(SetupWizard, {
+                key: 'setup-wizard',
+                rescanRepo: rescanRepo,
+                onComplete: async () => {
+                  await fetchRepos();
+                  await fetchAiStatus();
+                  await reloadData();
+                  setShowWizard(false);
+                  setRescanRepo(null);
+                },
+                onSwitchRepo: onWizardSwitchRepo,
+              })
+            : null
         ]);
       }
 

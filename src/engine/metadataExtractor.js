@@ -12,6 +12,13 @@ const NEST_ROUTE_PATTERNS = [
 
 const NEXT_APP_ROUTE_PATTERN = /export\s+(?:async\s+)?function\s+(GET|POST|PUT|DELETE|PATCH)\s*\(/g;
 
+const HTTPSERVER_ROUTE_PATTERNS = [
+  /http\.createServer\s*\(/g,
+  /https\.createServer\s*\(/g,
+];
+
+const PAGES_ROUTER_HANDLER_RE = /(?:export\s+default\s+(?:async\s+)?function|module\.exports\s*=\s*(?:async\s+)?function)\s*\w*\s*\(\s*(?:req|ctx)\s*[,:]/g;
+
 const TABLE_PATTERNS = [
   /from\s+([a-zA-Z0-9_]+)/gi,
   /join\s+([a-zA-Z0-9_]+)/gi,
@@ -426,6 +433,39 @@ function extractRoutes(content, filePath) {
     }
   }
 
+  // Next.js Pages Router: pages/api/**/*.ts|js with default export handler
+  const normalizedFilePath = filePath.replace(/\\/g, '/');
+  if (/\/pages\/api\/.+\.[jt]sx?$/.test(normalizedFilePath)) {
+    const pagesHandlerRe = new RegExp(PAGES_ROUTER_HANDLER_RE.source, PAGES_ROUTER_HANDLER_RE.flags);
+    if (pagesHandlerRe.test(content)) {
+      const pagesPath = inferPagesRouterPath(filePath);
+      if (pagesPath) {
+        const methodRe = /req(?:uest)?\.method\s*===?\s*['"`](GET|POST|PUT|DELETE|PATCH)['"`]/gi;
+        const foundMethods = new Set();
+        let mm;
+        while ((mm = methodRe.exec(content)) !== null) {
+          foundMethods.add(mm[1].toUpperCase());
+        }
+        if (foundMethods.size > 0) {
+          for (const method of foundMethods) {
+            routes.push({ method, path: pagesPath, framework: 'nextjs-pages-router', filePath });
+          }
+        } else {
+          routes.push({ method: 'ALL', path: pagesPath, framework: 'nextjs-pages-router', filePath });
+        }
+      }
+    }
+  }
+
+  // httpServer: detect http.createServer / https.createServer
+  for (const regex of HTTPSERVER_ROUTE_PATTERNS) {
+    const clonedHttp = new RegExp(regex.source, regex.flags);
+    if (clonedHttp.test(content)) {
+      routes.push({ method: 'ALL', path: '/', framework: 'httpserver', filePath });
+      break;
+    }
+  }
+
   return routes;
 }
 
@@ -475,4 +515,18 @@ function extractMetadata(filePaths) {
   return routeMetadata;
 }
 
-module.exports = { extractMetadata, inferNextRoutePath, extractTableAccess };
+function inferPagesRouterPath(filePath) {
+  const normalized = filePath.split(path.sep).join('/');
+  const marker = '/pages/api/';
+  const index = normalized.indexOf(marker);
+  if (index === -1) return null;
+
+  let segment = normalized.slice(index + marker.length);
+  segment = segment.replace(/\.[jt]sx?$/, '');
+  segment = segment.replace(/\/index$/, '');
+
+  if (!segment) return '/api';
+  return '/api/' + segment.split('/').map(s => s.replace(/^\[(.+)\]$/, ':$1')).join('/');
+}
+
+module.exports = { extractMetadata, inferNextRoutePath, inferPagesRouterPath, extractTableAccess };

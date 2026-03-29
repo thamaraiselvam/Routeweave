@@ -5,6 +5,21 @@ const { summarizeApi } = require('./aiClient');
 const { validateApiSummary } = require('./aiValidator');
 const { buildGraph } = require('./graphBuilder');
 const { writeCache } = require('./cache');
+const { parseRepository } = require('./codeParser');
+const { buildScanStats } = require('./scanStats');
+const { runParser } = require('../parser-engine');
+
+/**
+ * Run the code parser on the entire repository and write the parse report
+ * to .routeweave/scan_parse_report.json.  Returns the built stats object.
+ */
+function runCodeParser(repoPath) {
+  const root = path.resolve(repoPath);
+  const files = walkRepository(root);
+  const parseResult = parseRepository(files, root);
+  const stats = buildScanStats(parseResult);
+  return { root, stats };
+}
 
 function generateOpenCodeScanPrompt(repoPath) {
   const root = path.resolve(repoPath);
@@ -94,6 +109,8 @@ function generateOpenCodeScanPrompt(repoPath) {
     '   • Express/Koa/Fastify router files',
     '   • NestJS controllers (@Get/@Post/etc.)',
     '   • Next.js App Router (route.ts/route.js export functions)',
+    '   • Next.js Pages Router (pages/api/**/* default export handlers)',
+    '   • Node.js http.createServer / https.createServer',
     '   • Any custom framework patterns in this codebase',
     '   Trace each route through its controller → service → repository layers.',
     '   Impact analysis quality depends on accurate table + column coverage; be thorough.',
@@ -122,6 +139,7 @@ function generateOpenCodeScanPrompt(repoPath) {
     '',
     '   Rules for api_knowledge.json:',
     '   4a) tableAccess is REQUIRED for every API.',
+    '       If a route touches NO database, set tableAccess to [].',
     '       Use columns:["*"] only when the exact columns cannot be determined.',
     '   4b) tables[] must exactly match the table names in tableAccess[].',
     '   4c) Write one { "apis": [...] } wrapper object per route, not one big array.',
@@ -146,10 +164,15 @@ function generateOpenCodeScanPrompt(repoPath) {
     metadataJson,
   ].join('\n');
 
+  // Also run the code parser to produce per-file statistics
+  const parseResult = parseRepository(files, root);
+  const stats = buildScanStats(parseResult);
+
   return {
     fileCount: files.length,
     routeCount: metadata.length,
     prompt,
+    stats,
   };
 }
 
@@ -157,6 +180,10 @@ async function scanRepository(repoPath) {
   const root = path.resolve(repoPath);
   const files = walkRepository(root);
   const metadata = extractMetadata(files);
+
+  // Run the full code parser to build scan stats
+  const parseResult = parseRepository(files, root);
+  const stats = buildScanStats(parseResult);
 
   const apiKnowledge = [];
   for (const routeData of metadata) {
@@ -166,14 +193,78 @@ async function scanRepository(repoPath) {
   }
 
   const graph = buildGraph(apiKnowledge);
-  writeCache(root, { graph, apiKnowledge, metadata });
+  writeCache(root, { graph, apiKnowledge, metadata, scanParseReport: stats });
 
   return {
     fileCount: files.length,
     routeCount: metadata.length,
     nodeCount: graph.nodes.length,
     edgeCount: graph.edges.length,
+    stats,
   };
 }
 
-module.exports = { scanRepository, generateOpenCodeScanPrompt };
+/**
+ * Run the parser co-engine on a repository, emitting SSE-style progress events.
+ *
+ * Each progress event emitted via onEvent:
+ * {
+ *   type: 'progress' | 'done' | 'error',
+ *   file?: string,        // current file being processed
+ *   index?: number,       // 1-based file index
+ *   total?: number,       // total files
+ *   routesFound?: number, // routes found in this file
+ *   percent?: number,     // 0-100
+ *   message?: string,     // human-readable log message
+ *   // final "done" event also includes:
+ *   fileCount?: number,
+ *   routeCount?: number,
+ *   durationMs?: number,
+ *   coverageScore?: number,
+ *   coverageGrade?: string,
+ * }
+ *
+ * @param {string} repoPath
+ * @param {function(object): void} onEvent
+ * @returns {Promise<void>}
+ */
+async function scanWithProgress(repoPath, onEvent) {
+  const emit = typeof onEvent === 'function' ? onEvent : () => {};
+
+  try {
+    const result = await runParser(repoPath, {
+      onProgress({ file, index, total, routesFound }) {
+        const percent = total > 0 ? Math.round((index / total) * 100) : 0;
+        const routeNote = routesFound > 0 ? ` (${routesFound} route${routesFound !== 1 ? 's' : ''})` : '';
+        emit({
+          type: 'progress',
+          file,
+          index,
+          total,
+          routesFound,
+          percent,
+          message: `Scanning file ${index}/${total}: ${file}${routeNote}`,
+        });
+      },
+    });
+
+    const engineReport = (result.report && result.report.engine) || {};
+    emit({
+      type:          'done',
+      fileCount:     result.fileCount,
+      routeCount:    result.routeCount,
+      durationMs:    result.durationMs,
+      coverageScore: engineReport.coverageScore || 0,
+      coverageGrade: engineReport.coverageGrade || 'F',
+      message:       `Scan complete: ${result.routeCount} routes in ${result.fileCount} files (${result.durationMs}ms)`,
+    });
+  } catch (err) {
+    emit({
+      type:    'error',
+      message: err && err.message ? err.message : String(err),
+    });
+    throw err;
+  }
+}
+
+module.exports = { scanRepository, generateOpenCodeScanPrompt, runCodeParser, scanWithProgress };

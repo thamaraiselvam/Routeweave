@@ -2,7 +2,8 @@
 const fs = require('fs');
 const path = require('path');
 const { ensureCacheDir } = require('./engine/cache');
-const { scanRepository, generateOpenCodeScanPrompt } = require('./engine/workflow');
+const { scanRepository, generateOpenCodeScanPrompt, runCodeParser } = require('./engine/workflow');
+const { writeScanParseReport } = require('./engine/cache');
 const { createServer } = require('./server');
 
 const OPTION_ALIASES = {
@@ -11,11 +12,20 @@ const OPTION_ALIASES = {
 };
 
 function printUsage() {
-  console.log(`Usage: routeweave <init|scan|scan-prompt|serve> [path]
+  console.log(`Usage: routeweave <init|scan|scan-prompt|parse|serve> [path]
+
+Commands:
+  init          Create .routeweave cache directory
+  scan          Run local metadata scan (static regex analysis)
+  scan-prompt   Generate AI scan instruction file (SCAN_INSTRUCTIONS.md)
+  parse         Run full code parser on the repository — produces per-file
+                statistics and an overall coverage score written to
+                .routeweave/scan_parse_report.json
+  serve         Start the dashboard HTTP server on port 3789
 
 Path behavior:
   - Provide [path] (or --dir <path>) to target that exact directory.
-  - If omitted for init/scan/scan-prompt, routeweave uses the nearest git repository root.
+  - If omitted for init/scan/scan-prompt/parse, routeweave uses the nearest git repository root.
   - If omitted for serve, routeweave serves the current working directory.
 `);
 }
@@ -140,6 +150,11 @@ async function main() {
     const instructionFile = path.join(routeweaveDir, 'SCAN_INSTRUCTIONS.md');
     fs.writeFileSync(instructionFile, result.prompt, 'utf8');
 
+    // Also write the parse report produced during scan-prompt
+    if (result.stats) {
+      writeScanParseReport(targetPath, result.stats);
+    }
+
     console.log('');
     console.log('╔══════════════════════════════════════════════════════════╗');
     console.log('║          Routeweave Scan Instructions Ready              ║');
@@ -160,6 +175,44 @@ async function main() {
     console.log('╚══════════════════════════════════════════════════════════╝');
     console.log('');
     console.log(JSON.stringify({ fileCount: result.fileCount, routeCount: result.routeCount, instructionFile }, null, 2));
+    return;
+  }
+
+  if (command === 'parse') {
+    console.log(`\nRunning code parser on: ${targetPath}\n`);
+    const { root, stats } = runCodeParser(targetPath);
+    writeScanParseReport(targetPath, stats);
+
+    const s = stats.summary;
+    const bar = (score) => {
+      const filled = Math.round(score / 5);
+      return '[' + '█'.repeat(filled) + '░'.repeat(20 - filled) + ']';
+    };
+
+    console.log('╔══════════════════════════════════════════════════════════╗');
+    console.log('║             Routeweave Code Parser Report                ║');
+    console.log('╠══════════════════════════════════════════════════════════╣');
+    console.log(`║  Files scanned:      ${String(s.totalFiles).padEnd(36)}║`);
+    console.log(`║  Total lines:        ${String(s.totalLines).padEnd(36)}║`);
+    console.log(`║  Code lines:         ${String(s.totalCodeLines).padEnd(36)}║`);
+    console.log(`║  Routes found:       ${String(s.totalRoutes).padEnd(36)}║`);
+    console.log(`║  Files w/ routes:    ${String(s.filesWithRoutes).padEnd(36)}║`);
+    console.log(`║  Files w/ SQL:       ${String(s.filesWithSql).padEnd(36)}║`);
+    console.log(`║  Files w/ ORM:       ${String(s.filesWithOrm).padEnd(36)}║`);
+    console.log(`║  Files w/ HTTP:      ${String(s.filesWithHttpCalls).padEnd(36)}║`);
+    console.log(`║  DB tables found:    ${String(s.totalTables).padEnd(36)}║`);
+    console.log(`║  Unique packages:    ${String(s.totalImports).padEnd(36)}║`);
+    console.log(`║  Frameworks:         ${(stats.frameworks.join(', ') || 'none').padEnd(36)}║`);
+    console.log(`║  ORMs:               ${(stats.orms.join(', ') || 'none').padEnd(36)}║`);
+    console.log('╠══════════════════════════════════════════════════════════╣');
+    console.log(`║  Coverage score:     ${String(s.overallCoverageScore + '%').padEnd(5)} ${bar(s.overallCoverageScore)} ${s.overallCoverageGrade}  ║`);
+    console.log('╠══════════════════════════════════════════════════════════╣');
+    const reportPath = path.join(targetPath, '.routeweave', 'scan_parse_report.json');
+    console.log(`║  Report written to:                                      ║`);
+    console.log(`║    ${reportPath.slice(-52).padEnd(54)}║`);
+    console.log('╚══════════════════════════════════════════════════════════╝');
+    console.log('');
+    console.log('View in the dashboard:  routeweave serve .\n');
     return;
   }
 

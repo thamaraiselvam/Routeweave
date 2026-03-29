@@ -18,6 +18,23 @@ function writeCache(rootDir, data) {
     path.join(cacheDir, 'scan_state.json'),
     JSON.stringify({ scannedAt: new Date().toISOString(), apiCount: data.apiKnowledge.length }, null, 2),
   );
+  if (data.scanParseReport) {
+    fs.writeFileSync(
+      path.join(cacheDir, 'scan_parse_report.json'),
+      JSON.stringify(data.scanParseReport, null, 2),
+    );
+  }
+}
+
+/**
+ * Write the scan parse report separately (used by scan-prompt and parse commands).
+ */
+function writeScanParseReport(rootDir, report) {
+  const cacheDir = ensureCacheDir(rootDir);
+  fs.writeFileSync(
+    path.join(cacheDir, 'scan_parse_report.json'),
+    JSON.stringify(report, null, 2),
+  );
 }
 
 /**
@@ -65,4 +82,81 @@ function readCache(rootDir) {
   return { graph, apiKnowledge, metadata, scanState };
 }
 
-module.exports = { ensureCacheDir, writeCache, readCache, CACHE_DIR };
+/**
+ * Read the scan parse report (per-file stats and aggregate scores).
+ * Returns null if the file does not exist yet.
+ */
+function readScanParseReport(rootDir) {
+  const reportPath = path.join(rootDir, CACHE_DIR, 'scan_parse_report.json');
+  if (!fs.existsSync(reportPath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Delete all scan cache files from rootDir/.routeweave/.
+ * Removes: api_knowledge.json, graph.json, metadata.json, scan_state.json,
+ *          scan_parse_report.json, SCAN_INSTRUCTIONS.md
+ * The .routeweave directory itself is preserved (it may contain repos-registry.json).
+ *
+ * @param {string} rootDir  Resolved absolute path to the repo
+ * @returns {{ deleted: string[] }}  List of deleted file names
+ */
+function deleteCache(rootDir) {
+  const cacheDir = path.join(rootDir, CACHE_DIR);
+  const cacheFiles = [
+    'api_knowledge.json',
+    'graph.json',
+    'metadata.json',
+    'scan_state.json',
+    'scan_parse_report.json',
+    'SCAN_INSTRUCTIONS.md',
+  ];
+  const deleted = [];
+  for (const file of cacheFiles) {
+    const fp = path.join(cacheDir, file);
+    if (fs.existsSync(fp)) {
+      fs.unlinkSync(fp);
+      deleted.push(file);
+    }
+  }
+  return { deleted };
+}
+
+/**
+ * Returns true if rootDir has a valid .routeweave/api_knowledge.json cache.
+ */
+function hasCache(rootDir) {
+  return fs.existsSync(path.join(rootDir, CACHE_DIR, 'api_knowledge.json'));
+}
+
+/**
+ * Read cache from an explicit directory path (used for multi-repo support).
+ * Identical to readCache but accepts any resolved path instead of rootDir.
+ */
+function readCacheFrom(dir) {
+  return readCache(dir);
+}
+
+/**
+ * Read scan parse report from an explicit directory path.
+ */
+function readScanParseReportFrom(dir) {
+  return readScanParseReport(dir);
+}
+
+module.exports = {
+  ensureCacheDir,
+  writeCache,
+  writeScanParseReport,
+  readCache,
+  readScanParseReport,
+  hasCache,
+  deleteCache,
+  readCacheFrom,
+  readScanParseReportFrom,
+  CACHE_DIR,
+};

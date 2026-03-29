@@ -261,16 +261,147 @@ function buildTableCatalog(apis) {
   return tables;
 }
 
+function buildDependencyCatalog(apis) {
+  const depMap = new Map();
+
+  for (const api of apis) {
+    const apiId = `${normalizeString(api.method).toUpperCase()} ${normalizeString(api.path)}`;
+    const deps = Array.isArray(api.dependencies) ? api.dependencies : [];
+    for (const dep of deps) {
+      const name = normalizeString(dep);
+      if (!name) continue;
+      const key = toKey(dep);
+      if (!depMap.has(key)) {
+        depMap.set(key, { dependency: name, apiIds: new Set() });
+      }
+      depMap.get(key).apiIds.add(apiId);
+    }
+  }
+
+  const catalog = [...depMap.values()].map((entry) => ({
+    dependency: entry.dependency,
+    apiCount: entry.apiIds.size,
+  }));
+
+  catalog.sort((a, b) => (a.dependency < b.dependency ? -1 : a.dependency > b.dependency ? 1 : 0));
+  return catalog;
+}
+
+function buildServiceCatalog(apis) {
+  const svcMap = new Map();
+
+  for (const api of apis) {
+    const apiId = `${normalizeString(api.method).toUpperCase()} ${normalizeString(api.path)}`;
+    const svcs = Array.isArray(api.services) ? api.services : [];
+    for (const svc of svcs) {
+      const name = normalizeString(svc);
+      if (!name) continue;
+      const key = toKey(svc);
+      if (!svcMap.has(key)) {
+        svcMap.set(key, { service: name, apiIds: new Set() });
+      }
+      svcMap.get(key).apiIds.add(apiId);
+    }
+  }
+
+  const catalog = [...svcMap.values()].map((entry) => ({
+    service: entry.service,
+    apiCount: entry.apiIds.size,
+  }));
+
+  catalog.sort((a, b) => (a.service < b.service ? -1 : a.service > b.service ? 1 : 0));
+  return catalog;
+}
+
+function analyzeDependencyImpact(apis, filters = {}) {
+  const depFilter = normalizeString(filters.dependency);
+  if (!depFilter) return [];
+
+  const depKey = toKey(depFilter);
+  const results = [];
+
+  for (const api of apis) {
+    const deps = Array.isArray(api.dependencies) ? api.dependencies : [];
+    const match = deps.find((d) => toKey(d) === depKey);
+    if (!match) continue;
+
+    const method = normalizeString(api.method).toUpperCase();
+    const path = normalizeString(api.path);
+
+    results.push({
+      method,
+      path,
+      summary: normalizeString(api.summary) || `${method} ${path} endpoint`,
+      dependency: normalizeString(match),
+      impact: 'uses',
+      how: `Uses dependency ${normalizeString(match)}`,
+    });
+  }
+
+  results.sort((a, b) => {
+    if (a.path === b.path) return a.method.localeCompare(b.method);
+    return a.path.localeCompare(b.path);
+  });
+
+  return results;
+}
+
+function analyzeServiceImpact(apis, filters = {}) {
+  const svcFilter = normalizeString(filters.service);
+  if (!svcFilter) return [];
+
+  const svcKey = toKey(svcFilter);
+  const results = [];
+
+  for (const api of apis) {
+    const svcs = Array.isArray(api.services) ? api.services : [];
+    const match = svcs.find((s) => toKey(s) === svcKey);
+    if (!match) continue;
+
+    const method = normalizeString(api.method).toUpperCase();
+    const path = normalizeString(api.path);
+
+    results.push({
+      method,
+      path,
+      summary: normalizeString(api.summary) || `${method} ${path} endpoint`,
+      service: normalizeString(match),
+      impact: 'calls',
+      how: `Calls external service ${normalizeString(match)}`,
+    });
+  }
+
+  results.sort((a, b) => {
+    if (a.path === b.path) return a.method.localeCompare(b.method);
+    return a.path.localeCompare(b.path);
+  });
+
+  return results;
+}
+
 function buildImpactPayload(apiKnowledge, filters = {}) {
   const apis = flattenApis(apiKnowledge);
   const table = normalizeString(filters.table);
   const column = normalizeString(filters.column);
+  const dependency = normalizeString(filters.dependency);
+  const service = normalizeString(filters.service);
+
+  let results;
+  if (dependency) {
+    results = analyzeDependencyImpact(apis, { dependency });
+  } else if (service) {
+    results = analyzeServiceImpact(apis, { service });
+  } else {
+    results = analyzeImpact(apis, { table, column });
+  }
 
   return {
     totalApis: apis.length,
     tables: buildTableCatalog(apis),
-    filters: { table, column },
-    results: analyzeImpact(apis, { table, column }),
+    dependencies: buildDependencyCatalog(apis),
+    services: buildServiceCatalog(apis),
+    filters: { table, column, dependency, service },
+    results,
   };
 }
 
@@ -278,4 +409,8 @@ module.exports = {
   flattenApis,
   analyzeImpact,
   buildImpactPayload,
+  buildDependencyCatalog,
+  buildServiceCatalog,
+  analyzeDependencyImpact,
+  analyzeServiceImpact,
 };

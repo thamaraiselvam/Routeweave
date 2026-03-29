@@ -5,10 +5,10 @@
 **Always use this command to start the server for testing:**
 
 ```
-npm run serve -- ../thinkify/server
+npm run serve -- .
 ```
 
-This points to the thinkify dataset which has full API scan data (35 endpoints, MongoDB collections, services, etc.) needed to properly evaluate the UI. The server runs on **http://localhost:3789**.
+This serves the current Routeweave repo as the dataset. The server runs on **http://localhost:3789**.
 
 > Never use `npm run serve` alone — without the path argument the server has no data and the UI shows only fallback demo APIs.
 
