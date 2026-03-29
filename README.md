@@ -35,75 +35,21 @@ Routeweave scans your Node.js/TypeScript backend with an AI coding agent and bui
 
 ## Quick Start
 
-### 1. Generate scan instructions
+Point Routeweave at your project and everything happens in the browser:
 
 ```bash
-npx routeweave scan-prompt /path/to/your/repo
+npx routeweave /path/to/your/repo
 ```
 
-This creates `.routeweave/SCAN_INSTRUCTIONS.md` inside your target repo and prints:
+Open **http://localhost:3789** — a guided setup wizard walks you through three steps:
 
-```
-╔══════════════════════════════════════════════════════════╗
-║           Routeweave Scan Instructions Ready                ║
-╠══════════════════════════════════════════════════════════╣
-║  📄 Instruction file created at:                         ║
-║     /your/repo/.routeweave/SCAN_INSTRUCTIONS.md              ║
-╠══════════════════════════════════════════════════════════╣
-║  Next step — open this file in your AI coding agent      ║
-║  (Claude Code, Cursor, Copilot, etc.) and run:           ║
-║                                                          ║
-║    "Follow the instructions in SCAN_INSTRUCTIONS.md"    ║
-║                                                          ║
-║  The AI will scan your repo and create:                  ║
-║    • .routeweave/api_knowledge.json  (required)              ║
-║    • .routeweave/metadata.json       (audit trail)           ║
-║                                                          ║
-║  Then run:  npx routeweave serve .                           ║
-╚══════════════════════════════════════════════════════════╝
-```
-
-### 2. Run the AI scan
-
-Open `.routeweave/SCAN_INSTRUCTIONS.md` in your AI coding agent (Claude Code, Cursor, GitHub Copilot, etc.) and say:
-
-> **"Follow the instructions in SCAN_INSTRUCTIONS.md"**
-
-The agent will scan every route, trace through controllers → services → repositories, and write:
-- `.routeweave/api_knowledge.json` — full API knowledge (required by dashboard)
-- `.routeweave/metadata.json` — raw route metadata and audit trail
-
-`graph.json` and `scan_state.json` are derived automatically by the server on first boot — no extra steps needed.
-
-### 3. Launch the dashboard
-
-```bash
-npx routeweave serve /path/to/your/repo
-```
-
-Open **http://localhost:3789** — the full dashboard is ready.
-
----
-
-## All Commands
-
-| Command | Description |
+| Step | What happens |
 |---|---|
-| `npx routeweave init [path]` | Create the `.routeweave/` cache directory |
-| `npx routeweave scan-prompt [path]` | Generate AI scan instructions → writes `.routeweave/SCAN_INSTRUCTIONS.md` |
-| `npx routeweave scan [path]` | Run a local (non-AI) metadata-only scan |
-| `npx routeweave serve [path]` | Launch the dashboard server on port 3789 |
+| **1. Choose Project** | Pick an already-scanned repo or point to a new directory |
+| **2. Parse & AI Enrichment** | Static code analysis runs automatically, then an AI coding agent (Claude Code, Cursor, Copilot, etc.) enriches every endpoint with business-logic detail |
+| **3. Explore** | Dashboard is ready — browse APIs, trace flows, run impact analysis |
 
-**Path behaviour:**
-- For `init`, `scan`, `scan-prompt`: defaults to the nearest git repository root if no path is given.
-- For `serve`: defaults to the current working directory.
-- `--dir /path` is accepted by all commands.
-
-**npm script shortcuts:**
-```bash
-npm run scan:prompt -- /path/to/project
-npm run serve       -- /path/to/project
-```
+That's it. No extra commands, no config files to edit.
 
 ---
 
@@ -119,7 +65,7 @@ npm run serve       -- /path/to/project
 
 ## Cache Files
 
-The AI scan writes to `.routeweave/` inside your project:
+Routeweave stores scan data in `.routeweave/` inside your project:
 
 | File | Required | Description |
 |---|---|---|
@@ -127,7 +73,6 @@ The AI scan writes to `.routeweave/` inside your project:
 | `metadata.json` | Optional | Raw route metadata / audit trail |
 | `graph.json` | Auto-derived | Built from `api_knowledge.json` on first serve |
 | `scan_state.json` | Auto-derived | Scan timestamp and API count |
-| `SCAN_INSTRUCTIONS.md` | Generated | AI prompt — open in your coding agent |
 
 ---
 
@@ -146,11 +91,6 @@ The dashboard provides a **category switcher** (Tables / Dependencies / Ext. Ser
 ---
 
 ## Development
-
-```bash
-npm test          # run test suite
-npm run serve -- ../your-repo   # dev server with real data
-```
 
 Server runs at `http://localhost:3789`.
 
